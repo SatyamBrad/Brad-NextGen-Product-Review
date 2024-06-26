@@ -3,7 +3,7 @@
 client_id = "4ae4d80f7ac91b64603bc3b8bdaae885"
 name = "Brad NextGen Product Reviews"
 handle = "brad-nextgen-product-reviews"
-application_url = "https://therapy-tries-holder-respiratory.trycloudflare.com"
+application_url = "https://responsible-tool-logos-half.trycloudflare.com"
 embedded = true
 
 [build]
@@ -12,9 +12,9 @@ dev_store_url = "nextgenwishlist.myshopify.com"
 
 [auth]
 redirect_urls = [
-  "https://therapy-tries-holder-respiratory.trycloudflare.com/auth/callback",
-  "https://therapy-tries-holder-respiratory.trycloudflare.com/auth/shopify/callback",
-  "https://therapy-tries-holder-respiratory.trycloudflare.com/api/auth/callback"
+  "https://responsible-tool-logos-half.trycloudflare.com/auth/callback",
+  "https://responsible-tool-logos-half.trycloudflare.com/auth/shopify/callback",
+  "https://responsible-tool-logos-half.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
