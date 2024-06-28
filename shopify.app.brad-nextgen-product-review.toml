@@ -3,7 +3,7 @@
 client_id = "53eb8bac00dcac185e719de2e1721e66"
 name = "Brad NextGen Wishlist"
 handle = "brad-nextgen-wishlist-1"
-application_url = "https://operational-excerpt-ya-lit.trycloudflare.com"
+application_url = "https://easter-sep-removed-poll.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,16 +16,16 @@ scopes = "read_customers,write_customers,write_products"
 
 [auth]
 redirect_urls = [
-  "https://operational-excerpt-ya-lit.trycloudflare.com/auth/callback",
-  "https://operational-excerpt-ya-lit.trycloudflare.com/auth/shopify/callback",
-  "https://operational-excerpt-ya-lit.trycloudflare.com/api/auth/callback"
+  "https://easter-sep-removed-poll.trycloudflare.com/auth/callback",
+  "https://easter-sep-removed-poll.trycloudflare.com/auth/shopify/callback",
+  "https://easter-sep-removed-poll.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
 
 [app_proxy]
-url = "https://operational-excerpt-ya-lit.trycloudflare.com/api"
+url = "https://easter-sep-removed-poll.trycloudflare.com/api"
 subpath = "prapp"
 prefix = "apps"
 

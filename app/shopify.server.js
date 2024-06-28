@@ -2,12 +2,18 @@ import "@shopify/shopify-app-remix/adapters/node";
 import {
   ApiVersion,
   AppDistribution,
+  BillingInterval,
   DeliveryMethod,
   shopifyApp,
 } from "@shopify/shopify-app-remix/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import { restResources } from "@shopify/shopify-api/rest/admin/2024-04";
 import prisma from "./db.server";
+
+export const BASIC_SHOPIFY_PLAN = "Basic Shopify"
+export const SHOPIFY_PLAN = "Shopify"
+export const ADVANCED_SHOPIFY_PLAN = "Advanced Shopify"
+export const SHOPIFY_PLUS_PLAN = "Shopify Plus"
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -19,6 +25,28 @@ const shopify = shopifyApp({
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,
   restResources,
+  billing:{
+    [BASIC_SHOPIFY_PLAN]: {
+      amount: 9.99,
+      currencyCode:"USD",
+      interval: BillingInterval.Every30Days,
+    }, 
+    [SHOPIFY_PLAN]: {
+      amount: 19.99,
+      currencyCode:"USD",
+      interval: BillingInterval.Every30Days,
+    }, 
+    [ADVANCED_SHOPIFY_PLAN]: {
+      amount: 29.99,
+      currencyCode:"USD",
+      interval: BillingInterval.Every30Days,
+    }, 
+    [SHOPIFY_PLUS_PLAN]: {
+      amount: 59.99,
+      currencyCode:"USD",
+      interval: BillingInterval.Every30Days,
+    }, 
+  },
   webhooks: {
     APP_UNINSTALLED: {
       deliveryMethod: DeliveryMethod.Http,

@@ -137,7 +137,6 @@ export default function Dashboardcontent() {
                         backgroundColor: "#0B0B22",
                         padding: "20px",
                         borderRadius: "8px",
-                        borderRadius: "8px",
                         borderColor: "white",
                         borderWidth: "1px",
                         borderStyle: "solid",
