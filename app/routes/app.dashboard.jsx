@@ -1,8 +1,33 @@
-import React from "react";
-
 import DashboardCard from "../components/dashboardCard";
+import { authenticate } from "../shopify.server";
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 
-export default function Dashboardcontent() {
+export const loader = async ({ request }) => {
+    const { admin } = await authenticate.admin(request);
+
+    const response = await admin.graphql(
+        `#graphql
+            query getProducts {
+                products (first: 3) {
+                edges {
+                    node {
+                    id
+                    handle
+                    }
+                    }
+                }
+            }`
+    );
+
+    const data = await response.json();
+    return data;
+}
+
+
+
+export default function DashboardContent() {
+    const { data } = useLoaderData();
     return (
         <div
             style={{
@@ -34,7 +59,7 @@ export default function Dashboardcontent() {
                             marginBottom: "10px",
                         }}
                     >
-                        Product Reviews
+
                     </div>
 
                     <div
