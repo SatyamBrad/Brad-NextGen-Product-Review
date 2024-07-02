@@ -3,18 +3,23 @@
 client_id = "4ae4d80f7ac91b64603bc3b8bdaae885"
 name = "Brad NextGen Product Reviews"
 handle = "brad-nextgen-product-reviews"
-application_url = "https://spouse-masters-strings-actually.trycloudflare.com"
+application_url = "https://toolbar-egyptian-shareholders-prompt.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
 dev_store_url = "nextgenwishlist.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_customers,read_products,read_validations,write_customers,write_products,write_validations"
 
 [auth]
 redirect_urls = [
-  "https://spouse-masters-strings-actually.trycloudflare.com/auth/callback",
-  "https://spouse-masters-strings-actually.trycloudflare.com/auth/shopify/callback",
-  "https://spouse-masters-strings-actually.trycloudflare.com/api/auth/callback"
+  "https://toolbar-egyptian-shareholders-prompt.trycloudflare.com/auth/callback",
+  "https://toolbar-egyptian-shareholders-prompt.trycloudflare.com/auth/shopify/callback",
+  "https://toolbar-egyptian-shareholders-prompt.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

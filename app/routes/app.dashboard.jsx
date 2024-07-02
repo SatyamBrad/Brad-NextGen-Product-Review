@@ -14,10 +14,11 @@ export const loader = async ({ request }) => {
                     node {
                     id
                     handle
-                    }
+                    
                     }
                 }
-            }`
+            }
+        }`
     );
 
     const data = await response.json();
@@ -28,6 +29,7 @@ export const loader = async ({ request }) => {
 
 export default function DashboardContent() {
     const { data } = useLoaderData();
+    console.log(data.products.edges[0].node);
     return (
         <div
             style={{
@@ -161,7 +163,6 @@ export default function DashboardContent() {
                     style={{
                         backgroundColor: "#0B0B22",
                         padding: "20px",
-                        borderRadius: "8px",
                         borderRadius: "8px",
                         borderColor: "white",
                         borderWidth: "1px",
