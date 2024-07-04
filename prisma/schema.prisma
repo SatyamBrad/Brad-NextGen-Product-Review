@@ -32,7 +32,16 @@ model Session {
 }
 
 model product{
-  id            String
+  prodId        String  @id
   shop          String
   
 }
+model Review {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  rating    Int
+  author    String
+  createdAt DateTime @default(now())
+}
+
