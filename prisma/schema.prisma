@@ -30,3 +30,15 @@ model Session {
   collaborator  Boolean?  @default(false)
   emailVerified Boolean?  @default(false)
 }
+
+model Review {
+  id         Int     @id @default(autoincrement())
+  shop       String
+  productId  String
+  customerId String
+  review     String?
+  starRating Int?    @default(0) 
+
+  @@unique([shop, productId, customerId])
+}
+
