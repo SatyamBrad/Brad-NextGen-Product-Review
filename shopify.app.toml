@@ -1,24 +1,34 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "4ae4d80f7ac91b64603bc3b8bdaae885"
-name = "Brad NextGen Product Reviews"
-handle = "brad-nextgen-product-reviews"
-application_url = "https://responsible-tool-logos-half.trycloudflare.com"
+client_id = "53eb8bac00dcac185e719de2e1721e66"
+name = "Brad NextGen Wishlist"
+handle = "brad-nextgen-wishlist-1"
+application_url = "https://precision-foods-preferences-symptoms.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "nextgenwishlist.myshopify.com"
+dev_store_url = "bradnextgenwishlist.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_customers,write_customers,write_products"
 
 [auth]
 redirect_urls = [
-  "https://responsible-tool-logos-half.trycloudflare.com/auth/callback",
-  "https://responsible-tool-logos-half.trycloudflare.com/auth/shopify/callback",
-  "https://responsible-tool-logos-half.trycloudflare.com/api/auth/callback"
+  "https://precision-foods-preferences-symptoms.trycloudflare.com/auth/callback",
+  "https://precision-foods-preferences-symptoms.trycloudflare.com/auth/shopify/callback",
+  "https://precision-foods-preferences-symptoms.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
-api_version = "2024-04"
+api_version = "2023-10"
+
+[app_proxy]
+url = "https://precision-foods-preferences-symptoms.trycloudflare.com/api"
+subpath = "prapp"
+prefix = "apps"
 
 [pos]
-embedded = false
+embedded = true
