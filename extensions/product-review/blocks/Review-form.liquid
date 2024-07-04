@@ -1,0 +1,272 @@
+<!-- Star Rating section with Review Form -->
+<div class="star-rating-section">
+  <h2 class="star-rating-section__title">Customer Ratings</h2>
+
+  <!-- List of Reviews -->
+  <ul class="star-rating-list">
+    {% assign reviews = shop.metafields.custom.reviews %}
+    {% if reviews and reviews.size > 0 %}
+      {% for review in reviews %}
+        <li class="star-rating-item">
+          <h3 class="star-rating-item__title">{{ review.title }}</h3>
+          <p class="star-rating-item__content">{{ review.content }}</p>
+          <div class="star-rating-item__stars">
+            {% for i in (1..5) %}
+              {% if review.rating >= i %}
+                <span class="star filled">&#9733;</span>
+              {% else %}
+                <span class="star">&#9734;</span>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <p class="star-rating-item__author"><strong>Author:</strong> {{ review.author }}</p>
+        </li>
+      {% endfor %}
+    {% else %}
+      <p class="star-rating-section__no-reviews">No reviews yet. Be the first to review!</p>
+    {% endif %}
+  </ul>
+
+  <!-- Button to Open Modal -->
+  <button class="open-review-form-btn">Write a Review</button>
+
+  <!-- Modal -->
+  <div class="modal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <h2 class="modal__title">Write a Review</h2>
+      <form action="/submit_review" method="POST">
+        <div class="form-group">
+          <label for="review-title">Title</label>
+          <input type="text" id="review-title" name="review[title]" required>
+        </div>
+
+        <div class="form-group">
+          <label for="review-content">Review</label>
+          <textarea id="review-content" name="review[content]" rows="6" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="review-rating">Rating</label>
+          <div class="star-rating-input">
+            {% for i in (1..5) %}
+              <input type="radio" id="star{{ i }}" name="review[rating]" value="{{ i }}" required>
+              <label for="star{{ i }}" title="{{ i }} stars">&#9733;</label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="review-author">Your Name</label>
+          <input type="text" id="review-author" name="review[author]" required>
+        </div>
+
+        <button type="submit" class="btn-submit-review">Submit Review</button>
+      </form>
+      <button class="close-modal-btn">X</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .star-rating-section {
+    padding: 20px;
+    border-top: 1px solid #ccc;
+    margin-top: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .star-rating-section__title {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+
+  .star-rating-list {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .star-rating-item {
+    margin-bottom: 20px;
+  }
+
+  .star-rating-item__title {
+    font-size: 1.2em;
+    margin: 0 0 5px;
+  }
+
+  .star-rating-item__content {
+    margin: 0 0 10px;
+  }
+
+  .star-rating-item__stars {
+    display: flex;
+    gap: 5px;
+  }
+
+  .star {
+    font-size: 1.5em;
+    color: #ccc;
+  }
+
+  .star.filled {
+    color: gold;
+  }
+
+  .open-review-form-btn {
+    background-color: #000;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-bottom: 20px;
+  }
+
+  .open-review-form-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+
+  .modal__title {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .form-group input[type="text"],
+  .form-group textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    resize: vertical;
+  }
+
+  .star-rating-input {
+    display: flex;
+    gap: 5px;
+  }
+
+  .star-rating-input input[type="radio"] {
+    display: none;
+  }
+
+  .star-rating-input label {
+    font-size: 1.5em;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .star-rating-input label:hover,
+  .star-rating-input input[type="radio"]:checked ~ label {
+    color: gold;
+  }
+
+  .btn-submit-review {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .btn-submit-review:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+  }
+
+  .close-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #000;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .close-modal-btn:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const openFormBtn = document.querySelector('.open-review-form-btn');
+    const modal = document.querySelector('.modal');
+    const closeModalBtn = document.querySelector('.close-modal-btn');
+
+    openFormBtn.addEventListener('click', function() {
+      modal.style.display = 'flex';
+    });
+
+    closeModalBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside the modal content
+    window.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Review Form",
+  "target": "section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product", "autofill": true },
+    { "type": "color", "id": "colour", "label": "Star Colour", "default": "#ff0000" }
+  ]
+}
+{% endschema %}
