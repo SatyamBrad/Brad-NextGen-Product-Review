@@ -1,0 +1,70 @@
+.billing-container {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    height: 100vh;
+    border-radius: 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.billing-app {
+    width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.billing-plan-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.billing-current-plan {
+    background-color: var(--highlight-color);
+    padding: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.billing-plans {
+    width: 100%;
+    padding:0.3rem;
+    display: flex;
+    /* align-items: center; */
+    justify-content: space-around;
+}
+
+.billing-plan-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    background-color: var(--highlight-color);
+    padding: 1rem 2rem;
+    gap: 0.3rem;
+    border-radius: 8px;
+    /* width: 40%; */
+}
+
+.billing-plan-item button {
+    width: 100%;
+    padding:0.3rem 1rem;
+    margin-block: 0.3rem;
+    align-self: center;
+}
+
+.billing-account {
+    width: 30%;
+    background-color: var(--highlight-color);
+    padding: 1rem;
+    align-self: flex-start;
+}

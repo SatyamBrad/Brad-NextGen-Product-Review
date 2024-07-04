@@ -31,17 +31,17 @@ model Session {
   emailVerified Boolean?  @default(false)
 }
 
-model product{
-  prodId        String  @id
-  shop          String
+// model product{
+//   prodId        String  @id
+//   shop          String
   
-}
-model Review {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String
-  rating    Int
-  author    String
-  createdAt DateTime @default(now())
-}
+// }
+// model Review {
+//   id        Int      @id @default(autoincrement())
+//   title     String
+//   content   String
+//   rating    Int
+//   author    String
+//   createdAt DateTime @default(now())
+// }
 

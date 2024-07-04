@@ -1,6 +1,6 @@
 .review-container {
-    background-color: #0B0B22;
-    color: #fff;
+    background-color: var(--background-color);
+    color: var(--text-color);
     height: 100vh;
     border-radius: 8px;
     padding-top:2rem;
