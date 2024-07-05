@@ -27,51 +27,47 @@
     {% endif %}
   </ul>
 
-  <!-- Button to Open Modal -->
+  <!-- Button to Open Form -->
   <button class="open-review-form-btn">Write a Review</button>
 
-  <!-- Modal -->
-  <div class="modal" style="display: none;">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <h2 class="modal__title">Write a Review</h2>
-      <form action="/submit_review" method="POST">
-        <div class="form-group">
-          <label for="review-title">Title</label>
-          <input type="text" id="review-title" name="review[title]" required>
-        </div>
+  <!-- Review Form -->
+  <div class="review-form" style="display: none;">
+    <h2 class="review-form__title">Write a Review</h2>
+    <form id="reviewForm" action="/submit_review" method="POST">
+      <div class="form-group">
+        <label for="review-title">Title</label>
+        <input type="text" id="review-title" name="review[title]" required>
+      </div>
 
-        <div class="form-group">
-          <label for="review-content">Review</label>
-          <textarea id="review-content" name="review[content]" rows="6" required></textarea>
-        </div>
+      <div class="form-group">
+        <label for="review-content">Review</label>
+        <textarea id="review-content" name="review[content]" rows="6" required></textarea>
+      </div>
 
-        <div class="form-group">
-          <label for="review-rating">Rating</label>
-          <div class="star-rating-input">
-            {% for i in (1..5) %}
-              <input type="radio" id="star{{ i }}" name="review[rating]" value="{{ i }}" required>
-              <label for="star{{ i }}" title="{{ i }} stars">&#9733;</label>
-            {% endfor %}
-          </div>
+      <div class="form-group">
+        <label for="review-rating">Rating</label>
+        <div class="star-rating-input">
+          {% for i in (1..5) %}
+            <input type="radio" id="star{{ i }}" name="review[rating]" value="{{ i }}" required>
+            <label for="star{{ i }}" title="{{ i }} stars">&#9733;</label>
+          {% endfor %}
         </div>
+      </div>
 
-        <div class="form-group">
-          <label for="review-author">Your Name</label>
-          <input type="text" id="review-author" name="review[author]" required>
-        </div>
+      <div class="form-group">
+        <label for="review-author">Your Name</label>
+        <input type="text" id="review-author" name="review[author]" required>
+      </div>
 
-        <button type="submit" class="btn-submit-review">Submit Review</button>
-      </form>
-      <button class="close-modal-btn">X</button>
-    </div>
+      <button type="submit" class="btn-submit-review">Submit Review</button>
+    </form>
+    <button class="close-review-form-btn">X</button>
   </div>
 </div>
 
 <style>
   .star-rating-section {
     padding: 20px;
-    border-top: 1px solid #ccc;
     margin-top: 20px;
     max-width: 800px;
     margin-left: auto;
@@ -103,6 +99,7 @@
 
   .star-rating-item__stars {
     display: flex;
+    flex-direction: row; /* Align stars horizontally */
     gap: 5px;
   }
 
@@ -116,7 +113,7 @@
   }
 
   .open-review-form-btn {
-    background-color: #000;
+    background-color: #000000;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -132,30 +129,31 @@
     transform: translateY(-2px);
   }
 
-  .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .modal-content {
+  .review-form {
     background-color: #fff;
     padding: 20px;
-    border-radius: 5px;
-    width: 80%;
-    max-width: 600px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    position: relative;
+    margin-top: 20px;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    display: none;
+    opacity: 0;
+    transform: translateY(-20px);
   }
 
-  .modal__title {
+  .review-form.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .review-form.hide {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  .review-form__title {
     font-size: 1.5em;
     margin-bottom: 15px;
   }
@@ -174,10 +172,17 @@
   .form-group textarea {
     width: calc(100% - 20px);
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     font-size: 1em;
     resize: vertical;
+  }
+
+  .form-group input[type="text"]:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
   }
 
   .star-rating-input {
@@ -206,7 +211,7 @@
     color: white;
     padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 1em;
     transition: background-color 0.3s ease, transform 0.3s ease;
@@ -217,21 +222,21 @@
     transform: translateY(-2px);
   }
 
-  .close-modal-btn {
+  .close-review-form-btn {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #000;
+    background-color: #dc3545;
     color: white;
     padding: 5px 10px;
     border: none;
-    border-radius: 8px;
+    border-radius: 50%;
     cursor: pointer;
     font-size: 0.9em;
     transition: background-color 0.3s ease, transform 0.3s ease;
   }
 
-  .close-modal-btn:hover {
+  .close-review-form-btn:hover {
     background-color: #c82333;
     transform: translateY(-2px);
   }
@@ -240,22 +245,45 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const openFormBtn = document.querySelector('.open-review-form-btn');
-    const modal = document.querySelector('.modal');
-    const closeModalBtn = document.querySelector('.close-modal-btn');
+    const reviewForm = document.querySelector('.review-form');
+    const closeFormBtn = document.querySelector('.close-review-form-btn');
+    const formElement = document.getElementById('reviewForm');
 
     openFormBtn.addEventListener('click', function() {
-      modal.style.display = 'flex';
+      reviewForm.style.display = 'block';
+      requestAnimationFrame(() => {
+        reviewForm.classList.add('show');
+        reviewForm.classList.remove('hide');
+      });
+      openFormBtn.style.display = 'none'; // Hide the button when clicked
     });
 
-    closeModalBtn.addEventListener('click', function() {
-      modal.style.display = 'none';
+    closeFormBtn.addEventListener('click', function() {
+      reviewForm.classList.add('hide');
+      reviewForm.classList.remove('show');
+      setTimeout(() => {
+        reviewForm.style.display = 'none';
+        openFormBtn.style.display = 'block'; // Show the button again
+      }, 500); // match the transition duration
     });
 
-    // Close modal when clicking outside the modal content
-    window.addEventListener('click', function(event) {
-      if (event.target === modal) {
-        modal.style.display = 'none';
-      }
+    formElement.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Collect form data
+      const formData = new FormData(formElement);
+      console.log(formData); // You can use formData as needed
+      
+      // Example: Display success message
+      alert('Review submitted'); // Replace with your preferred method of displaying success message (e.g., toast notification)
+
+      // Reset form or close the form
+      reviewForm.classList.add('hide');
+      reviewForm.classList.remove('show');
+      setTimeout(() => {
+        reviewForm.style.display = 'none';
+        openFormBtn.style.display = 'block'; // Show the button again
+      }, 500); // match the transition duration
     });
   });
 </script>
