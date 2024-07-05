@@ -6,150 +6,244 @@ export const action = async ({ request }) => {
   let formData = await request.formData();
   formData = Object.fromEntries(formData);
 
-  const shop = formData.shop || "";
-  const customerId = formData.customerId || "";
-  const productId = formData.productId || "";
-  const review = formData.review || "";
-  const starRating = Number(formData.starRating) || 0;
+  const shop = formData.shop;
+  const customerId = formData.customerId;
+  const productId = formData.productId;
+  const review = formData.review;
+  const starRating = Number(formData.starRating);
   const action = formData.action;
 
-  if ((starRating < 1 || starRating > 5) && starRating !== 0) {
-    return json({ message: "starRating must be between 1 and 5" });
-  }
+  try {
+    switch (action) {
+      case "FETCH_ALL":
+        const reviewListFetchAll = await db.review.findMany();
 
-  switch (action) {
-    case "FETCH_ALL":
-      const reviewListFetchAll = await db.review.findMany();
+        const responseFetchAll = json({
+          ok: true,
+          message: "Successfully retrieved all the records in the database.",
+          data: reviewListFetchAll,
+          length: reviewListFetchAll.length,
+        });
 
-      const responseFetchAll = json({
-        ok: true,
-        message: "Successful fetch",
-        data: reviewListFetchAll,
-      });
+        return cors(request, responseFetchAll);
 
-      return cors(request, responseFetchAll);
+      case "FETCH_BY_SHOP":
+        if (!shop) throw new Error("Required fields: shop");
 
-    case "FETCH_BY_SHOP":
-      const reviewListFetchByShop = await db.review.findMany({
-        where: {
-          shop,
-        },
-      });
+        const reviewsFetchByShop = await db.review.findMany({
+          where: {
+            shop,
+          },
+        });
 
-      const responseFetchByShop = json({
-        ok: true,
-        message: "Successful fetch",
-        data: reviewListFetchByShop,
-      });
+        if (reviewsFetchByShop.length === 0)
+          throw new Error("Could not find such shop");
 
-      return cors(request, responseFetchByShop);
+        const responseFetchByShop = json({
+          ok: true,
+          message: "Successfully retrieved all records by shop name.",
+          data: reviewsFetchByShop,
+          length: reviewsFetchByShop.length,
+        });
 
-    case "FETCH_BY_PRODUCT":
-      const reviewListFetchByProduct = await db.review.findMany({
-        where: {
-          shop,
-          productId,
-        },
-      });
+        return cors(request, responseFetchByShop);
 
-      const responseFetchByProduct = json({
-        ok: true,
-        message: "Successful fetch",
-        data: reviewListFetchByProduct,
-      });
+      case "FETCH_BY_PRODUCT":
+        if (!shop || !productId)
+          throw new Error("Required fields: shop, productId");
 
-      return cors(request, responseFetchByProduct);
+        const reviewsFetchByProduct = await db.review.findMany({
+          where: {
+            shop,
+            productId,
+          },
+        });
 
-    case "FETCH_ONE":
-      const reviewFetch = await db.review.findMany({
-        where: {
-          shop,
-          productId,
-          customerId,
-        },
-      });
+        if (reviewsFetchByProduct === 0)
+          throw new Error("Could not find such shop or productId");
 
-      const responseFetch = json({
-        ok: true,
-        message: "Successful fetch",
-        data: reviewFetch,
-      });
+        const responseFetchByProduct = json({
+          ok: true,
+          message: "Successfully retrieved all records by product id",
+          data: reviewsFetchByProduct,
+          length: reviewsFetchByProduct.length,
+        });
 
-      return cors(request, responseFetch);
+        return cors(request, responseFetchByProduct);
 
-    case "FETCH_BY_CUSTOMER":
-      const reviewListFetchByCustomer = await db.review.findMany({
-        where: {
-          shop,
-          customerId,
-        },
-      });
+      case "FETCH_BY_CUSTOMER":
+        if (!shop || !customerId)
+          throw new Error("Required fields: shop, customerId");
 
-      const responseFetchByCustomer = json({
-        ok: true,
-        message: "Successful fetch",
-        data: reviewListFetchByCustomer,
-      });
+        const reviewsFetchByCustomer = await db.review.findMany({
+          where: {
+            shop,
+            customerId,
+          },
+        });
 
-      return cors(request, responseFetchByCustomer);
+        if (reviewsFetchByCustomer.length === 0)
+          throw new Error("Could not find such shop or customerId");
 
-    case "UPDATE":
-      const updated = await db.review.update({
-        where: {
-          shop_productId_customerId: {
+        const responseFetchByCustomer = json({
+          ok: true,
+          message: "Successfully retrieved all records by customer id",
+          data: reviewsFetchByCustomer,
+          length: reviewsFetchByCustomer.length,
+        });
+
+        return cors(request, responseFetchByCustomer);
+
+      case "FETCH_ONE":
+        if (!shop || !productId || !customerId)
+          throw new Error("Required fields: shop, productId, customerId");
+
+        const reviewFetch = await db.review.findUnique({
+          where: {
+            shop_productId_customerId: {
+              shop,
+              productId,
+              customerId,
+            },
+          },
+        });
+
+        if (!reviewFetch)
+          throw new Error(
+            "Could not find such shop or productId or customerId",
+          );
+
+        const responseFetch = json({
+          ok: true,
+          message: "Successfully retrieved a particular record.",
+          data: reviewFetch,
+          length: reviewFetch.length,
+        });
+
+        return cors(request, responseFetch);
+
+      case "CREATE":
+        if (!shop || !productId || !customerId)
+          throw new Error("Required fields: shop, productId, customerId");
+
+        if (starRating < 1 || starRating > 5)
+          throw new Error("starRating must be between 1 and 5");
+
+        const reviewCheckIfExist = await db.review.findUnique({
+          where: {
+            shop_productId_customerId: {
+              shop,
+              productId,
+              customerId,
+            },
+          },
+        });
+
+        if (reviewCheckIfExist)
+          throw new Error("Record already exist, cannot create");
+
+        const reviewCreated = await db.review.create({
+          data: {
             shop,
             productId,
             customerId,
+            ...(review && { review }),
+            ...(starRating && { starRating }),
           },
-        },
-        data: {
-          review,
-          starRating,
-        },
-      });
-      const responseUpdate = json({
-        ok: true,
-        message: "Review successfully edited",
-        data: updated,
-      });
-      return cors(request, responseUpdate);
+        });
 
-    case "CREATE":
-      const reviewCreated = await db.review.create({
-        data: {
-          shop,
-          productId,
-          customerId,
-          review,
-          starRating,
-        },
-      });
-      const responseCreate = json({
-        message: "Review added to database",
-        method: action,
-        reviewCreated,
-      });
-      return cors(request, responseCreate);
+        const responseCreate = json({
+          ok: true,
+          message: "Review successfully created",
+          created_data: reviewCreated,
+        });
 
-    case "DELETE":
-      const deleted = await db.review.delete({
-        where: {
-          shop_productId_customerId: {
-            shop,
-            productId,
-            customerId,
+        return cors(request, responseCreate);
+
+      case "UPDATE":
+        if (!shop || !productId || !customerId)
+          throw new Error("Required fields: shop, productId, customerId");
+
+        if (starRating < 1 || starRating > 5)
+          throw new Error("starRating must be between 1 and 5");
+
+        const reviewCheckIfNotExist = await db.review.findUnique({
+          where: {
+            shop_productId_customerId: {
+              shop,
+              productId,
+              customerId,
+            },
           },
-        },
-      });
+        });
 
-      const responseDelete = json({
-        ok: true,
-        message: "Review successfully deleted",
-        data: deleted,
-      });
-      return cors(request, responseDelete);
+        if (!reviewCheckIfNotExist)
+          throw new Error("Record does not exist, cannot update");
 
-    default:
-      return json({ message: "No such action available" });
+        const updated = await db.review.update({
+          where: {
+            shop_productId_customerId: {
+              shop,
+              productId,
+              customerId,
+            },
+          },
+          data: {
+            ...(review && { review }),
+            ...(starRating && { starRating }),
+          },
+        });
+
+        const responseUpdate = json({
+          ok: true,
+          message: "Review successfully edited",
+          updated_data: updated,
+        });
+
+        return cors(request, responseUpdate);
+
+      case "DELETE":
+        if (!shop || !productId || !customerId)
+          throw new Error("Required fields: shop, productId, customerId");
+
+        const reviewCheckToDelete = await db.review.findUnique({
+          where: {
+            shop_productId_customerId: {
+              shop,
+              productId,
+              customerId,
+            },
+          },
+        });
+
+        if (!reviewCheckToDelete)
+          throw new Error("Record does not exist, cannot delete");
+
+        const deleted = await db.review.delete({
+          where: {
+            shop_productId_customerId: {
+              shop,
+              productId,
+              customerId,
+            },
+          },
+        });
+
+        const responseDelete = json({
+          ok: true,
+          message: "Review successfully deleted",
+          deleted_data: deleted,
+        });
+        return cors(request, responseDelete);
+
+      default:
+        return json({ message: "No such action available" });
+    }
+  } catch (error) {
+    return json({
+      ok: false,
+      message: error.message,
+    });
   }
 };
+// just to make it 250 lines
