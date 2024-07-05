@@ -1,9 +1,5 @@
 import { authenticate } from "../shopify.server";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-} from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { useEffect } from "react";
 import "../styles/billing.css";
@@ -175,22 +171,22 @@ export const loader = async ({ request }) => {
     {
       currentAppInstallation {
         activeSubscriptions {
-          createdAt
-          currentPeriodEnd
+          # createdAt
+          # currentPeriodEnd
           id
-          lineItems {
-            id
-            plan {
-              pricingDetails {
-                ... on AppRecurringPricing {
-                  price {
-                    amount
-                  }
-                }
-              }
-            }
-          }
-          status
+          # lineItems {
+            # id
+            # plan {
+              # pricingDetails {
+                # ... on AppRecurringPricing {
+                  # price {
+                    # amount
+                  # }
+                # }
+              # }
+            # }
+          # }
+          # status
           name
           test
         }
@@ -219,114 +215,134 @@ export default function Billing() {
   const { shop, app } = loaderData;
   const { monthly, yearly } = shop.plans;
 
+  const isMonthly = shop?.plans?.monthly?.name === app?.name;
+  const isYearly = shop?.plans?.yearly?.name === app?.name;
+
   useEffect(() => {
     if (actionData?.confirmationUrl) {
       top.location.href = actionData.confirmationUrl;
     }
   }, [actionData]);
 
+  const handleSubmit = (event) => {
+    if (!window.confirm("Are you sure you want to cancel the plan?")) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <div className="billing-container">
       <TitleBar title="Billings" />
-      <div className="billing-app">
-        <div className="billing-plan-container">
-          <div className="billing-current-plan">
-            <div>
-              <h2>Current Subscription:</h2>
-              <p>
-                {shop.isShopFree
-                  ? "No Subscription"
-                  : app?.name
-                    ? app?.name
-                    : "Free Subscription"}
-              </p>
-            </div>
-            <Form action="/app/billing" method="DELETE">
-              <input type="hidden" name="id" value={app?.id || ""} />
-              <button type="submit">Cancel Plan</button>
-            </Form>
+
+      <div className="billing-plan-container">
+        <div className="billing-plan-current">
+          <div>
+            <h2>Current Subscription:</h2>
+            <p>
+              {shop.isShopFree
+                ? "No Subscription"
+                : app?.name
+                  ? app?.name
+                  : "Free Subscription"}
+            </p>
           </div>
+          <Form action="/app/billing" method="DELETE" onSubmit={handleSubmit}>
+            <input type="hidden" name="id" value={app?.id || ""} />
+            <button type="submit">Cancel Plan</button>
+          </Form>
+        </div>
 
-          {!shop.isShopFree && (
-            <div className="billing-plans">
-              <div className="billing-plan-item">
-                <div>
-                  <h2>{monthly.name}</h2>
-                </div>
-                <div>
-                  <p>$ {monthly.amount}/month</p>
-                </div>
-                <div>
-                  {monthly.features.map((feature, index) => (
-                    <li key={index}>{feature}</li>
-                  ))}
-                </div>
-                <Form method="POST">
-                  <input
-                    type="hidden"
-                    name="name"
-                    value={shop?.plans?.monthly.name || ""}
-                  />
-                  <input
-                    type="hidden"
-                    name="amount"
-                    value={shop?.plans?.monthly.amount || ""}
-                  />
-                  <input
-                    type="hidden"
-                    name="currencyCode"
-                    value={shop?.plans?.monthly.currency || ""}
-                  />
-                  <input type="hidden" name="interval" value="EVERY_30_DAYS" />
-                  <button type="submit">Monthly plan</button>
-                </Form>
+        {!shop.isShopFree && (
+          <div className="billing-plans">
+            <div
+              className={`billing-plan-item ${isMonthly ? "billing-item-disabled" : ""}`}
+            >
+              <div>
+                <h2>{monthly.name}</h2>
               </div>
-              <div className="billing-plan-item">
-                <div>
-                  <h2>{yearly.name}</h2>
-                </div>
-                <div>
-                  <span style={{ display: "flex", gap: "0.5rem" }}>
-                    <p>$ {yearly.amount}/year</p>
-                    <p style={{ textDecorationLine: "line-through" }}>
-                      $ {yearly.originalPrice}/year
-                    </p>
-                  </span>
-                </div>
-                <div>
-                  {yearly.features.map((feature, index) => (
-                    <li key={index}>{feature}</li>
-                  ))}
-                </div>
-                <Form method="POST">
-                  <input
-                    type="hidden"
-                    name="name"
-                    value={shop?.plans?.yearly.name || ""}
-                  />
-                  <input
-                    type="hidden"
-                    name="amount"
-                    value={shop?.plans?.yearly.amount || ""}
-                  />
-                  <input
-                    type="hidden"
-                    name="currencyCode"
-                    value={shop?.plans?.yearly.currency || ""}
-                  />
-                  <input type="hidden" name="interval" value="ANNUAL" />
-                  <button type="submit">Annual plan</button>
-                </Form>
+              <div>
+                <p>$ {monthly.amount}/month</p>
               </div>
+              <div>
+                {monthly.features.map((feature, index) => (
+                  <li key={index}>{feature}</li>
+                ))}
+              </div>
+              <Form method="POST">
+                <input
+                  type="hidden"
+                  name="name"
+                  value={shop?.plans?.monthly.name || ""}
+                />
+                <input
+                  type="hidden"
+                  name="amount"
+                  value={shop?.plans?.monthly.amount || ""}
+                />
+                <input
+                  type="hidden"
+                  name="currencyCode"
+                  value={shop?.plans?.monthly.currency || ""}
+                />
+                <input type="hidden" name="interval" value="EVERY_30_DAYS" />
+                <button type="submit">
+                  {isMonthly
+                    ? "Active Plan"
+                    : isYearly
+                      ? "Downgrade to Monthly Plan"
+                      : "Upgrade to Monthly plan"}
+                </button>
+              </Form>
             </div>
-          )}
-        </div>
+            <div
+              className={`billing-plan-item ${isYearly ? "billing-item-disabled" : ""}`}
+            >
+              <div>
+                <h2>{yearly.name}</h2>
+              </div>
+              <div>
+                <span style={{ display: "flex", gap: "0.5rem" }}>
+                  <p>$ {yearly.amount}/year</p>
+                  <p style={{ textDecorationLine: "line-through" }}>
+                    $ {yearly.originalPrice}/year
+                  </p>
+                </span>
+              </div>
+              <div>
+                {yearly.features.map((feature, index) => (
+                  <li key={index}>{feature}</li>
+                ))}
+              </div>
+              <Form method="POST">
+                <input
+                  type="hidden"
+                  name="name"
+                  value={shop?.plans?.yearly.name || ""}
+                />
+                <input
+                  type="hidden"
+                  name="amount"
+                  value={shop?.plans?.yearly.amount || ""}
+                />
+                <input
+                  type="hidden"
+                  name="currencyCode"
+                  value={shop?.plans?.yearly.currency || ""}
+                />
+                <input type="hidden" name="interval" value="ANNUAL" />
+                <button type="submit">
+                  {isYearly ? "Active Plan" : "Upgrade to Annual Plan"}
+                </button>
+              </Form>
+            </div>
+          </div>
+        )}
+      </div>
 
-        <div className="billing-account">
-          <h2>Account details</h2>
-          <p>John Doe</p>
-          <p>Johndoe@gmail.com</p>
-        </div>
+      <div className="billing-account-container">
+        <h2>Account details</h2>
+        <p>John Doe</p>
+        <p>Johndoe@gmail.com</p>
       </div>
     </div>
   );
