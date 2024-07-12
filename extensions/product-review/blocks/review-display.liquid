@@ -1,99 +1,70 @@
-<div class="customer-reviews">
-    <h2>Customer Reviews</h2>
-    <div class="rating">
-      <div class="star-rating">
-        {% assign rating = product.rating %}
-        {% for i in (1..5) reversed %}
-          <i class="fa fa-star {% if rating >= i %}filled{% endif %}"></i>
-        {% endfor %}
-      </div>
-      <div class="rating-count">
-        {{ rating }}
-        <span class="total-reviews">{{ product.reviews_count }} reviews</span>
-      </div>
-    </div>
-    <div class="review-distribution">
-      {% assign reviews = product.reviews %}
-      {% for i in (1..5) reversed %}
-        <div class="review-bar">
-          <span class="star-label">{{ i }} Star</span>
-          <div class="bar">
-            <div class="progress" style="width: {{ reviews | where: 'rating', i | size | times: 100 | divided_by: product.reviews_count }}%">
-            </div>
-          </div>
-          <span class="count">{{ reviews | where: 'rating', i | size }}</span>
-        </div>
+<div class="rating-summary">
+  <div class="average-rating">
+    <span class="rating-value">{{ product.rating | round: 1 }}</span>
+    <div class="stars">
+      {% assign rating = product.rating | round: 1 %}
+      {% assign full_stars = rating | floor %}
+      {% assign half_star = rating | minus: full_stars %}
+      {% assign empty_stars = 5 | minus: full_stars | minus: half_star %}
+      
+      {% for i in (1..full_stars) %}
+        <i class="fas fa-star filled"></i>
+      {% endfor %}
+      
+      {% if half_star > 0 %}
+        <i class="fas fa-star-half-alt filled"></i>
+      {% endif %}
+      
+      {% for i in (1..empty_stars) %}
+        <i class="far fa-star"></i>
       {% endfor %}
     </div>
+    <span class="rating-count">{{ product.reviews_count }} ratings</span>
   </div>
-  
-  <style>
-  .customer-reviews {
-    width: 70%;
-    height: 40%;
-    max-width: 800px;
-    margin: 0 auto;
-    font-family: Arial, sans-serif;
-  }
-  .customer-reviews h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  .rating {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  .star-rating {
-    display: flex;
-  }
-  .star-rating .fa {
-    color: #ddd;
-    margin-right: 5px;
-  }
-  .star-rating .fa.filled {
-    color: #f39c12;
-  }
-  .rating-count {
-    font-size: 16px;
-  }
-  .review-distribution {
-    margin-bottom: 20px;
-  }
-  .review-bar {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .star-label {
-    width: 50px;
-  }
-  .bar {
-    flex-grow: 1;
-    height: 10px;
-    background-color: #f1f1f1;
-    margin: 0 10px;
-    position: relative;
-  }
-  .progress {
-    height: 100%;
-    background-color: #f39c12;
-  }
-  .count {
-    width: 30px;
-    text-align: right;
-  }
-  </style>
-  
-  {% schema %}
-  {
-    "name": "review display",
-    "target": "section",
-    "settings": [
-      { "type": "product", "id": "product", "label": "Product", "autofill": true },
-      { "type": "color", "id": "colour", "label": "Star Colour", "default": "#ff0000" }
-    ]
-  }
-  {% endschema %}
-  
+</div>
+
+<style>
+.rating-summary {
+  display: flex;
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+.average-rating {
+  display: flex;
+  align-items: center;
+}
+.rating-value {
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+.stars {
+  display: flex;
+  align-items: center;
+}
+.fas.fa-star,
+.fas.fa-star-half-alt {
+  color: #ffcc00;
+  margin-right: 0.1rem;
+}
+.far.fa-star {
+  color: #ddd;
+  margin-right: 0.1rem;
+}
+.rating-count {
+  margin-left: 0.5rem;
+  color: #007185;
+  cursor: pointer;
+  font-size: 1rem;
+}
+</style>
+
+{% schema %}
+{
+  "name": "review display",
+  "target": "section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product", "autofill": true },
+    { "type": "color", "id": "colour", "label": "Star Colour", "default": "#ff0000" }
+  ]
+}
+{% endschema %}

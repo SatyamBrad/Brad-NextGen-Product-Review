@@ -1,0 +1,28 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "4ae4d80f7ac91b64603bc3b8bdaae885"
+name = "Brad NextGen Product Reviews"
+handle = "brad-nextgen-product-reviews"
+application_url = "https://correspondence-attempt-disposal-density.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "nextgenwishlist.myshopify.com"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_customers,read_products,read_validations,write_customers,write_products,write_validations"
+
+[auth]
+redirect_urls = [
+  "https://correspondence-attempt-disposal-density.trycloudflare.com/auth/callback",
+  "https://correspondence-attempt-disposal-density.trycloudflare.com/auth/shopify/callback",
+  "https://correspondence-attempt-disposal-density.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-04"
+
+[pos]
+embedded = false
