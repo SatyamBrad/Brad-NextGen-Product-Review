@@ -1,0 +1,160 @@
+{{ 'review-form.css' | asset_url | stylesheet_tag }}
+
+
+<div class="review-form-container">
+  <div class="review-form-close">
+    <img
+      src='{{ 'close-icon.svg' | asset_url }}'
+      width="auto"
+      height="auto"
+      alt="close">
+  </div>
+  <h2>
+    <b>Write a Review</b>
+  </h2>
+  <form id="reviewFormModal">
+    <input
+      type="hidden"
+      name="shop"
+      value="{{ shop.permanent_domain }}">
+
+    <input
+      type="hidden"
+      name="customerId"
+      value="{{ customer.id }}">
+
+    <input
+      type="hidden"
+      name="productId"
+      value="{{ product.id }}">
+
+    <div>
+      <label for="review-form-author">Your Name (Leave it empty to remain Anonymous)</label>
+      <input
+        type="text"
+        id="review-form-author"
+        name="customerName">
+    </div>
+
+    <div class="review-form-rating">
+      <label for="review-form-rating">Rating</label>
+      <div class="star-rating-input">
+        {% for i in (1..5) %}
+          <input
+            type="radio"
+            id="star{{ i }}"
+            name="starRating"
+            value="{{ i }}">
+          <label for="star{{ i }}" title="{{ i }} stars">&#9733;</label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div>
+      <label for="review-form-title">Title</label>
+      <input
+        type="text"
+        id="review-form-title"
+        name="reviewTitle">
+    </div>
+
+    <div>
+      <label for="review-form-description">Review</label>
+      <textarea
+        id="review-form-description"
+        name="reviewDescription"
+        rows="4"></textarea>
+    </div>
+
+
+    <div class="review-form-image">
+      <label for="review-form-image">Upload Images (Optional)</label>
+      {% comment %} ignore the class name here its just for reusability {% endcomment %}
+      <div class="star-rating-input">
+        <div>
+          <input
+            id="review-upload-image"
+            name="images"
+            type="file"
+            accept=".jpg, .png, .gif, .jpeg"
+            hidden
+            multiple>
+          <label for="review-upload-image" class="review-upload-button">+</label>
+        </div>
+        <div class="review-image-preview"></div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-submit-review">Submit Review</button>
+  </form>
+</div>
+
+<script>
+  
+  const stars = document.querySelectorAll('.star-rating-input label');
+  const form = document.getElementById("reviewFormModal");
+  
+  document.querySelector("#review-upload-image").addEventListener('change', (event)=> {
+    const input = event.target
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      const imagePreview = document.querySelector('.review-image-preview');
+      imagePreview.innerHTML = '';
+
+      const img = document.createElement('img');
+      img.src = reader.result;
+      imagePreview.appendChild(img);
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.classList.add('review-delete-btn');
+      deleteBtn.innerHTML = '&times;';
+      deleteBtn.onclick = function() {
+        imagePreview.innerHTML = '';
+        input.value = '';
+      };
+
+      imagePreview.appendChild(deleteBtn);
+    };
+
+    if (input.files && input.files[0]) {
+        reader.readAsDataURL(input.files[0]);
+    }
+  })
+  
+  stars.forEach((star, index) => {
+    star.addEventListener('click', () => {
+      stars.forEach((s) => s.classList.remove('selected'));    
+      for (let i = 0; i <= index; i++) {
+        stars[i].classList.add('selected');
+      }
+    });
+  });
+  
+  document.getElementById('reviewFormModal').addEventListener('reset', () => {
+    stars.forEach((s) => s.classList.remove('selected'));
+  });
+  
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+  
+    const formData = new FormData(form);
+    formData.append('action', 'CREATE')
+  
+    fetch('https://tales-respected-kitty-indexed.trycloudflare.com/api/reviews', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+      modal.style.display = "none";
+      form.reset()
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      form.reset()
+    });
+    
+  });
+</script>
