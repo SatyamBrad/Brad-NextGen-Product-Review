@@ -1,9 +1,10 @@
 import { Badge, Checkbox, Icon, Select } from "@shopify/polaris";
 import { InfoIcon, ChatIcon, CheckCircleIcon } from "@shopify/polaris-icons";
 import "./review-component.css";
-import { useState } from "react";
 
 export default function ReviewComponent({ item }) {
+  // console.log(item);
+
   const flexStyle = {
     display: "flex",
     justifyContent: "center",
@@ -13,6 +14,30 @@ export default function ReviewComponent({ item }) {
 
   const handleCheck = () => {
     item.checked = !item.checked;
+  };
+
+  const handleTimeShow = () => {
+    const time = new Date(item.createdAt);
+    const month = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ][time.getMonth()];
+    const date = time.getDate();
+    const hours = time.getHours();
+    const finalHours = hours > 12 ? hours - 12 : hours;
+    const mins = time.getMinutes();
+    const isAmOrPm = hours > 12 ? "PM" : "AM";
+    return `${month} ${date} at ${finalHours}:${mins} ${isAmOrPm}`;
   };
 
   return (
@@ -53,17 +78,27 @@ export default function ReviewComponent({ item }) {
 
       <div className="review-component-heading">
         <div>
-          <h2>{item.heading}</h2>
+          <h2>{item.reviewTitle}</h2>
         </div>
         <div style={{ ...flexStyle }}>
-          <p style={{textDecoration:"underline", textUnderlineOffset:"4px"}}>{item.author}</p>
+          <p
+            style={{ textDecoration: "underline", textUnderlineOffset: "4px" }}
+          >
+            {item.customerName}
+          </p>
           {item.verified && <Icon source={CheckCircleIcon} />}
-          <p>{item.time}</p>
+          <p>{handleTimeShow()}</p>
         </div>
       </div>
 
       <div className="review-component-body">
-        <p>{item.review}</p>
+        <p>{item.reviewDescription}</p>
+      </div>
+
+      <div className="review-component-image">
+        {item.images?.map((image, index) => (
+          <img key={index} src={image.imageUrl} alt="" />
+        ))}
       </div>
     </div>
   );

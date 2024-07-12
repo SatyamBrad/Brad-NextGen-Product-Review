@@ -32,13 +32,23 @@ model Session {
 }
 
 model Review {
-  id         Int     @id @default(autoincrement())
-  shop       String
-  productId  String
-  customerId String
-  review     String? @default("")
-  starRating Int?    @default(0) 
+  id                Int           @id @default(autoincrement())
+  shop              String
+  productId         String
+  customerId        String
+  customerName      String?       @default("Anonymous")
+  reviewTitle       String?       @default("")
+  reviewDescription String?       @default("")
+  starRating        Int?          @default(0)
+  createdAt         DateTime      @default(now())
+  images            ReviewImage[]
 
   @@unique([shop, productId, customerId])
 }
 
+model ReviewImage {
+  id       Int    @id @default(autoincrement())
+  imageUrl String?
+  review   Review @relation(fields: [reviewId], references: [id])
+  reviewId Int
+}
