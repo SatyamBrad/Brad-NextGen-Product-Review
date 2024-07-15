@@ -210,7 +210,6 @@ export const loader = async ({ request }) => {
 export default function Billing() {
   const loaderData = useLoaderData();
   const actionData = useActionData();
-  console.log(loaderData);
 
   const { shop, app } = loaderData;
   const { monthly, yearly } = shop.plans;

@@ -1,0 +1,51 @@
+.review-section-sliders-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+  justify-content: space-evenly;
+}
+
+.review-section-sliders-container .bar {
+  width: 200px;
+  height: 10px;
+  border-radius: 10px;
+  background-color: #eee;
+  position: relative;
+}
+
+.review-section-sliders-container .bar .inner-bar {
+  width: 60%;
+  height: 100%;
+  border-radius: 10px;
+  background-color: #333;
+  position: relative;
+}
+
+.review-section-sliders-container .bar .inner-bar .slider {
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  background-color: black;
+  display: block;
+  position: absolute;
+
+  top: -5px;
+  left: calc(100% - 20px);
+}
+
+.review-section-sliders-container .bar .label {
+  position: absolute;
+  top: 10px;
+}
+
+.review-section-sliders-container .bar .inner-bar .start-label {
+  left: 0;
+}
+
+.review-section-sliders-container .bar .end-label {
+  right: 0;
+}
+
+.review-section-sliders-container .bar .inner-bar .position-label {
+  left: calc(100% - 40px);
+}
