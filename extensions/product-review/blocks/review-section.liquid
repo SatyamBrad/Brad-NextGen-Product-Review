@@ -1,111 +1,50 @@
-<!-- review-button.liquid -->
+{{ 'review-section.css' | asset_url | stylesheet_tag }}
+
+{% comment %} defining constants  {% endcomment %}
+<script>
+  const starColor = '{{ block.settings.colour }}';
+  const shopId = '{{ shop.permanent_domain }}';
+  const backendApi = 'https://choir-livestock-mouth-nudist.trycloudflare.com';
+</script>
 
 {% render 'review-form' %}
-<div class="review-section">
-  <p id="review-message">We value your feedback! Please write a review for our store.</p>
-  <button id="openModalBtn" class="btn">Write a Review</button>
-  <p id="thank-you-message" style="display: none;">Thank you for choosing to write a review!</p>
+<div class="review-section-container">
+  <h1>Customer Reviews</h1>
+  <div class="review-section-app">
+    <div>
+      {% render 'review-section-summary' %}
+      {% render 'review-section-ratings' %}
+    </div>
+    {% render 'review-section-sliders' %}
+  </div>
+
+  <div><button class="open-review-form-btn">Write a Review</button></div>
+  <div><button class="open-review-list-btn">See Review Summary</button></div>
 </div>
 
-<style>
-  .review-section {
-    margin: 20px 0;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  .btn {
-    background-color: #007bff;
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-  }
-  .btn:hover {
-    background-color: #0056b3;
-  }
-  #review-message, #thank-you-message {
-    margin-top: 10px;
-    font-size: 16px;
-  }
-  .review-form-container {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    max-width: 500px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-  }
-  .review-form-close {
-    display: flex;
-    justify-content: flex-end;
-  }
-  .review-form-close img {
-    cursor: pointer;
-  }
-  .review-form-close img:hover {
-    opacity: 0.7;
-  }
-</style>
-
 <script>
-  document.querySelector("#openModalBtn").addEventListener("click", () => {
-    const modal = document.querySelector(".review-form-container");
+  {% comment %} scripts to open and close the form modal {% endcomment %}
+  const modal = document.querySelector(".review-form-container");
+  document
+  .querySelector(".open-review-form-btn")
+  .addEventListener("click", () => {
     modal.style.display = "block";
   });
 
-  document.querySelector(".review-form-close img").addEventListener("click", () => {
-    const modal = document.querySelector(".review-form-container");
-    modal.style.display = "none";
-  });
+  document
+    .querySelector(".review-form-close img")
+    .addEventListener("click", () => {
+      modal.style.display = "none";
+    });
 
   window.onclick = function(event) {
-    const modal = document.querySelector(".review-form-container");
     if (event.target == modal) {
-      modal.style.display = "none";
+      modal.style.display = 'none';
     }
   }
-</script>
 
-{% comment %}
-<div>
-  <h2 class="star-rating-section__title">Customer Ratings</h2>
-  <ul class="star-rating-list">
-    {% assign reviews = shop.metafields.custom.reviews %}
-    {% if reviews and reviews.size > 0 %}
-      {% for review in reviews %}
-        <li class="star-rating-item">
-          <h3 class="star-rating-item__title">{{ review.title }}</h3>
-          <p class="star-rating-item__content">{{ review.content }}</p>
-          <div class="star-rating-item__stars">
-            {% for i in (1..5) %}
-              {% if review.rating >= i %}
-                <span class="star filled">&#9733;</span>
-              {% else %}
-                <span class="star">&#9734;</span>
-              {% endif %}
-            {% endfor %}
-          </div>
-          <p class="star-rating-item__author"><strong>Author:</strong> {{ review.author }}</p>
-        </li>
-      {% endfor %}
-    {% else %}
-      <p class="star-rating-section__no-reviews">No reviews yet. Be the first to review!</p>
-    {% endif %}
-  </ul>
-  <button class="open-review-form-btn">Write a Review</button>
-</div>
-{% endcomment %}
+  {% comment %} fetch review summary here {% endcomment %}
+</script>
 
 {% schema %}
 {
@@ -117,12 +56,12 @@
       "id": "product",
       "label": "Product",
       "autofill": true
-    }, 
+    },
     {
       "type": "color",
       "id": "colour",
       "label": "Star Colour",
-      "default": "#ff0000"
+      "default": "#FFD700"
     }
   ]
 }

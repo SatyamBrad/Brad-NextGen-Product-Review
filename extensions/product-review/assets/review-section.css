@@ -1,0 +1,23 @@
+.review-section-container {
+  width: 100%;
+}
+
+.review-section-container > h1 {
+  text-align: center;
+}
+
+.review-section-app {
+  width: 80%;
+  margin: auto;
+  display: flex;  
+  align-items: center;
+  justify-content: space-around;
+  padding-block: 1rem;
+}
+
+.review-section-app > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}

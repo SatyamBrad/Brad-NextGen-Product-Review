@@ -1,0 +1,49 @@
+.review-section-summary-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* .review-section-summary-container > div > button {
+  width: 100%;
+  outline: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.5rem;
+} */
+
+.review-section-summary-container .rating > .details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.review-section-summary-container .rating > .details .stars {
+  display: flex;
+  align-items: center;
+  font-size: 3rem;
+  padding: 0;
+}
+.review-section-summary-container .rating > .details > .val {
+  font-size: 2rem;
+}
+
+.open-review-form-btn {
+  border: none;
+  color: white;
+  background-color: black;
+}
+
+.open-review-form-btn:hover {
+  background-color: #333;
+}
+
+.open-review-list-btn {
+  border: 2px solid black;
+  background-color: transparent;
+  color: black;
+}
+
+.open-review-list-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}

@@ -2,30 +2,24 @@ import { json } from "@remix-run/node";
 import db from "../db.server.js";
 import { cors } from "remix-utils/cors";
 
-export const loader = ({ request }) => {
-  return json({ hello: "world" });
-};
-
 export const action = async ({ request }) => {
-  let formData = await request.formData();
+  var imageUrls = [];
+  const formData = await request.formData();
+
   const images = formData.getAll("images");
-  formData = Object.fromEntries(formData);
-
-  const shop = formData.shop;
-  const productId = formData.productId;
-  const customerId = formData.customerId;
-  const customerName = formData.customerName;
-  const reviewTitle = formData.reviewTitle;
-  const reviewDescription = formData.reviewDescription;
-  const starRating = Number(formData.starRating);
-  const action = formData.action;
-
-  const imageUrls = [];
+  const productId = formData.get("productId");
+  const customerId = formData.get("customerId");
+  const customerName = formData.get("customerName");
+  const reviewTitle = formData.get("reviewTitle");
+  const reviewDescription = formData.get("reviewDescription");
+  const starRating = Number(formData.get("starRating"));
+  const action = formData.get("action");
+  const shop = formData.get("shop");
 
   async function uploadImages(images) {
     const uploadPromises = images.map(async (image) => {
+      
       const imageFormData = new FormData();
-
       imageFormData.append("file", image);
       imageFormData.append("upload_preset", "fqvxnxnt");
 
@@ -46,11 +40,37 @@ export const action = async ({ request }) => {
       }
     });
 
+    
     await Promise.all(uploadPromises);
   }
 
   try {
     switch (action) {
+      case "FETCH_SUMMARY":
+        if (!shop) throw new Error("Required Field: shop");
+        const fetchSummaryReviews1 = await db.review.aggregate({
+          _avg: {
+            starRating: true,
+          },
+          _count: {
+            id: true,
+          },
+        });
+
+        const fetchSummaryReviews2 = await db.review.groupBy({
+          by: ["starRating"],
+          _count: {
+            id: true,
+          },
+        });
+
+        const fetchSummaryResponse = json({
+          ok: true,
+          message: "Successfully fetched the summary from shop",
+          data: { ...fetchSummaryReviews1, ...fetchSummaryReviews2 },
+        });
+        return cors(request, fetchSummaryResponse);
+
       case "FETCH_ALL":
         if (!shop) throw new Error("Required Field: shop");
 
@@ -75,12 +95,22 @@ export const action = async ({ request }) => {
         if (!shop || !productId || !customerId)
           throw new Error("Required fields: shop, productId, customerId");
 
-        if (starRating < 1 || starRating > 5)
-          throw new Error("starRating must be between 1 and 5");
+        const checkRecordBeforeCreating = await db.review.findUnique({
+          where: {
+            shop_productId_customerId: {
+              shop,
+              productId,
+              customerId
+            }
+          }
+        })
 
-        await uploadImages(images); // Await the uploadImages function
+        if(checkRecordBeforeCreating) {
+          throw new Error("Record Exist cannot Create another Record")
+        }
 
-        const reviewCreated = await db.review.create({
+        await uploadImages(images);
+        const createdReview = await db.review.create({
           data: {
             shop,
             productId,
@@ -100,13 +130,13 @@ export const action = async ({ request }) => {
           },
         });
 
-        const responseCreate = json({
+        const createdResponse = json({
           ok: true,
-          message: "Review successfully created",
-          created_data: reviewCreated,
+          message: "Review record successfully created",
+          created_data: createdReview,
         });
 
-        return cors(request, responseCreate);
+        return cors(request, createdResponse);
     }
   } catch (err) {
     console.error(err);
