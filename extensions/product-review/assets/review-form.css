@@ -6,6 +6,7 @@
   position: relative;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 2rem;
+  z-index: 10;
 }
 
 .review-form-close {
@@ -110,7 +111,7 @@ textarea {
   cursor: pointer;
 }
 
-.review-upload-button:hover { 
+.review-upload-button:hover {
   background-color: #f7f7f7;
 }
 
@@ -139,16 +140,16 @@ textarea {
 
 .review-delete-btn {
   position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: #fff;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-    text-align: center;
-    line-height: 18px;
-    font-size: 16px;
-    color: #ff0000;
+  top: 5px;
+  right: 5px;
+  background-color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 18px;
+  font-size: 16px;
+  color: #ff0000;
 }
