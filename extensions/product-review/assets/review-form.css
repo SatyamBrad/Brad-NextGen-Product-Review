@@ -1,17 +1,30 @@
 .review-form-container {
   /* display: none; */
-  width: 60%;
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  width: 100%;
   height: 100%;
-  margin: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.review-form-app {
+  overflow: auto;
+  background-color: #fefefe;
+  width: 60%;
+  height: 100vh;
+  margin-inline: auto;
+  padding: 1rem 5rem;
   position: relative;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
+  top: 0;
 }
 
 .review-form-close {
   position: absolute;
-  right: 1rem;
-  top: 1rem;
+  right: 2rem;
+  top: 2rem;
 }
 
 .review-form-close > img {
@@ -24,61 +37,129 @@
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-.review-form-rating {
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.review-form label {
+  display: block;
+  font-size: 2rem;
+  color: black;
+}
+
+.review-form input[type="text"],
+.review-form textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #aaa;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 1.5rem;
+  outline: none;
+}
+
+.review-form [type="text"]:focus,
+.review-form textarea:focus-visible {
+  box-shadow: none;
+  outline: none;
+  border: 2px solid black;
+}
+
+.review-form textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.review-form .review-form-rating {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-label {
-  display: block;
-  font-weight: bold;
-  font-size: 2rem;
-}
-
-.review-form-container input[type="text"],
-.review-form-container textarea {
-  width: 100%;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 1.8rem;
-  outline: none;
-}
-
-.review-form-container [type="text"]:focus,
-.review-form-container textarea:focus-visible {
-  box-shadow: none;
-  outline: none;
-  border: 1px solid black;
-}
-
-textarea {
-  resize: vertical;
-}
-
-.star-rating-input {
+.review-form .review-form-rating .star-container {
   display: flex;
-  align-items: baseline;
-  gap: 0.3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-.star-rating-input input[type="radio"] {
-  display: none;
+.review-form .review-form-rating .star-container label {
+  display: flex;
+  align-items: center;
 }
 
-.star-rating-input label {
-  font-size: 3rem;
-  color: #ccc;
+.review-form .review-form-rating .star-container .star {
   cursor: pointer;
 }
 
-.star-rating-input label.selected {
-  color: #ffcc00;
+.review-form .review-form-rating .star-container input[type="radio"] {
+  display: none;
 }
 
-.btn-submit-review {
+.review-form .review-form-image > div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.review-form .review-form-image #review-upload-image + label {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  box-shadow:
+    rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.review-form .review-form-image .image-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.review-form .review-form-image .image-preview > div {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow:
+    rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.review-form .review-form-image .image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.review-form .review-form-image .image-preview .review-image-delete-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 1rem;
+  font-size: 1rem;
+  color: #ff0000;
+}
+.review-form .btn-submit-review {
   width: 100%;
   background-color: white;
   color: black;
@@ -91,64 +172,7 @@ textarea {
   margin-block: 1rem;
 }
 
-.btn-submit-review:hover {
+.review-form .btn-submit-review:hover {
   background-color: black;
   color: white;
-}
-
-.review-upload-button {
-  width: 100px;
-  height: 100px;
-  padding: 3rem;
-  border-radius: 10px;
-  box-shadow:
-    rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
-    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.review-upload-button:hover { 
-  background-color: #f7f7f7;
-}
-
-.review-upload-button {
-  background-color: #f7f7f7;
-}
-
-.review-image-preview {
-  width: 100px;
-  height: 100px;
-  overflow: hidden;
-  border-radius: 8px;
-  border: 2px solid #ccc;
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.review-image-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.review-delete-btn {
-  position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: #fff;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-    text-align: center;
-    line-height: 18px;
-    font-size: 16px;
-    color: #ff0000;
 }

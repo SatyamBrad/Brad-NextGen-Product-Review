@@ -3,7 +3,6 @@ import { InfoIcon, ChatIcon, CheckCircleIcon } from "@shopify/polaris-icons";
 import "./review-component.css";
 
 export default function ReviewComponent({ item }) {
-  // console.log(item);
 
   const flexStyle = {
     display: "flex",

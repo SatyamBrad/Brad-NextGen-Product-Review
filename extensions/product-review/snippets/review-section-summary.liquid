@@ -1,0 +1,64 @@
+{{ 'review-section-summary.css' | asset_url | stylesheet_tag }}
+
+<div class="review-section-summary-container">
+  <div class="val"><h1>2.5</h1></div>
+  <div class="details">
+    <div class="stars">
+      {% for i in (1..5) %}
+        <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <defs>
+            <clipPath id="star-clip-{{ i }}">
+              <rect x="0" y="0" width="0%" height="100%"></rect>
+            </clipPath>
+          </defs>
+          <polygon
+            fill="none"
+            stroke="#FFD700"
+            stroke-width="2"
+            points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"
+          />
+          <polygon
+            fill="#FFD700"
+            clip-path="url(#star-clip-{{ i }})"
+            points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"
+          />
+        </svg>
+      {% endfor %}
+    </div>
+    <div class="val">Based on 45 reviews</div>
+  </div>
+</div>
+
+<script>
+  const rating = 2.5;
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.review-section-summary-container .star polygon:first-of-type').forEach((item) => {
+      item.style.stroke = starColor;
+    });
+    document.querySelectorAll('.review-section-summary-container .star polygon:last-of-type').forEach((item) => {
+      item.style.fill = starColor;
+    });
+  });
+
+  const displayStars = () => {
+    var i = 1;
+    while (i <= Math.floor(rating)) {
+      const clipRect = document.querySelector(`#star-clip-${i} rect`);
+      clipRect.setAttribute('width', `100%`);
+      i++;
+    }
+    if (i <= 5) {
+      const percentage = (rating - Math.floor(rating)) * 100;
+      const clipRect = document.querySelector(`#star-clip-${i} rect`);
+      clipRect.setAttribute('width', `${percentage}%`);
+      i++;
+    }
+    while (i <= 5) {
+      const clipRect = document.querySelector(`#star-clip-${i} rect`);
+      clipRect.setAttribute('width', `0%`);
+      i++;
+    }
+  };
+
+  displayStars();
+</script>
