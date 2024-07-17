@@ -2,10 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
-
-  
-  /* font-size: 1.5rem; */
+  justify-content: space-evenly; 
 }
 
 .review-section-ratings-container > div {
@@ -13,7 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  gap: 0.5rem;
+  gap: 0.8rem;
 }
 
 .review-section-ratings-container .star-with-num,
@@ -21,6 +18,7 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
+  font-size: 2rem;
 }
 
 .review-section-ratings-container .bar {
@@ -30,9 +28,13 @@
   border-radius: 10px;
 }
 .review-section-ratings-container .bar .inner-bar {
-  width: 50%;
   height: 100%;
   background-color: #333;
   border-radius: 10px;
   display: block;
+  width: 0%;
+}
+
+.review-section-ratings-container .val-count {
+  font-size: 2rem;
 }

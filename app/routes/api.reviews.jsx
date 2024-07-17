@@ -6,19 +6,18 @@ export const action = async ({ request }) => {
   var imageUrls = [];
   const formData = await request.formData();
 
-  const images = formData.getAll("images");
+  const shop = formData.get("shop");
   const productId = formData.get("productId");
   const customerId = formData.get("customerId");
   const customerName = formData.get("customerName");
   const reviewTitle = formData.get("reviewTitle");
   const reviewDescription = formData.get("reviewDescription");
   const starRating = Number(formData.get("starRating"));
+  const images = formData.getAll("images");
   const action = formData.get("action");
-  const shop = formData.get("shop");
 
   async function uploadImages(images) {
     const uploadPromises = images.map(async (image) => {
-      
       const imageFormData = new FormData();
       imageFormData.append("file", image);
       imageFormData.append("upload_preset", "fqvxnxnt");
@@ -40,7 +39,6 @@ export const action = async ({ request }) => {
       }
     });
 
-    
     await Promise.all(uploadPromises);
   }
 
@@ -48,12 +46,17 @@ export const action = async ({ request }) => {
     switch (action) {
       case "FETCH_SUMMARY":
         if (!shop) throw new Error("Required Field: shop");
+        if (!productId) throw new Error("Required Field: productId");
         const fetchSummaryReviews1 = await db.review.aggregate({
           _avg: {
             starRating: true,
           },
           _count: {
             id: true,
+          },
+          where: {
+            shop,
+            productId,
           },
         });
 
@@ -62,12 +65,19 @@ export const action = async ({ request }) => {
           _count: {
             id: true,
           },
+          where: {
+            shop,
+            productId,
+          },
         });
 
         const fetchSummaryResponse = json({
           ok: true,
           message: "Successfully fetched the summary from shop",
-          data: { ...fetchSummaryReviews1, ...fetchSummaryReviews2 },
+          data: {
+            ...{ summary: fetchSummaryReviews1 },
+            ...{ ratings: fetchSummaryReviews2 },
+          },
         });
         return cors(request, fetchSummaryResponse);
 
@@ -91,30 +101,39 @@ export const action = async ({ request }) => {
 
         return cors(request, fetchAllResponse);
 
-      case "CREATE":
-        if (!shop || !productId || !customerId)
-          throw new Error("Required fields: shop, productId, customerId");
+      case "FETCH_BY_PRODUCT":
+        if (!shop) throw new Error("Required field: shop");
+        if (!productId) throw new Error("Required field: productId");
 
-        const checkRecordBeforeCreating = await db.review.findUnique({
+        const fetchByProductReviews = await db.review.findMany({
           where: {
-            shop_productId_customerId: {
-              shop,
-              productId,
-              customerId
-            }
-          }
-        })
+            shop,
+            productId,
+          },
+          include: {
+            images: true,
+          },
+        });
 
-        if(checkRecordBeforeCreating) {
-          throw new Error("Record Exist cannot Create another Record")
-        }
+        const fetchByProductResponse = json({
+          ok: false,
+          message: "Retrieved all records from shop by product id",
+          data: fetchByProductReviews,
+        });
+
+        return cors(request, fetchByProductResponse);
+
+      // can convert to and upsert call
+      case "CREATE":
+        if (!shop) throw new Error("Required fields: shop");
+        if (!productId) throw new Error("Required fields: productId");
 
         await uploadImages(images);
         const createdReview = await db.review.create({
           data: {
             shop,
             productId,
-            customerId,
+            ...(customerId && { customerId }),
             ...(customerName && { customerName }),
             ...(reviewTitle && { reviewTitle }),
             ...(reviewDescription && { reviewDescription }),
