@@ -1,11 +1,9 @@
 import DashboardCard from "../components/dashboardCard";
 import { authenticate } from "../shopify.server";
-import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
 export const loader = async ({ request }) => {
     const { admin } = await authenticate.admin(request);
-
     const response = await admin.graphql(
         `#graphql
             query getProducts {
@@ -14,7 +12,6 @@ export const loader = async ({ request }) => {
                     node {
                     id
                     handle
-                    
                     }
                 }
             }
@@ -25,11 +22,10 @@ export const loader = async ({ request }) => {
     return data;
 }
 
-
-
 export default function DashboardContent() {
     const { data } = useLoaderData();
     console.log(data.products.edges[0].node);
+
     return (
         <div
             style={{
@@ -40,9 +36,7 @@ export default function DashboardContent() {
                 minHeight: "100vh",
                 minWidth: "100%",
                 borderTopRadius: "8px",
-                // borderColor: "white",
-                // borderWidth: "1px",
-                // borderStyle: "solid",
+
             }}
         >
             <div style={{ display: "flex" }}>
@@ -123,7 +117,7 @@ export default function DashboardContent() {
                     Pending Activity
                 </div>
                 <div style={{ fontSize: "16px", marginBottom: "20px" }}>
-                    Reviews (4)
+                    starRating
                 </div>
                 <div
                     style={{
@@ -176,7 +170,7 @@ export default function DashboardContent() {
                             marginBottom: "10px",
                         }}
                     >
-                        Women's Gentle-Support High-Waisted 7/8 Leggings
+                        reviewTitle
                     </div>
                     <div
                         style={{
@@ -188,21 +182,16 @@ export default function DashboardContent() {
                         Amazing workout pants!
                     </div>
                     <div style={{ fontSize: "14px", marginBottom: "10px" }}>
-                        Aishwarya G.{" "}
+                        customerName{" "}
                         <span
                             style={{ fontSize: "14px", color: "#fff", marginRight: "5px" }}
                         >
                             &#10004;
                         </span>{" "}
-                        May 12 at 10:49 pm
+                        createdAt
                     </div>
                     <p style={{ fontSize: "14px" }}>
-                        This is THE best pant I have worn for gym so far. Have tried other
-                        brands for the last 5 years, but this one beats them all. It feels
-                        amazing wearing it. I wasn't sure when I bought it and needed a
-                        pant, which is why I tried it once and then bought it, but after gym
-                        now, it's soo good. I love everything about it and have urged some
-                        of my friends to buy it!
+                        reviewDescription
                     </p>
                 </div>
             </div>

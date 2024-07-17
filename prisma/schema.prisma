@@ -35,7 +35,7 @@ model Review {
   id                Int           @id @default(autoincrement())
   shop              String
   productId         String
-  customerId        String
+  customerId        String?       @default("guest")
   customerName      String?       @default("Anonymous")
   reviewTitle       String?       @default("")
   reviewDescription String?       @default("")
