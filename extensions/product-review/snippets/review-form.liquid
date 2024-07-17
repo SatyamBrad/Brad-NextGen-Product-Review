@@ -4,12 +4,10 @@
   <div class="review-form-container">
     <div class="review-form-app">
       <div class="review-form-close">
-        <img
-          src="{{ 'close-icon.svg' | asset_url }}"
-          width="auto"
-          height="auto"
-          alt="close"
-        >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 6L18 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
       <h1>Write a Review</h1>
 
@@ -33,7 +31,7 @@
         >
 
         <div>
-          <label for="review-form-author">Your Name (Leave it empty to remain Anonymous)</label>
+          <label for="review-form-author">Your Name</label>
           <input
             type="text"
             id="review-form-author"
@@ -153,12 +151,28 @@
       }
       imageInput.value = ""
     });
-    
-    
+
+
     {% comment %} form handling {% endcomment %}
     form.addEventListener('submit', (e) => {
-      console.log(uploadedImages)
       e.preventDefault();
+
+      {% comment %} validation {% endcomment %}
+      const starRatingInputs = form.querySelectorAll('input[name="starRating"]');
+      let isAnyChecked = false;
+
+      starRatingInputs.forEach(input => {
+          if (input.checked) {
+              isAnyChecked = true;
+          }
+      });
+
+      if (!isAnyChecked) {
+          window.alert('Please select a star rating.');
+          starRatingInputs[0].focus();
+          return false
+      }
+
       const formData = new FormData(form);
       formData.append('action', 'CREATE')
       uploadedImages.forEach(image=>{
@@ -171,6 +185,7 @@
       })
       .then(response => response.json())
       .then(data => {
+        // dont remove until notification is shown
         console.log('Success:', data);
         modal.style.display = "none";
         form.reset()

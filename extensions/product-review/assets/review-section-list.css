@@ -1,0 +1,85 @@
+.review-section-list-container {
+  width: 80%;
+  margin: 2rem auto;
+}
+
+.review-section-list-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-block: 2px solid #ccc;
+  padding: 2rem;
+}
+
+.review-section-list-buttons .btn {
+  border: 2px solid black;
+  color: black;
+  background-color: transparent;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.review-section-list-container .btn:hover {
+  background-color: black;
+  color: white;
+}
+
+.review-section-list-container .list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.review-section-list-container .list-container .list-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  border-radius: 4px;
+}
+.review-section-list-container .list-container .list-item > div {
+  width: 100%;
+}
+
+.review-section-list-container .list-container .list-item .list-item-header {
+  display: flex;
+  align-items: flex-start;
+}
+
+.review-section-list-container .list-container .list-item .list-item-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.review-section-list-container .list-container .list-item .star-container {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.review-section-list-container .list-container .list-item .image-container {
+  margin-block: 0.5rem;
+  width: 100%;
+  min-height: 100px;
+  overflow-x: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1rem;
+}
+
+.review-section-list-container .list-container .list-item .image-container .image {
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+}

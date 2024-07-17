@@ -1,10 +1,11 @@
 {{ 'review-section.css' | asset_url | stylesheet_tag }}
 
-{% comment %} defining constants  {% endcomment %}
+{% comment %} defining constants {% endcomment %}
 <script>
   const starColor = '{{ block.settings.colour }}';
   const shopId = '{{ shop.permanent_domain }}';
-  const backendApi = 'https://choir-livestock-mouth-nudist.trycloudflare.com';
+  const productId = '{{ product.id }}';
+  const backendApi = "https://robinson-coupled-trackback-ethics.trycloudflare.com"
 </script>
 
 {% render 'review-form' %}
@@ -18,51 +19,113 @@
     {% render 'review-section-sliders' %}
   </div>
 
-  <div><button class="open-review-form-btn">Write a Review</button></div>
-  <div><button class="open-review-list-btn">See Review Summary</button></div>
+  {% render 'review-section-list' %}
 </div>
 
 <script>
-  {% comment %} scripts to open and close the form modal {% endcomment %}
+  // scripts to open and close the form modal 
   const modal = document.querySelector(".review-form-container");
   document
-  .querySelector(".open-review-form-btn")
-  .addEventListener("click", () => {
-    modal.style.display = "block";
-  });
+    .querySelector(".open-review-form-btn")
+    .addEventListener("click", () => {
+      modal.style.display = "block";
+    });
 
   document
-    .querySelector(".review-form-close img")
+    .querySelector(".review-form-close")
     .addEventListener("click", () => {
       modal.style.display = "none";
     });
 
-  window.onclick = function(event) {
+  window.onclick = function (event) {
     if (event.target == modal) {
       modal.style.display = 'none';
     }
   }
 
-  {% comment %} fetch review summary here {% endcomment %}
+  const fetchSummary = async () => {
+    const body = new FormData()
+    body.append('action', "FETCH_SUMMARY")
+    body.append('shop', shopId)
+    body.append('productId', productId)
+    const response = await fetch(backendApi + "/api/reviews", {
+      method: "POST",
+      body
+    })
+
+    const { data } = await response.json()
+
+    if (data?.summary?._count?.id === 0) {
+      document.querySelector('.review-section-app').style.display = "none"
+    } else {
+      displaySummaryDetails(data)
+      displaySummaryRatings(data)
+      fetchAllReviews()
+    }
+  }
+
+  fetchSummary()
 </script>
 
 {% schema %}
 {
-  "name": "Review Section",
-  "target": "section",
-  "settings": [
-    {
-      "type": "product",
-      "id": "product",
-      "label": "Product",
-      "autofill": true
-    },
-    {
-      "type": "color",
-      "id": "colour",
-      "label": "Star Colour",
-      "default": "#FFD700"
-    }
-  ]
+"name": "Review Section",
+"target": "section",
+"settings": [
+{
+"type": "product",
+"id": "product",
+"label": "Product",
+"autofill": true
+},
+{
+"type": "color",
+"id": "colour",
+"label": "Star Colour",
+"default": "#FFD700"
+},
+{
+"type": "text",
+"id": "slider-qualilty-title",
+"label": "Quality Slider Title",
+"default": "Quality"
+},
+{
+"type": "text",
+"id": "slider-quality-start",
+"label": "Quality Slider Start Value",
+"default": "Poor"
+},
+{
+"type": "text",
+"id": "slider-quality-end",
+"label": "Quality Slider End Value",
+"default": "Excellent"
+},
+{
+"type": "text",
+"id": "slider-sizing-title",
+"label": "Sizing Slider Title",
+"default": "Sizing"
+},
+{
+"type": "text",
+"id": "slider-sizing-start-value",
+"label": "Sizing Slider Start Value",
+"default": "Runs Small"
+},
+{
+"type": "text",
+"id": "slider-sizing-mid-value",
+"label": "Sizing Slider Mid Value",
+"default": "True to Size"
+},
+{
+"type": "text",
+"id": "slider-sizing-end-value",
+"label": "Sizing Slider End Value",
+"default": "Runs Large"
+}
+]
 }
 {% endschema %}

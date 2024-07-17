@@ -1,7 +1,7 @@
 {{ 'review-section-summary.css' | asset_url | stylesheet_tag }}
 
 <div class="review-section-summary-container">
-  <div class="val"><h1>2.5</h1></div>
+  <div class="val"><h1></h1></div>
   <div class="details">
     <div class="stars">
       {% for i in (1..5) %}
@@ -25,22 +25,21 @@
         </svg>
       {% endfor %}
     </div>
-    <div class="val">Based on 45 reviews</div>
+    <div class="val">Based on <span>45</span> reviews</div>
   </div>
 </div>
 
 <script>
-  const rating = 2.5;
-  document.addEventListener('DOMContentLoaded', function () {
+  const colorStars = () => {
     document.querySelectorAll('.review-section-summary-container .star polygon:first-of-type').forEach((item) => {
       item.style.stroke = starColor;
     });
     document.querySelectorAll('.review-section-summary-container .star polygon:last-of-type').forEach((item) => {
       item.style.fill = starColor;
     });
-  });
+  };
 
-  const displayStars = () => {
+  const displayStars = (rating) => {
     var i = 1;
     while (i <= Math.floor(rating)) {
       const clipRect = document.querySelector(`#star-clip-${i} rect`);
@@ -60,5 +59,12 @@
     }
   };
 
-  displayStars();
+  const displaySummaryDetails = ({ summary }) => {
+    const rating = parseFloat(summary?._avg?.starRating.toFixed(1));
+    document.querySelector('.review-section-summary-container > .val > h1').innerHTML = rating;
+    document.querySelector('.review-section-summary-container > .details > .val > span').innerHTML =
+      summary?._count?.id;
+    colorStars();
+    displayStars(rating);
+  };
 </script>

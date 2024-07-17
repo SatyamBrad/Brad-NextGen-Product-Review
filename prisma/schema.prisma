@@ -35,15 +35,13 @@ model Review {
   id                Int           @id @default(autoincrement())
   shop              String
   productId         String
-  customerId        String?       @default("guest")
-  customerName      String?       @default("Anonymous")
+  customerId        String?       @default("Guest")
+  customerName      String?       @default("")
   reviewTitle       String?       @default("")
   reviewDescription String?       @default("")
   starRating        Int?          @default(0)
   createdAt         DateTime      @default(now())
   images            ReviewImage[]
-
-  @@unique([shop, productId, customerId])
 }
 
 model ReviewImage {
