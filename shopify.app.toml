@@ -3,7 +3,7 @@
 client_id = "53eb8bac00dcac185e719de2e1721e66"
 name = "Brad NextGen Wishlist"
 handle = "brad-nextgen-wishlist-1"
-application_url = "https://choir-livestock-mouth-nudist.trycloudflare.com"
+application_url = "https://scheme-gothic-planned-bread.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,16 +16,16 @@ scopes = "read_customers,write_customers,write_products"
 
 [auth]
 redirect_urls = [
-  "https://choir-livestock-mouth-nudist.trycloudflare.com/auth/callback",
-  "https://choir-livestock-mouth-nudist.trycloudflare.com/auth/shopify/callback",
-  "https://choir-livestock-mouth-nudist.trycloudflare.com/api/auth/callback"
+  "https://scheme-gothic-planned-bread.trycloudflare.com/auth/callback",
+  "https://scheme-gothic-planned-bread.trycloudflare.com/auth/shopify/callback",
+  "https://scheme-gothic-planned-bread.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
 
 [app_proxy]
-url = "https://choir-livestock-mouth-nudist.trycloudflare.com/api"
+url = "https://scheme-gothic-planned-bread.trycloudflare.com/api"
 subpath = "prapp"
 prefix = "apps"
 

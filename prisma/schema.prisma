@@ -36,17 +36,18 @@ model Review {
   shop              String
   productId         String
   customerId        String?       @default("Guest")
-  customerName      String?       @default("")
+  customerName      String?       @default("Anonymous")
   reviewTitle       String?       @default("")
   reviewDescription String?       @default("")
   starRating        Int?          @default(0)
   createdAt         DateTime      @default(now())
   images            ReviewImage[]
+  status            String?       @default("Published")
 }
 
 model ReviewImage {
-  id       Int    @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   imageUrl String?
-  review   Review @relation(fields: [reviewId], references: [id])
+  review   Review  @relation(fields: [reviewId], references: [id])
   reviewId Int
 }

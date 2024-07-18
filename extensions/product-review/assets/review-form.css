@@ -1,5 +1,5 @@
 .review-form-container {
-  display: none;
+  /* display: block; */
   position: fixed;
   z-index: 999;
   left: 0;
@@ -19,12 +19,7 @@
   position: relative;
   top: 0;
 }
-@media only screen and (max-width: 600px) {
-  .review-form-app {
-    width: 95%; /* Full width on mobile */
-    top: 5%; /* Slightly less top margin */
-  }
-}
+
 
 .review-form-close {
   position: absolute;
