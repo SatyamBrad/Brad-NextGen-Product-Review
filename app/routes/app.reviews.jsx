@@ -5,33 +5,45 @@ import { authenticate } from "../shopify.server";
 
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import db from "../db.server";
+
 
 
 export const loader = async ({ request }) => {
   const { session } = await authenticate.admin(request);
-  const { shop } = session;
 
-  // const formData = new FormData();
-  // formData.append("action", "FETCH_ALL");
-  // formData.append("shop", shop);
 
-  const fetchAllReviews = await db.review.findMany({
-    where: {
-      shop
+  const formData = new FormData();
+  formData.append("action", "FETCH_ALL");
+  formData.append("shop", "bradnextgenwishlist");
+
+  const response = await fetch(
+    "https://trends-regulations-corners-cocktail.trycloudflare.com/api/reviews",
+    {
+      method: "POST",
+      body: formData,
     },
-    include: {
-      images: true,
-    },
-  });
-  console.log(fetchAllReviews);
+  );
+  const data = await response.json();
+  return json(data);
+
+  // const fetchAllReviews = await db.review.findMany({
+  //   where: {
+  //     shop
+  //   },
+  //   include: {
+  //     images: true,
+  //   },
+  // });
+  // console.log(fetchAllReviews);
 
 
-  return json(fetchAllReviews);
+  // return json(fetchAllReviews);
+
 };
 
 export default function Review() {
   const { data } = useLoaderData();
+  console.log(data);
   return (
     <div className="review-container">
       <TitleBar title="Reviews" />

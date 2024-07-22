@@ -1,30 +1,28 @@
 import DashboardCard from "../components/dashboardCard";
-import { authenticate } from "../shopify.server";
+
 import { useLoaderData } from "@remix-run/react";
-
+import { json } from "@remix-run/node";
 export const loader = async ({ request }) => {
-    const { admin } = await authenticate.admin(request);
-    const response = await admin.graphql(
-        `#graphql
-            query getProducts {
-                products (first: 3) {
-                edges {
-                    node {
-                    id
-                    handle
-                    }
-                }
-            }
-        }`
+    const formData = new FormData();
+    formData.append("action", "FETCH_SUMMARY");
+    formData.append("shop", "bradnextgenwishlist");
+    formData.append("productId", "prod123");
+    const response = await fetch(
+        "https://trends-regulations-corners-cocktail.trycloudflare.com/api/reviews",
+        {
+            method: "POST",
+            body: formData,
+        },
     );
-
     const data = await response.json();
-    return data;
+    console.log(data);
+    return json(data);
+
 }
 
 export default function DashboardContent() {
     const { data } = useLoaderData();
-    console.log(data.products.edges[0].node);
+
 
     return (
         <div
