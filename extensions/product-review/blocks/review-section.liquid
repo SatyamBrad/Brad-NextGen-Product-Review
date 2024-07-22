@@ -1,65 +1,40 @@
-{{ 'review-section.css' | asset_url | stylesheet_tag }}
-
-{% comment %} defining constants {% endcomment %}
+{% comment %} backend api link can be removed afterwards after constant link {% endcomment %}
 <script>
-  const starColor = '{{ block.settings.colour }}';
-  const shopId = '{{ shop.permanent_domain }}';
-  const productId = '{{ product.id }}';
-  const backendApi = "https://nyc-own-harmony-support.trycloudflare.com"
+  window.appSettings = {
+    backendApi: "https://monaco-territories-beings-obligations.trycloudflare.com"
+  }
 </script>
 
 <div class="review-section-container">
-  {% render 'review-form' %}
   <h1>Customer Reviews</h1>
   <div class="review-section-app">
     <div>
-      {% render 'review-section-summary' %}
-      {% render 'review-section-ratings' %}
+      {% render 'review-section-summary', starColor: block.settings.color %}
+      {% render 'review-section-ratings', starColor: block.settings.color %}
     </div>
     {% render 'review-section-sliders' %}
   </div>
-
-  {% render 'review-section-list' %}
+  {% render 'review-section-list', starColor: block.settings.color  %}
 </div>
 
 <script>
-  // scripts to open and close the form modal 
-  const modal = document.querySelector(".review-form-container");
-  document
-    .querySelector(".open-review-form-btn")
-    .addEventListener("click", () => {
-      modal.style.display = "block";
-    });
-
-  document
-    .querySelector(".review-form-close")
-    .addEventListener("click", () => {
-      modal.style.display = "none";
-    });
-
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = 'none';
-    }
-  }
-
   const fetchSummary = async () => {
     const body = new FormData()
     body.append('action', "FETCH_SUMMARY")
-    body.append('shop', shopId)
-    body.append('productId', productId)
-    const response = await fetch(backendApi + "/api/reviews", {
+    body.append('shop', '{{ shop.permanent_domain }}')
+    body.append('productId', '{{ product.id }}')
+    const response = await fetch(window.appSettings.backendApi + "/api/reviews", {
       method: "POST",
       body
     })
 
     const { data } = await response.json()
-
-    if (data?.summary?._count?.id === 0) {
-      document.querySelector('.review-section-app').style.display = "none"
-    } else {
+    if (data?.summary?._count?.id !== 0) {
+      document.querySelector('.review-section-app').style.display = "flex"
       displaySummaryDetails(data)
       displaySummaryRatings(data)
+      document.querySelector(".filter-btn").style.display = "block";
+      document.querySelector(".review-section-list-buttons").style.justifyContent = "space-between"
       fetchAllReviews()
     }
   }
@@ -70,7 +45,8 @@
 {% schema %}
 {
 "name": "Review Section",
-"target": "section",  
+"target": "section", 
+"stylesheet": "review-section.css",
 "settings": [
 {
 "type": "product",
@@ -80,8 +56,8 @@
 },
 {
 "type": "color",
-"id": "colour",
-"label": "Star Colour",
+"id": "color",
+"label": "Star Color",
 "default": "#FFD700"
 },
 {
