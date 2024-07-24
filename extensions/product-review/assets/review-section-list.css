@@ -1,14 +1,22 @@
 .review-section-list-container {
-  width: 80%;
+  width: 90%;
   margin: 2rem auto;
 }
 
 .review-section-list-buttons {
   display: flex;
+  flex-direction: column-reverse;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   border-block: 2px solid #ccc;
   padding: 2rem;
+  gap: 0.5rem;
+}
+
+@media  screen and (min-width: 480px) {
+  .review-section-list-buttons {
+    flex-direction: row;
+  }
 }
 
 .review-section-list-buttons .btn {
@@ -27,9 +35,14 @@
   color: white;
 }
 
+.review-section-list-buttons .filter-btn {
+  display: none;
+}
+
 .review-section-list-container .list-container {
+  text-align: center;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   align-items: center;
   justify-content: space-evenly;
   gap: 1rem;
@@ -70,16 +83,15 @@
   width: 100%;
   min-height: 100px;
   overflow-x: auto;
-  border: 1px solid #ccc;
   border-radius: 4px;
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  padding: 1rem;
 }
 
 .review-section-list-container .list-container .list-item .image-container .image {
   height: 100px;
   width: 100px;
   object-fit: cover;
+  border-radius: 8px;
 }

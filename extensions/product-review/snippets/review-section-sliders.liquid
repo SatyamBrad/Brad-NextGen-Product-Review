@@ -1,29 +1,28 @@
 {{ 'review-section-sliders.css' | asset_url | stylesheet_tag }}
 
 <div class="review-section-sliders-container">
-  <div><h2>100% people will recommend this</h2></div>
+  <h2>100% people will recommend this</h2>
 
-  <div class="sliders-container">
-    <div>
-      <h3>{{ block.settings['slider-qualilty-title'] }}</h3>
-      <div class="bar">
-        <div class="inner-bar" style="width: 100%">
-          <div class="slider"></div>
-        </div>
-        <div class="label start-label">{{ block.settings['slider-quality-start'] }}</div>
-        <div class="label end-label">{{ block.settings['slider-quality-end'] }}</div>
+  <div>
+    <h3>{{ block.settings['slider-qualilty-title'] }}</h3>
+    <div class="bar">
+      <div class="inner-bar" style="width: 100%">
+        <div class="slider"></div>
       </div>
+      <div class="label start-label">{{ block.settings['slider-quality-start'] }}</div>
+      <div class="label end-label">{{ block.settings['slider-quality-end'] }}</div>
     </div>
-    <div>
-      <h3>{{ block.settings['slider-sizing-title'] }}</h3>
-      <div class="bar">
-        <div class="inner-bar" style="width: 50%">
-          <div class="slider"></div>
-        </div>
-        <div class="label start-label">{{ block.settings['slider-sizing-start-value'] }}</div>
-        <div class="label mid-label">{{ block.settings['slider-sizing-mid-value'] }}</div>
-        <div class="label end-label">{{ block.settings['slider-sizing-end-value'] }}</div>
+  </div>
+
+  <div>
+    <h3>{{ block.settings['slider-sizing-title'] }}</h3>
+    <div class="bar">
+      <div class="inner-bar" style="width: 50%">
+        <div class="slider"></div>
       </div>
+      <div class="label start-label">{{ block.settings['slider-sizing-start-value'] }}</div>
+      <div class="label mid-label">{{ block.settings['slider-sizing-mid-value'] }}</div>
+      <div class="label end-label">{{ block.settings['slider-sizing-end-value'] }}</div>
     </div>
   </div>
 </div>

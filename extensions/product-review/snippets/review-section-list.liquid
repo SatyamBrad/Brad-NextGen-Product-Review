@@ -2,31 +2,28 @@
 
 <div class="review-section-list-container">
   <div class="review-section-list-buttons">
-    <button class="btn">Filter</button>
+    <button class="btn filter-btn">Filter</button>
     <button class="btn open-review-form-btn">Write a Review</button>
   </div>
 
-  <div class="list-container"></div>
+  <div class="list-container">No reviews yet. Be the first one to review this product.</div>
 </div>
 
 <script>
-  
+
   const fetchAllReviews = async () => {
     const body = new FormData()
     body.append('action', "FETCH_BY_PRODUCT")
-    body.append('shop', shopId)
-    body.append('productId', productId)
-    const response = await fetch(backendApi + "/api/reviews", {
+    body.append('shop', '{{ shop.permanent_domain }}')
+    body.append('productId', '{{ product.id }}')
+    const response = await fetch(window.appSettings.backendApi + "/api/reviews", {
       method: "POST",
       body
     })
     const { data } = await response.json()
     const container = document.querySelector('.review-section-list-container .list-container')
-    if (data.length <= 0) {
-      container.innerHTML = "No reviews yet. Be the first one to write one"
-    } else {
-      fillReviewList(container, data)
-    }
+    container.innerHTML = ""
+    fillReviewList(container, data)
   }
 
   const fillReviewList = (container, data) => {
@@ -46,11 +43,11 @@
         star.classList.add('star')
         if (i <= item.starRating) {
           star.innerHTML = `<svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-              <polygon fill="${starColor}" stroke="${starColor}" stroke-width="2" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"/>
+              <polygon fill="{{ starColor }}" stroke="{{ starColor }}" stroke-width="2" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"/>
               </svg>`
         } else {
           star.innerHTML = `<svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-              <polygon fill="none" stroke="${starColor}" stroke-width="2" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"/>
+              <polygon fill="none" stroke="{{ starColor }}" stroke-width="2" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"/>
               </svg>`
 
         }
@@ -65,19 +62,16 @@
       reviewDescription.classList.add("review-description")
 
       const imageContainer = document.createElement('div')
-      imageContainer.classList.add('image-container')
+      if (item.images.length !== 0) {
+        imageContainer.classList.add('image-container')
 
-      if (item.images.length === 0) {
-        imageContainer.innerHTML = "no image added"
-        imageContainer.style.justifyContent = "center"
+        item.images.forEach(image => {
+          const img = document.createElement('img')
+          img.classList.add('image')
+          img.src = image?.imageUrl
+          imageContainer.appendChild(img)
+        })
       }
-      item.images.forEach(image => {
-        const img = document.createElement('img')
-        img.classList.add('image')
-        img.src = image?.imageUrl
-        imageContainer.appendChild(img)
-      })
-
       const header = document.createElement('div')
       header.classList.add('list-item-header')
       header.appendChild(userDetails)
