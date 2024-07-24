@@ -32,10 +32,10 @@
 <script>
   const colorStars = () => {
     document.querySelectorAll('.review-section-summary-container .star polygon:first-of-type').forEach((item) => {
-      item.style.stroke = starColor;
+      item.style.stroke = '{{ starColor }}';
     });
     document.querySelectorAll('.review-section-summary-container .star polygon:last-of-type').forEach((item) => {
-      item.style.fill = starColor;
+      item.style.fill = '{{ starColor }}';
     });
   };
 

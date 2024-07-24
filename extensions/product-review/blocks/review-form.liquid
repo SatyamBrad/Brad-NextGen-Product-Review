@@ -1,0 +1,219 @@
+{{ 'review-form.css' | asset_url | stylesheet_tag }}
+
+<div class="review-form-container">
+    <div class="review-form-app">
+        <div class="review-form-close">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M6 6L18 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </div>
+        <h1>Write a Review</h1>
+
+        <form class="review-form">
+            <input type="hidden" name="shop" value="{{ shop.permanent_domain }}">
+
+            <input type="hidden" name="customerId" value="{{ customer.id }}">
+
+            <input type="hidden" name="productId" value="{{ product.id }}">
+
+            <div class="review-form-rating">
+                <label>Ratings</label>
+                <div class="star-container">
+                    {% for i in (1..5) %}
+                    <input type="radio" id="star{{ i }}" name="starRating" value="{{ i }}">
+                    <label for="star{{ i }}" title="{{ i }} stars">
+                        <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <polygon fill="none" stroke="#FFD700" stroke-width="2"
+                                points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
+                        </svg>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div>
+                <label for="review-form-title">Title</label>
+                <input type="text" id="review-form-title" name="reviewTitle">
+            </div>
+
+            <div>
+                <label for="review-form-description">Review</label>
+                <textarea id="review-form-description" name="reviewDescription" rows="4"></textarea>
+            </div>
+
+            <div>
+                <label for="review-form-author">Your Name</label>
+                <input type="text" id="review-form-author" name="customerName">
+            </div>
+
+            <div class="review-form-image">
+                <label>Upload Images (Optional)</label>
+
+                <div>
+                    <div class="image-upload">
+                        <input id="review-upload-image" type="file" accept=".jpg, .png, .gif, .jpeg" hidden multiple>
+                        <label for="review-upload-image">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                <path d="M12 5v14M5 12h14" stroke="black" stroke-width="2" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </label>
+                    </div>
+
+                    <div class="image-preview"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit-review">
+                Submit Review
+            </button>
+        </form>
+    </div>
+    <div class="loader"></div>
+</div>
+
+<script>
+    // modal oppening and closing event handling
+    const modal = document.querySelector('.review-form-container')
+    document.querySelector(".open-review-form-btn").addEventListener("click", () => {
+        modal.style.display = "flex";
+    })
+
+    document
+        .querySelector(".review-form-close")
+        .addEventListener("click", () => {
+            const loaderStyle = document.querySelector(".loader").style.display
+            if (loaderStyle === "")
+                modal.style.display = "none";
+        });
+
+    window.onclick = function (event) {
+        const loaderStyle = document.querySelector(".loader").style.display
+        if (loaderStyle === "" && event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // star coloring feature 
+    const formStars = document.querySelectorAll('.star-container .star polygon');
+    formStars.forEach((star, index) => {
+        star.style.stroke = '{{ block.settings.color }}';
+        star.parentNode.addEventListener('click', () => {
+            formStars.forEach((s) => { s.style.fill = "" });
+            for (let i = 0; i <= index; i++) {
+                formStars[i].style.fill = '{{ block.settings.color }}';
+            }
+        });
+    });
+
+
+    // uploaded image showing feature
+    var uploadedImages = [];
+    const imageInput = document.querySelector("#review-upload-image")
+    imageInput.addEventListener('change', (event) => {
+        const images = event.target.files;
+        const imagePreview = document.querySelector('.review-form .review-form-image .image-preview');
+
+        for (let i = 0; i < images.length; i++) {
+            const image = images[i];
+            uploadedImages.push(image);
+            const imageURL = URL.createObjectURL(image);
+
+            const div = document.createElement('div');
+
+            const img = document.createElement('img');
+            img.src = imageURL;
+            div.appendChild(img);
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.classList.add('review-image-delete-btn');
+            deleteBtn.innerHTML = '&times;';
+            deleteBtn.onclick = function () {
+                div.remove();
+                uploadedImages = uploadedImages.filter((item, index) => index !== i);
+            };
+            div.appendChild(deleteBtn);
+
+            imagePreview.appendChild(div);
+        }
+        imageInput.value = ""
+    });
+
+
+    // form handling
+    const form = document.querySelector(".review-form");
+    form.addEventListener('submit', async (e) => {
+        try {
+            e.preventDefault();
+            document.querySelector(".loader").style.display = "block"
+            document.querySelector(".review-form-app").classList.add("disabled-div")
+
+            // validation
+            const starRatingInputs = form.querySelectorAll('input[name="starRating"]');
+            let isAnyChecked = false;
+
+            starRatingInputs.forEach(input => {
+                if (input.checked) {
+                    isAnyChecked = true;
+                }
+            });
+
+            if (!isAnyChecked) {
+                starRatingInputs[0].focus();
+                throw new Error('Please select a star rating.');
+            }
+
+            const formData = new FormData(form);
+            formData.append('action', 'CREATE')
+            uploadedImages.forEach(image => {
+                formData.append('images', image)
+            })
+
+            const response = await fetch(window.appSettings.backendApi + '/api/reviews', {
+                method: 'POST',
+                body: formData
+            })
+            const data = await response.json()
+            if (!data.ok) {
+                throw new Error(data.message)
+            }
+            console.log("Success:", data)
+            form.reset()
+            document.querySelector(".loader").style.display = "none"
+            document.querySelector(".review-form-app").classList.remove("disabled-div")
+
+            modal.style.display = "none";
+        } catch (err) {
+            console.error(err)
+            renderNotification(err.message)
+            document.querySelector(".loader").style.display = "none"
+            document.querySelector(".review-form-app").classList.remove("disabled-div")
+        }
+    })
+
+
+    // form reset on modal close
+    form.addEventListener('reset', () => {
+        formStars.forEach((s) => { s.style.fill = "" });
+        uploadedImages = []
+        document.querySelector('.review-form .review-form-image .image-preview').innerHTML = ""
+        fetchSummary()
+    });
+</script>
+
+
+{% schema %}
+{
+"name": "Review Form",
+"target": "body",
+"settings": [
+{
+"type": "color",
+"id": "color",
+"label": "Star Color",
+"default": "#FFD700"
+}
+]
+}
+{% endschema %}
