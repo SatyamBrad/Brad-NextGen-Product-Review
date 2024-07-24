@@ -17,7 +17,7 @@ export const loader = async ({ request }) => {
   formData.append("shop", "bradnextgenwishlist");
 
   const response = await fetch(
-    "https://trends-regulations-corners-cocktail.trycloudflare.com/api/reviews",
+    "https://grams-necessarily-player-camcorders.trycloudflare.com/api/reviews",
     {
       method: "POST",
       body: formData,

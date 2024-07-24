@@ -2,13 +2,15 @@ import DashboardCard from "../components/dashboardCard";
 
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
+
 export const loader = async ({ request }) => {
+
     const formData = new FormData();
     formData.append("action", "FETCH_SUMMARY");
     formData.append("shop", "bradnextgenwishlist");
     formData.append("productId", "prod123");
     const response = await fetch(
-        "https://trends-regulations-corners-cocktail.trycloudflare.com/api/reviews",
+        "https://grams-necessarily-player-camcorders.trycloudflare.com/api/reviews",
         {
             method: "POST",
             body: formData,
@@ -93,7 +95,7 @@ export default function DashboardContent() {
                 }}
             >
                 <DashboardCard />
-                <DashboardCard />
+                <DashboardCard ReviewsCollected={data.summary._avg.starRating} CardName="Overall Avg. Rating" />
                 <DashboardCard />
 
             </div>
@@ -168,7 +170,7 @@ export default function DashboardContent() {
                             marginBottom: "10px",
                         }}
                     >
-                        reviewTitle
+                        reviewassss
                     </div>
                     <div
                         style={{
