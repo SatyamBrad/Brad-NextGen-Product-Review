@@ -1,0 +1,26 @@
+<div class="review-notification-container">
+
+    <div class="review-notification-app">
+        <h3>No Notification</h3>
+    </div>
+</div>
+
+<script>
+    const renderNotification = (message)=> {
+        const notify = document.querySelector(".review-notification-container")
+        notify.style.display = "flex"
+        notify.querySelector("h3").innerText = message
+        setTimeout(()=>{
+            notify.style.display = "none"
+        }, 3000)
+    }
+</script>
+
+{% schema %}
+{
+    "name": "Review Notification",
+    "target":"body",
+    "stylesheet": "review-notification.css",
+    "settings": []
+}
+{% endschema %}
