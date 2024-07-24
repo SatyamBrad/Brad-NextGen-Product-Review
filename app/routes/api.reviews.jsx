@@ -161,5 +161,7 @@ export const action = async ({ request }) => {
     console.error(err);
     const response = json({ ok: false, message: err.message });
     return cors(request, response);
+
   }
+
 };
