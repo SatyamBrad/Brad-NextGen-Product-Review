@@ -15,6 +15,7 @@ export const action = async ({ request }) => {
   const starRating = Number(formData.get("starRating"));
   const images = formData.getAll("images");
   const action = formData.get("action");
+  const pageNo = formData.get("pageNo");
 
   async function uploadImages(images) {
     const uploadPromises = images.map(async (image) => {
@@ -104,7 +105,6 @@ export const action = async ({ request }) => {
       case "FETCH_BY_PRODUCT":
         if (!shop) throw new Error("Required field: shop");
         if (!productId) throw new Error("Required field: productId");
-
         const fetchByProductReviews = await db.review.findMany({
           where: {
             shop,
@@ -112,6 +112,11 @@ export const action = async ({ request }) => {
           },
           include: {
             images: true,
+          },
+          skip: (pageNo - 1) * 5,
+          take: 5,
+          orderBy: {
+            createdAt: 'desc',
           },
         });
 

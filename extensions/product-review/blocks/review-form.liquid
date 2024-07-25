@@ -179,6 +179,7 @@
                 throw new Error(data.message)
             }
             console.log("Success:", data)
+            renderNotification("Review submitted Successfully")
             form.reset()
             document.querySelector(".loader").style.display = "none"
             document.querySelector(".review-form-app").classList.remove("disabled-div")
