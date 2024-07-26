@@ -1,7 +1,7 @@
 {% comment %} backend api link can be removed afterwards after constant link {% endcomment %}
 <script>
   window.appSettings = {
-    backendApi: "https://survive-access-arcade-spaces.trycloudflare.com"
+    backendApi: "https://magnet-rebecca-ring-copyrights.trycloudflare.com"
   }
 </script>
 
@@ -33,6 +33,7 @@
       document.querySelector('.review-section-app').style.display = "flex"
       displaySummaryDetails(data)
       displaySummaryRatings(data)
+      displaySliders(data)
       document.querySelector(".filter-btn").style.display = "block";
       document.querySelector(".review-section-list-buttons").style.justifyContent = "space-between"
       pageNavigationSetup(1, data?.summary?._count?.id)

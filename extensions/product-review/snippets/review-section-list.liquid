@@ -16,14 +16,12 @@
       const button = document.createElement("button");
       button.innerHTML = text;
       button.addEventListener("click", (e) => {
-        console.log("event", e.target)
         pageNavigationSetup(index, totalReviews);
         document.querySelector(".review-section-list-container .list-container").scrollIntoView({ behavior: "smooth" });
       });
       if (index === currentPage) {
         button.disabled = true;
       }
-      console.log(button)
       container.appendChild(button);
     };
 
@@ -31,7 +29,6 @@
     const totalPages = Math.ceil(totalReviews / 5);
     const container = document.querySelector(".page-nav-container");
     container.innerHTML = "";
-    console.log(container)
     if (totalPages <= 1) return;
 
     if (currentPage !== 1) {
@@ -61,13 +58,10 @@
 
     if (currentPage !== totalPages) {
       createPageButton(currentPage + 1, `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
-  <path d="M0 0h24v24H0z" fill="none"/>
-</svg>
-`)
+        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+        <path d="M0 0h24v24H0z" fill="none"/>
+      </svg>`)
     }
-
-    // console.log(document.querySelectorAll(".page-nav-container button"))
   };
 
   const fillReviewList = (container, data) => {

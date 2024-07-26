@@ -3,10 +3,10 @@
 <div class="review-section-sliders-container">
   <h2>100% people will recommend this</h2>
 
-  <div>
+  <div id="review-section-slider-quality">
     <h3>{{ block.settings['slider-qualilty-title'] }}</h3>
     <div class="bar">
-      <div class="inner-bar" style="width: 100%">
+      <div class="inner-bar">
         <div class="slider"></div>
       </div>
       <div class="label start-label">{{ block.settings['slider-quality-start'] }}</div>
@@ -14,10 +14,10 @@
     </div>
   </div>
 
-  <div>
+  <div id="review-section-slider-sizing">
     <h3>{{ block.settings['slider-sizing-title'] }}</h3>
     <div class="bar">
-      <div class="inner-bar" style="width: 50%">
+      <div class="inner-bar">
         <div class="slider"></div>
       </div>
       <div class="label start-label">{{ block.settings['slider-sizing-start-value'] }}</div>
@@ -26,3 +26,10 @@
     </div>
   </div>
 </div>
+
+<script>
+  const displaySliders = ({sliders}) => {
+    document.getElementById("review-section-slider-quality").querySelector(".inner-bar").style.width = `${sliders.quality * 100}%`
+    document.getElementById("review-section-slider-sizing").querySelector(".inner-bar").style.width = `${sliders.sizing * 100}%`
+  }
+</script>
