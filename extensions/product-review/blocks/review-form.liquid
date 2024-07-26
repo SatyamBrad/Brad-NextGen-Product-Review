@@ -65,6 +65,40 @@
                 </div>
             </div>
 
+            <div class="review-form-slider">
+                <label>Quality</label>
+                <div class="review-form-slider-container">
+                    {% for i in (1..5) %}
+                    <input type="radio" id="review-form-slider1-{{ i }}" name="quality" value="{{ i }}">
+                    <label for="review-form-slider1-{{ i }}" title="{{ i }}">
+                        <span>{{ i }}</span>
+                    </label>
+                    {% endfor %}
+                    <span class="label start-label">Poor</span>
+                    <span class="label end-label">Excellent</span>
+                </div>
+
+            </div>
+            <div class="review-form-slider">
+                <label>Fitness</label>
+                <div class="review-form-slider-container">
+                    {% for i in (1..5) %}
+                    <input type="radio" id="review-form-slider2-{{ i }}" name="sizing" value="{{ i | minus: 3}}">
+                    <label for="review-form-slider2-{{ i }}" title="{{ i }}">
+                        <span>
+                            <svg height="10" width="10">
+                                <circle cx="5" cy="5" r="5" fill="black" />
+                            </svg>
+                        </span>
+                    </label>
+                    {% endfor %}
+                    <span class="label start-label">Runs Small</span>
+                    <span class="label mid-label">True to size</span>
+                    <span class="label end-label">Runs Large</span>
+                </div>
+
+            </div>
+
             <button type="submit" class="btn-submit-review">
                 Submit Review
             </button>
@@ -179,6 +213,7 @@
                 throw new Error(data.message)
             }
             console.log("Success:", data)
+            renderNotification("Review submitted Successfully")
             form.reset()
             document.querySelector(".loader").style.display = "none"
             document.querySelector(".review-form-app").classList.remove("disabled-div")
@@ -213,6 +248,48 @@
 "id": "color",
 "label": "Star Color",
 "default": "#FFD700"
+},
+{
+"type": "text",
+"id": "slider-qualilty-title",
+"label": "Quality Slider Title",
+"default": "Quality"
+},
+{
+"type": "text",
+"id": "slider-quality-start",
+"label": "Quality Slider Start Value",
+"default": "Poor"
+},
+{
+"type": "text",
+"id": "slider-quality-end",
+"label": "Quality Slider End Value",
+"default": "Excellent"
+},
+{
+"type": "text",
+"id": "slider-sizing-title",
+"label": "Sizing Slider Title",
+"default": "Sizing"
+},
+{
+"type": "text",
+"id": "slider-sizing-start-value",
+"label": "Sizing Slider Start Value",
+"default": "Runs Small"
+},
+{
+"type": "text",
+"id": "slider-sizing-mid-value",
+"label": "Sizing Slider Mid Value",
+"default": "True to Size"
+},
+{
+"type": "text",
+"id": "slider-sizing-end-value",
+"label": "Sizing Slider End Value",
+"default": "Runs Large"
 }
 ]
 }

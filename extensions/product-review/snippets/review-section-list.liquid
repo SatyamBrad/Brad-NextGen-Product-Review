@@ -7,24 +7,62 @@
   </div>
 
   <div class="list-container">No reviews yet. Be the first one to review this product.</div>
+  <div class="page-nav-container"></div>
 </div>
 
 <script>
+  const pageNavigationSetup = async (currentPage, totalReviews) => {
+    const createPageButton = (index, text) => {
+      const button = document.createElement("button");
+      button.innerHTML = text;
+      button.addEventListener("click", (e) => {
+        pageNavigationSetup(index, totalReviews);
+        document.querySelector(".review-section-list-container .list-container").scrollIntoView({ behavior: "smooth" });
+      });
+      if (index === currentPage) {
+        button.disabled = true;
+      }
+      container.appendChild(button);
+    };
 
-  const fetchAllReviews = async () => {
-    const body = new FormData()
-    body.append('action', "FETCH_BY_PRODUCT")
-    body.append('shop', '{{ shop.permanent_domain }}')
-    body.append('productId', '{{ product.id }}')
-    const response = await fetch(window.appSettings.backendApi + "/api/reviews", {
-      method: "POST",
-      body
-    })
-    const { data } = await response.json()
-    const container = document.querySelector('.review-section-list-container .list-container')
-    container.innerHTML = ""
-    fillReviewList(container, data)
-  }
+    await fetchReviews(currentPage);
+    const totalPages = Math.ceil(totalReviews / 5);
+    const container = document.querySelector(".page-nav-container");
+    container.innerHTML = "";
+    if (totalPages <= 1) return;
+
+    if (currentPage !== 1) {
+      createPageButton(currentPage - 1, `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        <path d="M0 0h24v24H0z" fill="none"/>
+      </svg>`)
+    }
+
+    if (currentPage > 3) {
+      createPageButton(1, 1);
+      const span = document.createElement("span")
+      span.innerText = "..."
+      container.appendChild(span)
+    }
+
+    for (let index = Math.max(1, currentPage - 2); index <= Math.min(totalPages, currentPage + 2); index++) {
+      createPageButton(index, index);
+    }
+
+    if (currentPage < totalPages - 2) {
+      const span = document.createElement("span")
+      span.innerText = "..."
+      container.appendChild(span)
+      createPageButton(totalPages, totalPages);
+    }
+
+    if (currentPage !== totalPages) {
+      createPageButton(currentPage + 1, `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
+        <path d="M0 0h24v24H0z" fill="none"/>
+      </svg>`)
+    }
+  };
 
   const fillReviewList = (container, data) => {
     data.forEach(item => {
@@ -43,12 +81,12 @@
         star.classList.add('star')
         if (i <= item.starRating) {
           star.innerHTML = `<svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-              <polygon fill="{{ starColor }}" stroke="{{ starColor }}" stroke-width="2" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"/>
-              </svg>`
+            <polygon fill="{{ starColor }}" stroke="{{ starColor }}" stroke-width="2" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"/>
+            </svg>`
         } else {
           star.innerHTML = `<svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-              <polygon fill="none" stroke="{{ starColor }}" stroke-width="2" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"/>
-              </svg>`
+            <polygon fill="none" stroke="{{ starColor }}" stroke-width="2" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"/>
+            </svg>`
 
         }
         starContainer.appendChild(star)
@@ -90,6 +128,24 @@
 
       container.appendChild(listItem)
     })
+
   }
+
+  const fetchReviews = async (pageNo) => {
+    const body = new FormData()
+    body.append('action', "FETCH_BY_PRODUCT")
+    body.append('shop', '{{ shop.permanent_domain }}')
+    body.append('productId', '{{ product.id }}')
+    body.append("pageNo", pageNo)
+    const response = await fetch(window.appSettings.backendApi + "/api/reviews", {
+      method: "POST",
+      body
+    })
+    const { data } = await response.json()
+    const container = document.querySelector('.review-section-list-container .list-container')
+    container.innerHTML = ""
+    fillReviewList(container, data)
+  }
+
 
 </script>

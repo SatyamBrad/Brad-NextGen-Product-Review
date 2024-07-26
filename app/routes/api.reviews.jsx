@@ -4,6 +4,7 @@ import { cors } from "remix-utils/cors";
 
 export const action = async ({ request }) => {
   var imageUrls = [];
+  var reviewDetails = [];
   const formData = await request.formData();
 
   const shop = formData.get("shop");
@@ -15,6 +16,9 @@ export const action = async ({ request }) => {
   const starRating = Number(formData.get("starRating"));
   const images = formData.getAll("images");
   const action = formData.get("action");
+  const pageNo = formData.get("pageNo");
+  const quality = Number(formData.get("quality"));
+  const fitness = Number(formData.get("fitness"));
 
   async function uploadImages(images) {
     const uploadPromises = images.map(async (image) => {
@@ -71,12 +75,44 @@ export const action = async ({ request }) => {
           },
         });
 
+        const fetchSummaryReviews3 = await db.reviewDetail.aggregate({
+          _avg: {
+            value: true,
+          },
+          where: {
+            key: "quality",
+            review: {
+              shop,
+              productId,
+            },
+          },
+        });
+
+        const fetchSummaryReviews4 = await db.reviewDetail.aggregate({
+          _avg: {
+            value: true,
+          },
+          where: {
+            key: "sizing",
+            review: {
+              shop,
+              productId,
+            },
+          },
+        });
+
         const fetchSummaryResponse = json({
           ok: true,
           message: "Successfully fetched the summary from shop",
           data: {
             ...{ summary: fetchSummaryReviews1 },
             ...{ ratings: fetchSummaryReviews2 },
+            ...{
+              sliders: {
+                quality: (fetchSummaryReviews3?._avg?.value / 4) - 0.25,
+                sizing: (fetchSummaryReviews4?._avg?.value / 4) + 0.5,
+              },
+            },
           },
         });
         return cors(request, fetchSummaryResponse);
@@ -104,7 +140,6 @@ export const action = async ({ request }) => {
       case "FETCH_BY_PRODUCT":
         if (!shop) throw new Error("Required field: shop");
         if (!productId) throw new Error("Required field: productId");
-
         const fetchByProductReviews = await db.review.findMany({
           where: {
             shop,
@@ -112,6 +147,11 @@ export const action = async ({ request }) => {
           },
           include: {
             images: true,
+          },
+          skip: (pageNo - 1) * 5,
+          take: 5,
+          orderBy: {
+            createdAt: "desc",
           },
         });
 
@@ -129,6 +169,8 @@ export const action = async ({ request }) => {
         if (!productId) throw new Error("Required fields: productId");
 
         await uploadImages(images);
+        reviewDetails.push({ key: "quality", value: quality });
+        reviewDetails.push({ key: "fitness", value: fitness });
         const createdReview = await db.review.create({
           data: {
             shop,
@@ -143,9 +185,15 @@ export const action = async ({ request }) => {
                 data: imageUrls,
               },
             },
+            details: {
+              createMany: {
+                data: reviewDetails,
+              },
+            },
           },
           include: {
             images: true,
+            details: true,
           },
         });
 
@@ -161,7 +209,5 @@ export const action = async ({ request }) => {
     console.error(err);
     const response = json({ ok: false, message: err.message });
     return cors(request, response);
-
   }
-
 };
