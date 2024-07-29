@@ -1,8 +1,8 @@
 {{ 'review-section-summary.css' | asset_url | stylesheet_tag }}
 
 <div class="review-section-summary-container">
-  <div class="val"><h1></h1></div>
-  <div class="details">
+  <div class="star-rating"><h1></h1></div>
+  <div class="star-rating-avg">
     <div class="stars">
       {% for i in (1..5) %}
         <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -25,7 +25,7 @@
         </svg>
       {% endfor %}
     </div>
-    <div class="val">Based on <span>45</span> reviews</div>
+    <div class="value">Based on <span>0</span> reviews</div>
   </div>
 </div>
 
@@ -60,11 +60,10 @@
   };
 
   const displaySummaryDetails = ({ summary }) => {
-    const rating = parseFloat(summary?._avg?.starRating.toFixed(1));
-    document.querySelector('.review-section-summary-container > .val > h1').innerHTML = rating;
-    document.querySelector('.review-section-summary-container > .details > .val > span').innerHTML =
-      summary?._count?.id;
     colorStars();
+    const rating = parseFloat(summary?._avg?.starRating.toFixed(1));
+    document.querySelector('.review-section-summary-container h1').innerHTML = rating;
+    document.querySelector('.review-section-summary-container .star-rating-avg .value > span').innerHTML = summary?._count?.id;
     displayStars(rating);
   };
 </script>

@@ -4,7 +4,6 @@ import { cors } from "remix-utils/cors";
 
 export const action = async ({ request }) => {
   var imageUrls = [];
-  var reviewDetails = [];
   const formData = await request.formData();
 
   const shop = formData.get("shop");
@@ -17,8 +16,8 @@ export const action = async ({ request }) => {
   const images = formData.getAll("images");
   const action = formData.get("action");
   const pageNo = formData.get("pageNo");
-  const quality = Number(formData.get("quality"));
-  const fitness = Number(formData.get("fitness"));
+  const quality = formData.get("quality");
+  const sizing = formData.get("sizing");
 
   async function uploadImages(images) {
     const uploadPromises = images.map(async (image) => {
@@ -109,8 +108,8 @@ export const action = async ({ request }) => {
             ...{ ratings: fetchSummaryReviews2 },
             ...{
               sliders: {
-                quality: (fetchSummaryReviews3?._avg?.value / 4) - 0.25,
-                sizing: (fetchSummaryReviews4?._avg?.value / 4) + 0.5,
+                quality: fetchSummaryReviews3?._avg?.value / 4 - 0.25,
+                sizing: fetchSummaryReviews4?._avg?.value / 4 + 0.5,
               },
             },
           },
@@ -163,14 +162,11 @@ export const action = async ({ request }) => {
 
         return cors(request, fetchByProductResponse);
 
-      // can convert to and upsert call
       case "CREATE":
         if (!shop) throw new Error("Required fields: shop");
         if (!productId) throw new Error("Required fields: productId");
 
         await uploadImages(images);
-        reviewDetails.push({ key: "quality", value: quality });
-        reviewDetails.push({ key: "fitness", value: fitness });
         const createdReview = await db.review.create({
           data: {
             shop,
@@ -187,7 +183,16 @@ export const action = async ({ request }) => {
             },
             details: {
               createMany: {
-                data: reviewDetails,
+                data: [
+                  {
+                    key: "quality",
+                    value: quality && Number(quality),
+                  },
+                  {
+                    key: "sizing",
+                    value: sizing && Number(sizing),
+                  },
+                ],
               },
             },
           },

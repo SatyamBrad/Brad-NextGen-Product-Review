@@ -1,6 +1,5 @@
 .review-section-container {
   width: 100%;
-  /* height: 100%; */
 }
 
 .review-section-container > h1 {
@@ -10,7 +9,7 @@
 .review-section-app {
   width: 100%;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
   gap: 1rem;
   padding-bottom: 5rem;
@@ -21,7 +20,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
   width: 90%;
 }
 

@@ -1,7 +1,7 @@
 {% comment %} backend api link can be removed afterwards after constant link {% endcomment %}
 <script>
   window.appSettings = {
-    backendApi: "https://magnet-rebecca-ring-copyrights.trycloudflare.com"
+    backendApi: "https://confused-path-enjoyed-edward.trycloudflare.com"  
   }
 </script>
 
@@ -29,6 +29,7 @@
     })
 
     const { data } = await response.json()
+    console.log(data)
     if (data?.summary?._count?.id !== 0) {
       document.querySelector('.review-section-app').style.display = "flex"
       displaySummaryDetails(data)
