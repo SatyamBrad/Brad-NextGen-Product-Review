@@ -18,6 +18,9 @@ export const action = async ({ request }) => {
   const pageNo = formData.get("pageNo");
   const quality = formData.get("quality");
   const sizing = formData.get("sizing");
+  const starRatingOption = formData.getAll("starRatingOption");
+  const orderByOption = formData.get("orderByOption");
+
 
   async function uploadImages(images) {
     const uploadPromises = images.map(async (image) => {
@@ -47,6 +50,30 @@ export const action = async ({ request }) => {
 
   try {
     switch (action) {
+      case "FETCH_COUNT":
+        if (!shop) throw new Error("Required Field: shop");
+        if (!productId) throw new Error("Required Field: productId");
+
+        const fetchCount = await db.review.count({
+          where: {
+            shop,
+            productId,
+            ...(starRatingOption.length > 0 && {
+              starRating: {
+                in: starRatingOption.map((item) => Number(item)),
+              },
+            }),
+          },
+        });   
+
+        const fetchCountResponse = json({
+          ok: true,
+          message: "Successfully fetched all count",
+          data: fetchCount,
+        });
+
+        return cors(request, fetchCountResponse);
+
       case "FETCH_SUMMARY":
         if (!shop) throw new Error("Required Field: shop");
         if (!productId) throw new Error("Required Field: productId");
@@ -143,6 +170,11 @@ export const action = async ({ request }) => {
           where: {
             shop,
             productId,
+            ...(starRatingOption.length > 0 && {
+              starRating: {
+                in: starRatingOption.map((item) => Number(item)),
+              },
+            }),
           },
           include: {
             images: true,
@@ -150,7 +182,7 @@ export const action = async ({ request }) => {
           skip: (pageNo - 1) * 5,
           take: 5,
           orderBy: {
-            createdAt: "desc",
+            createdAt: orderByOption,
           },
         });
 

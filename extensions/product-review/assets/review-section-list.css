@@ -8,8 +8,8 @@
   flex-direction: column-reverse;
   align-items: center;
   justify-content: center;
-  border-block: 2px solid #ccc;
-  padding: 2rem;
+  border-top: 2px solid #ccc;
+  padding-top: 2rem;
   gap: 0.5rem;
 }
 
@@ -129,5 +129,62 @@
   .page-nav-container button {
     padding: 1rem 2rem;
     font-size: 1.5rem;
+  }
+}
+
+.filter-options {
+  width: 90%;
+  padding-inline: 2rem;
+  margin: 0.5rem auto;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.5s ease-in-out,
+    opacity 0.5s ease-in-out;
+}
+
+.filter-options-display {
+  max-height: 100%;
+  opacity: 1;
+}
+
+.filter-options ul {
+  display: flex;
+  
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-options li {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  list-style: none;
+  border-radius: 2rem;
+  border: 1px solid black;
+  padding: 0.3rem 1rem;
+  cursor: pointer;
+}
+
+.filter-options-selected {
+  background-color: black;
+  color: white;
+}
+
+.filter-options-selected polygon {
+  fill: white;
+}
+
+@media screen and (min-width: 480px) {
+  .filter-options {
+    width: 60%;
+    margin: 0.5rem 0;
+  }
+
+  .filter-options ul {
+    justify-content: flex-start;
   }
 }
