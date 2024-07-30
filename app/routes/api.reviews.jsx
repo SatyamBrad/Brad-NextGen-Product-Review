@@ -4,7 +4,6 @@ import { cors } from "remix-utils/cors";
 
 export const action = async ({ request }) => {
   var imageUrls = [];
-  var reviewDetails = [];
   const formData = await request.formData();
 
   const shop = formData.get("shop");
@@ -17,8 +16,11 @@ export const action = async ({ request }) => {
   const images = formData.getAll("images");
   const action = formData.get("action");
   const pageNo = formData.get("pageNo");
-  const quality = Number(formData.get("quality"));
-  const fitness = Number(formData.get("fitness"));
+  const quality = formData.get("quality");
+  const sizing = formData.get("sizing");
+  const starRatingOption = formData.getAll("starRatingOption");
+  const orderByOption = formData.get("orderByOption");
+
 
   async function uploadImages(images) {
     const uploadPromises = images.map(async (image) => {
@@ -48,6 +50,30 @@ export const action = async ({ request }) => {
 
   try {
     switch (action) {
+      case "FETCH_COUNT":
+        if (!shop) throw new Error("Required Field: shop");
+        if (!productId) throw new Error("Required Field: productId");
+
+        const fetchCount = await db.review.count({
+          where: {
+            shop,
+            productId,
+            ...(starRatingOption.length > 0 && {
+              starRating: {
+                in: starRatingOption.map((item) => Number(item)),
+              },
+            }),
+          },
+        });   
+
+        const fetchCountResponse = json({
+          ok: true,
+          message: "Successfully fetched all count",
+          data: fetchCount,
+        });
+
+        return cors(request, fetchCountResponse);
+
       case "FETCH_SUMMARY":
         if (!shop) throw new Error("Required Field: shop");
         if (!productId) throw new Error("Required Field: productId");
@@ -109,8 +135,8 @@ export const action = async ({ request }) => {
             ...{ ratings: fetchSummaryReviews2 },
             ...{
               sliders: {
-                quality: (fetchSummaryReviews3?._avg?.value / 4) - 0.25,
-                sizing: (fetchSummaryReviews4?._avg?.value / 4) + 0.5,
+                quality: fetchSummaryReviews3?._avg?.value / 4 - 0.25,
+                sizing: fetchSummaryReviews4?._avg?.value / 4 + 0.5,
               },
             },
           },
@@ -144,6 +170,11 @@ export const action = async ({ request }) => {
           where: {
             shop,
             productId,
+            ...(starRatingOption.length > 0 && {
+              starRating: {
+                in: starRatingOption.map((item) => Number(item)),
+              },
+            }),
           },
           include: {
             images: true,
@@ -151,7 +182,7 @@ export const action = async ({ request }) => {
           skip: (pageNo - 1) * 5,
           take: 5,
           orderBy: {
-            createdAt: "desc",
+            createdAt: orderByOption,
           },
         });
 
@@ -163,14 +194,11 @@ export const action = async ({ request }) => {
 
         return cors(request, fetchByProductResponse);
 
-      // can convert to and upsert call
       case "CREATE":
         if (!shop) throw new Error("Required fields: shop");
         if (!productId) throw new Error("Required fields: productId");
 
         await uploadImages(images);
-        reviewDetails.push({ key: "quality", value: quality });
-        reviewDetails.push({ key: "fitness", value: fitness });
         const createdReview = await db.review.create({
           data: {
             shop,
@@ -187,7 +215,16 @@ export const action = async ({ request }) => {
             },
             details: {
               createMany: {
-                data: reviewDetails,
+                data: [
+                  {
+                    key: "quality",
+                    value: quality && Number(quality),
+                  },
+                  {
+                    key: "sizing",
+                    value: sizing && Number(sizing),
+                  },
+                ],
               },
             },
           },

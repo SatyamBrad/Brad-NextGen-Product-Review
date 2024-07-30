@@ -1,11 +1,11 @@
 {% comment %} backend api link can be removed afterwards after constant link {% endcomment %}
 <script>
   window.appSettings = {
-    backendApi: "https://magnet-rebecca-ring-copyrights.trycloudflare.com"
+    backendApi: "https://refurbished-sam-metallic-ip.trycloudflare.com"
   }
 </script>
 
-<div class="review-section-container">
+<div class="review-section-container" id="brad-nextgen-product-review">
   <h1>Customer Reviews</h1>
   <div class="review-section-app">
     <div>
@@ -29,6 +29,7 @@
     })
 
     const { data } = await response.json()
+    // console.log(data)
     if (data?.summary?._count?.id !== 0) {
       document.querySelector('.review-section-app').style.display = "flex"
       displaySummaryDetails(data)

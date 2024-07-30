@@ -1,16 +1,22 @@
 .review-section-ratings-container {
+  width: 80%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly; 
+  justify-content: center;
 }
 
-.review-section-ratings-container > div {
+.inner-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.inner-container > div {
+  width: 100%;
   height: 4rem;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
-  gap: 0.8rem;
+  gap: 0.5rem;
 }
 
 .review-section-ratings-container .star-with-num,
@@ -19,14 +25,16 @@
   align-items: center;
   gap: 0.3rem;
   font-size: 2rem;
+  min-width: 3rem;
 }
 
 .review-section-ratings-container .bar {
-  width: 16rem;
+  flex: 1;
   height: 1rem;
   background-color: #eee;
   border-radius: 10px;
 }
+
 .review-section-ratings-container .bar .inner-bar {
   height: 100%;
   background-color: #333;
@@ -37,4 +45,6 @@
 
 .review-section-ratings-container .val-count {
   font-size: 2rem;
+  min-width: 3rem;
+  text-align: right;
 }
