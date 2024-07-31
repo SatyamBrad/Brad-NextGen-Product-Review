@@ -3,7 +3,7 @@
 client_id = "53eb8bac00dcac185e719de2e1721e66"
 name = "Brad NextGen Wishlist"
 handle = "brad-nextgen-wishlist-1"
-application_url = "https://farms-healing-starts-jennifer.trycloudflare.com"
+application_url = "https://refurbished-sam-metallic-ip.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,16 +16,16 @@ scopes = "read_customers,write_customers,write_products"
 
 [auth]
 redirect_urls = [
-  "https://farms-healing-starts-jennifer.trycloudflare.com/auth/callback",
-  "https://farms-healing-starts-jennifer.trycloudflare.com/auth/shopify/callback",
-  "https://farms-healing-starts-jennifer.trycloudflare.com/api/auth/callback"
+  "https://refurbished-sam-metallic-ip.trycloudflare.com/auth/callback",
+  "https://refurbished-sam-metallic-ip.trycloudflare.com/auth/shopify/callback",
+  "https://refurbished-sam-metallic-ip.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
 
 [app_proxy]
-url = "https://farms-healing-starts-jennifer.trycloudflare.com/api"
+url = "https://refurbished-sam-metallic-ip.trycloudflare.com/api"
 subpath = "prapp"
 prefix = "apps"
 

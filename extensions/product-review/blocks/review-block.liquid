@@ -1,0 +1,94 @@
+<div class="review-block-container">
+  <h2>
+    No reviews yet. Be the first One to <a href="#brad-nextgen-product-review">Submit</a> a review
+  </h2>
+  <div></div>
+</div>
+
+<script>
+  const fetchReviewSummaryOnBlock = async () => {
+    const body = new FormData()
+    body.append("action", "FETCH_SUMMARY")
+    body.append("shop", "{{ shop.permanent_domain }}")
+    body.append("productId", "{{ product.id }}")
+    const response = await fetch("https://refurbished-sam-metallic-ip.trycloudflare.com/api/reviews", {
+      method: "POST",
+      body
+    })
+    const { data } = await response.json()
+    const { summary } = data
+    console.log(summary)
+
+    if (summary?._count?.id > 0) {
+      const rating = summary?._avg?.starRating.toFixed(1)
+      const h2 = document.querySelector(".review-block-container h2")
+      h2.innerText = rating
+
+      const div = document.querySelector(".review-block-container div")
+      div.innerHTML = ""
+      for (let i = 1; i <= 5; i++) {
+        div.innerHTML += `<svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <defs>
+            <clipPath id="review-block-star-clip-${i}">
+              <rect x="0" y="0" width="0%" height="100%"></rect>
+            </clipPath>
+          </defs>
+          <polygon
+            fill="none"
+            stroke="{{ block.settings.color }}"
+            stroke-width="2"
+            points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"
+          />
+          <polygon
+            fill="{{ block.settings.color }}"
+            clip-path="url(#review-block-star-clip-${i})"
+            points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"
+          />
+        </svg>`
+      }
+
+      var i = 1;
+      while (i <= Math.floor(rating)) {
+        const clipRect = document.querySelector(`#review-block-star-clip-${i} rect`);
+        clipRect.setAttribute('width', `100%`);
+        i++;
+      }
+      if (i <= 5) {
+        const percentage = (rating - Math.floor(rating)) * 100;
+        const clipRect = document.querySelector(`#review-block-star-clip-${i} rect`);
+        clipRect.setAttribute('width', `${percentage}%`);
+        i++;
+      }
+      while (i <= 5) {
+        const clipRect = document.querySelector(`#review-block-star-clip-${i} rect`);
+        clipRect.setAttribute('width', `0%`);
+        i++;
+      }
+
+    }
+  };
+
+  fetchReviewSummaryOnBlock()
+</script>
+
+
+{% schema %}
+{
+"name": "Review Block",
+"target": "section",
+"stylesheet": "review-block.css",
+"settings": [
+{
+"type": "product",
+"id": "product",
+"label": "Product",
+"autofill": true
+}, {
+"type": "color",
+"id": "color",
+"label": "Star Colour",
+"default": "#FFD700"
+}
+]
+}
+{% endschema %}

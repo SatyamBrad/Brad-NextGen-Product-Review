@@ -11,19 +11,12 @@
 }
 
 .review-notification-app {
-    width: 90%;
     border-radius: 8px;
-    padding: 1rem;
+    padding: 1rem 3rem;
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
 
-.review-notification-app h2 {
+.review-notification-app h3 {
     text-align: center;
-}
-
-@media screen and (min-width: 480px) {
-    .review-notification-app {
-        width: 50%;
-    }
 }

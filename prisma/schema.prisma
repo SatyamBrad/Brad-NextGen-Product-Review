@@ -41,13 +41,22 @@ model Review {
   reviewDescription String?       @default("")
   starRating        Int?          @default(0)
   createdAt         DateTime      @default(now())
-  images            ReviewImage[]
   status            String?       @default("Published")
+  images            ReviewImage[]
+  details           ReviewDetail[]
 }
 
 model ReviewImage {
   id       Int     @id @default(autoincrement())
-  imageUrl String?
-  review   Review  @relation(fields: [reviewId], references: [id])
   reviewId Int
+  review   Review  @relation(fields: [reviewId], references: [id])
+  imageUrl String?
+}
+
+model ReviewDetail {
+  id       Int     @id @default(autoincrement())
+  reviewId Int
+  review   Review  @relation(fields: [reviewId], references: [id])
+  key      String?
+  value    Int?
 }

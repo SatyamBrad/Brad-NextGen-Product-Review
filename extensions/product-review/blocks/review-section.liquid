@@ -1,11 +1,11 @@
 {% comment %} backend api link can be removed afterwards after constant link {% endcomment %}
 <script>
   window.appSettings = {
-    backendApi: "https://acceptance-glory-fourth-weird.trycloudflare.com"
+    backendApi: "https://refurbished-sam-metallic-ip.trycloudflare.com"
   }
 </script>
 
-<div class="review-section-container">
+<div class="review-section-container" id="brad-nextgen-product-review">
   <h1>Customer Reviews</h1>
   <div class="review-section-app">
     <div>
@@ -14,7 +14,7 @@
     </div>
     {% render 'review-section-sliders' %}
   </div>
-  {% render 'review-section-list', starColor: block.settings.color  %}
+  {% render 'review-section-list', starColor: block.settings.color %}
 </div>
 
 <script>
@@ -29,13 +29,15 @@
     })
 
     const { data } = await response.json()
+    // console.log(data)
     if (data?.summary?._count?.id !== 0) {
       document.querySelector('.review-section-app').style.display = "flex"
       displaySummaryDetails(data)
       displaySummaryRatings(data)
+      displaySliders(data)
       document.querySelector(".filter-btn").style.display = "block";
       document.querySelector(".review-section-list-buttons").style.justifyContent = "space-between"
-      fetchAllReviews()
+      pageNavigationSetup(1, data?.summary?._count?.id)
     }
   }
 
@@ -45,7 +47,7 @@
 {% schema %}
 {
 "name": "Review Section",
-"target": "section", 
+"target": "section",
 "stylesheet": "review-section.css",
 "settings": [
 {

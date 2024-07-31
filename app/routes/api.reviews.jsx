@@ -15,6 +15,12 @@ export const action = async ({ request }) => {
   const starRating = Number(formData.get("starRating"));
   const images = formData.getAll("images");
   const action = formData.get("action");
+  const pageNo = formData.get("pageNo");
+  const quality = formData.get("quality");
+  const sizing = formData.get("sizing");
+  const starRatingOption = formData.getAll("starRatingOption");
+  const orderByOption = formData.get("orderByOption");
+
 
   async function uploadImages(images) {
     const uploadPromises = images.map(async (image) => {
@@ -44,6 +50,30 @@ export const action = async ({ request }) => {
 
   try {
     switch (action) {
+      case "FETCH_COUNT":
+        if (!shop) throw new Error("Required Field: shop");
+        if (!productId) throw new Error("Required Field: productId");
+
+        const fetchCount = await db.review.count({
+          where: {
+            shop,
+            productId,
+            ...(starRatingOption.length > 0 && {
+              starRating: {
+                in: starRatingOption.map((item) => Number(item)),
+              },
+            }),
+          },
+        });   
+
+        const fetchCountResponse = json({
+          ok: true,
+          message: "Successfully fetched all count",
+          data: fetchCount,
+        });
+
+        return cors(request, fetchCountResponse);
+
       case "FETCH_SUMMARY":
         if (!shop) throw new Error("Required Field: shop");
         if (!productId) throw new Error("Required Field: productId");
@@ -71,12 +101,44 @@ export const action = async ({ request }) => {
           },
         });
 
+        const fetchSummaryReviews3 = await db.reviewDetail.aggregate({
+          _avg: {
+            value: true,
+          },
+          where: {
+            key: "quality",
+            review: {
+              shop,
+              productId,
+            },
+          },
+        });
+
+        const fetchSummaryReviews4 = await db.reviewDetail.aggregate({
+          _avg: {
+            value: true,
+          },
+          where: {
+            key: "sizing",
+            review: {
+              shop,
+              productId,
+            },
+          },
+        });
+
         const fetchSummaryResponse = json({
           ok: true,
           message: "Successfully fetched the summary from shop",
           data: {
             ...{ summary: fetchSummaryReviews1 },
             ...{ ratings: fetchSummaryReviews2 },
+            ...{
+              sliders: {
+                quality: fetchSummaryReviews3?._avg?.value / 4 - 0.25,
+                sizing: fetchSummaryReviews4?._avg?.value / 4 + 0.5,
+              },
+            },
           },
         });
         return cors(request, fetchSummaryResponse);
@@ -104,14 +166,23 @@ export const action = async ({ request }) => {
       case "FETCH_BY_PRODUCT":
         if (!shop) throw new Error("Required field: shop");
         if (!productId) throw new Error("Required field: productId");
-
         const fetchByProductReviews = await db.review.findMany({
           where: {
             shop,
             productId,
+            ...(starRatingOption.length > 0 && {
+              starRating: {
+                in: starRatingOption.map((item) => Number(item)),
+              },
+            }),
           },
           include: {
             images: true,
+          },
+          skip: (pageNo - 1) * 5,
+          take: 5,
+          orderBy: {
+            createdAt: orderByOption,
           },
         });
 
@@ -123,7 +194,6 @@ export const action = async ({ request }) => {
 
         return cors(request, fetchByProductResponse);
 
-      // can convert to and upsert call
       case "CREATE":
         if (!shop) throw new Error("Required fields: shop");
         if (!productId) throw new Error("Required fields: productId");
@@ -143,9 +213,24 @@ export const action = async ({ request }) => {
                 data: imageUrls,
               },
             },
+            details: {
+              createMany: {
+                data: [
+                  {
+                    key: "quality",
+                    value: quality && Number(quality),
+                  },
+                  {
+                    key: "sizing",
+                    value: sizing && Number(sizing),
+                  },
+                ],
+              },
+            },
           },
           include: {
             images: true,
+            details: true,
           },
         });
 
@@ -161,7 +246,5 @@ export const action = async ({ request }) => {
     console.error(err);
     const response = json({ ok: false, message: err.message });
     return cors(request, response);
-
   }
-
 };
