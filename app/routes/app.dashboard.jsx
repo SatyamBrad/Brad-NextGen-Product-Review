@@ -1,29 +1,29 @@
 import DashboardCard from "../components/dashboardCard";
-
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 
-export const loader = async ({ request }) => {
+export const loader = async () => {
 
     const formData = new FormData();
-    formData.append("action", "FETCH_SUMMARY");
-    formData.append("shop", "bradnextgenwishlist");
-    formData.append("productId", "prod123");
+    formData.append("action", "FETCH_ALL");
+    formData.append("shop", "bradnextgenwishlist.myshopify.com");
+
+    const appUrl = `https://musical-careers-english-luxury.trycloudflare.com/api/reviews`;
+
     const response = await fetch(
-        "https://grams-necessarily-player-camcorders.trycloudflare.com/api/reviews",
+        appUrl,
         {
             method: "POST",
             body: formData,
         },
     );
-    const data = await response.json();
-    console.log(data);
-    return json(data);
+    const fetchAllReviews = await response.json();
+    return json(fetchAllReviews);
 
 }
 
 export default function DashboardContent() {
-    const { data } = useLoaderData();
+    const { fetchAllReviews } = useLoaderData();
 
 
     return (
@@ -95,7 +95,7 @@ export default function DashboardContent() {
                 }}
             >
                 <DashboardCard />
-                <DashboardCard ReviewsCollected={data.summary._avg.starRating} CardName="Overall Avg. Rating" />
+                <DashboardCard />
                 <DashboardCard />
 
             </div>
