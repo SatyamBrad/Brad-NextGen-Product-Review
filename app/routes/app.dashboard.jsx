@@ -10,7 +10,7 @@ export const loader = async ({ request }) => {
     formData.append("shop", "bradnextgenwishlist");
     formData.append("productId", "prod123");
     const response = await fetch(
-        "https://grams-necessarily-player-camcorders.trycloudflare.com/api/reviews",
+        "https://yea-lie-cork-vital.trycloudflare.com/api/reviews",
         {
             method: "POST",
             body: formData,

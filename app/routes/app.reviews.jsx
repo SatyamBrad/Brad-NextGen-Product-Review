@@ -14,10 +14,10 @@ export const loader = async ({ request }) => {
 
   const formData = new FormData();
   formData.append("action", "FETCH_ALL");
-  formData.append("shop", "bradnextgenwishlist");
+  formData.append("shop", "bradnextgenwishlist.myshopify.com");
 
   const response = await fetch(
-    "https://grams-necessarily-player-camcorders.trycloudflare.com/api/reviews",
+    "https://yea-lie-cork-vital.trycloudflare.com/api/reviews",
     {
       method: "POST",
       body: formData,
