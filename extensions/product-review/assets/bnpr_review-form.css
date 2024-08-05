@@ -1,4 +1,4 @@
-.review-form-container {
+.bnpr-review-form-container {
   display: none;
   position: fixed;
   z-index: 99;
@@ -11,24 +11,31 @@
   justify-content: center;
 }
 
-.review-form-app {
+.bnpr-review-form-app {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: auto;
   background-color: #fefefe;
   height: 90%;
   width: 95%;
+  overflow: auto;
   position: relative;
-  border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  border-radius: 8px;
+  box-shadow:
+    rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
 
-.review-form-app::-webkit-scrollbar {
-  display: none;
+.bnpr-review-form-app::-webkit-scrollbar {
+  width: 0.8rem;
 }
 
-.review-form-close {
+.bnpr-review-form-app::-webkit-scrollbar-thumb {
+  border-radius: 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.bnpr-close-form-btn {
   position: absolute;
   right: 1rem;
   top: 1rem;
@@ -39,12 +46,12 @@
   align-items: center;
 }
 
-.review-form-close:hover,
-.review-form-close:focus {
+.bnpr-close-form-btn:hover,
+.bnpr-close-form-btn:focus {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-.review-form {
+.bnpr-review-form {
   width: 80%;
   display: flex;
   flex-direction: column;
@@ -52,19 +59,19 @@
   gap: 1rem;
 }
 
-.review-form > div {
+.bnpr-review-form > div {
   width: 100%;
 }
 
 /* text fields css */
-.review-form label {
+.bnpr-review-form label {
   display: block;
   font-size: 2rem;
   color: black;
 }
 
-.review-form input[type="text"],
-.review-form textarea {
+.bnpr-review-form input[type="text"],
+.bnpr-review-form textarea {
   width: 100%;
   padding: 1rem;
   border: 1px solid #aaa;
@@ -74,53 +81,54 @@
   outline: none;
 }
 
-.review-form textarea {
+.bnpr-review-form textarea {
   resize: vertical;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.review-form [type="text"]:focus,
-.review-form textarea:focus-visible {
+.bnpr-review-form [type="text"]:focus,
+.bnpr-review-form textarea:focus-visible {
   box-shadow: none;
   outline: none;
   border: 2px solid black;
 }
 
 /* star rating css */
-.review-form .review-form-rating {
+.bnpr-review-form-rating {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.review-form .review-form-rating .star-container {
+.bnpr-review-form-rating .bnpr-star-container {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
 }
 
-.review-form .review-form-rating .star-container label {
+.bnpr-review-form-rating .bnpr-star-container label {
   display: flex;
   align-items: center;
 }
 
-.review-form .review-form-rating .star-container .star {
+.bnpr-review-form-rating .bnpr-star-container .bnpr-star {
   cursor: pointer;
 }
 
-.review-form .review-form-rating .star-container input[type="radio"] {
+.bnpr-review-form-rating .bnpr-star-container input[type="radio"] {
   display: none;
 }
 
 /* image field css */
-.review-form .review-form-image > div {
+.bnpr-review-form-image > div {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
+  width: 100%;
 }
 
-.review-form .review-form-image #review-upload-image + label {
+.bnpr-review-form-image #bnpr-review-upload-image + label {
   width: 8rem;
   height: 8rem;
   border-radius: 8px;
@@ -131,14 +139,27 @@
   cursor: pointer;
 }
 
-.review-form .review-form-image .image-preview {
+.bnpr-review-form-image .bnpr-image-preview {
+  overflow-x: auto;
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.5rem;
+  width: 100%;
+  padding-bottom: 0.5rem;
 }
 
-.review-form .review-form-image .image-preview > div {
-  width: 8rem;
+.bnpr-review-form-image .bnpr-image-preview::-webkit-scrollbar {
+  height: 0.8rem;
+}
+
+.bnpr-review-form-image .bnpr-image-preview::-webkit-scrollbar-thumb {
+  border-radius: 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.bnpr-review-form-image .bnpr-image-preview > div {
+  min-width: 8rem;
+  max-width: 8rem;
   height: 8rem;
   overflow: hidden;
   border-radius: 8px;
@@ -151,13 +172,13 @@
   background-color: #fff;
 }
 
-.review-form .review-form-image .image-preview img {
+.bnpr-review-form-image .bnpr-image-preview img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.review-form .review-form-image .image-preview .review-image-delete-btn {
+.bnpr-review-form-image .bnpr-image-preview .bnpr-review-image-delete-btn {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -172,7 +193,8 @@
   font-size: 1.6rem;
   color: #ff0000;
 }
-.review-form .btn-submit-review {
+
+.bnpr-review-submit-btn {
   width: 100%;
   background-color: white;
   color: black;
@@ -185,7 +207,13 @@
   margin-block: 1rem;
 }
 
-.loader {
+.bnpr-review-submit-btn:hover {
+  background-color: black;
+  color: white;
+}
+
+.bnpr-loader {
+  display: none;
   position: absolute;
   left: 45%;
   top: 50%;
@@ -194,68 +222,62 @@
   aspect-ratio: 1;
   border-radius: 50%;
   background: black;
-  --_m: 
-    conic-gradient(#0000 10%,#000),
-    linear-gradient(#000 0 0) content-box;
+  --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
   -webkit-mask: var(--_m);
-          mask: var(--_m);
+  mask: var(--_m);
   -webkit-mask-composite: source-out;
-          mask-composite: subtract;
+  mask-composite: subtract;
   animation: l3 1s infinite linear;
 }
-@keyframes l3 {to{transform: rotate(1turn)}}
-
-.review-form .btn-submit-review:hover {
-  background-color: black;
-  color: white;
+@keyframes l3 {
+  to {
+    transform: rotate(1turn);
+  }
 }
 
-.disabled-div {
+.bnpr-disabled-div {
   filter: blur(1px);
   pointer-events: none;
-  user-select: none; 
+  user-select: none;
 }
 
-
 @media screen and (min-width: 480px) {
-  .review-form-app {
+  .bnpr-review-form-app {
     width: 50%;
     border-radius: 8px;
   }
 
-  .review-form-close {
+  .bnpr-close-form-btn {
     right: 2rem;
     top: 2rem;
   }
 
-  .loader {
-    left:50%;
+  .bnpr-loader {
+    left: 50%;
   }
 }
 
-
-/* added later */
-.review-form-slider {
-  
+/* added later - sliders section */
+.bnpr-review-form-slider {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
 }
 
-.review-form-slider input[type="radio"] {
+.bnpr-review-form-slider input[type="radio"] {
   display: none;
 }
 
-.review-form-slider input[type="radio"]:checked + label {
+.bnpr-review-form-slider input[type="radio"]:checked + label {
   background-color: black;
   color: white;
 }
-.review-form-slider input[type="radio"]:checked + label svg > circle {
+.bnpr-review-form-slider input[type="radio"]:checked + label svg > circle {
   fill: white;
 }
 
-.review-form-slider-container {
+.bnpr-review-form-slider-container {
   display: flex;
   align-items: center;
   gap: 0.3rem;
@@ -263,31 +285,30 @@
   margin-bottom: 3rem;
 }
 
-.review-form-slider-container label {
+.bnpr-review-form-slider-container label {
   border: 1px solid black;
   border-radius: 4px;
   cursor: pointer;
   padding: 0.1rem 2rem;
 }
 
-.review-form-slider-container .label {
+.bnpr-review-form-slider-container .bnpr-label {
   position: absolute;
   bottom: -3rem;
 }
-.review-form-slider-container .start-label {
+.bnpr-review-form-slider-container .bnpr-start-label {
   left: 0;
 }
-.review-form-slider-container .mid-label {
+.bnpr-review-form-slider-container .bnpr-mid-label {
   left: 50%;
   transform: translateX(-50%);
 }
-.review-form-slider-container .end-label {
+.bnpr-review-form-slider-container .bnpr-end-label {
   right: 0;
 }
 
 @media screen and (min-width: 480px) {
-.review-form-slider-container label {
-  padding:0.3rem 3rem;
-  
-}
+  .bnpr-review-form-slider-container label {
+    padding: 0.3rem 3rem;
+  }
 }

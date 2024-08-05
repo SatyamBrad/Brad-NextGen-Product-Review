@@ -1,0 +1,22 @@
+.bnpr-review-section-summary-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bnpr-summary-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.bnpr-summary-rating .bnpr-stars {
+  display: flex;
+  align-items: center;
+  font-size: 4rem;
+  padding: 0.2rem;
+}
+
+.bnpr-summary-count {
+  font-size: 2rem;
+}

@@ -1,0 +1,167 @@
+{{ 'bnpr_review-form.css' | asset_url | stylesheet_tag }}
+
+<div class="bnpr-review-form-container">
+    <div class="bnpr-review-form-app">
+
+        <div class="bnpr-close-form-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M6 6L18 18" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </div>
+
+        <h1>Write a Review</h1>
+
+        <form class="bnpr-review-form">
+            <input type="hidden" name="shop" value="{{ shop.permanent_domain }}">
+
+            <input type="hidden" name="customerId" value="{{ customer.id }}">
+
+            <input type="hidden" name="productId" value="{{ product.id }}">
+
+            <div class="bnpr-review-form-rating">
+                <label>Ratings</label>
+                <div class="bnpr-star-container">
+                    {% for i in (1..5) %}
+                    <input type="radio" id="bnpr-form-star-{{ i }}" name="starRating" value="{{ i }}">
+                    <label for="bnpr-form-star-{{ i }}" title="{{ i }} stars">
+                        <svg class="bnpr-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                            height="24">
+                            <polygon fill="none" stroke="#FFD700" stroke-width="2"
+                                points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
+                        </svg>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div>
+                <label for="bnpr-review-form-title">Title</label>
+                <input type="text" id="bnpr-review-form-title" name="reviewTitle">
+            </div>
+
+            <div>
+                <label for="bnpr-review-form-description">Review</label>
+                <textarea id="bnpr-review-form-description" name="reviewDescription" rows="4"></textarea>
+            </div>
+
+            <div>
+                <label for="bnpr-review-form-author">Your Name</label>
+                <input type="text" id="bnpr-review-form-author" name="customerName">
+            </div>
+
+            <div class="bnpr-review-form-image">
+                <label>Upload Images (Optional)</label>
+                <div>
+                    <div class="bnpr-image-upload">
+                        <input id="bnpr-review-upload-image" type="file" accept=".jpg, .png, .gif, .jpeg" hidden
+                            multiple>
+                        <label for="bnpr-review-upload-image">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                <path d="M12 5v14M5 12h14" stroke="black" stroke-width="2" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </label>
+                    </div>
+                    <div class="bnpr-image-preview"></div>
+                </div>
+            </div>
+
+            <div class="bnpr-review-form-slider">
+                <label>Quality</label>
+                <div class="bnpr-review-form-slider-container">
+                    {% for i in (1..5) %}
+                    <input type="radio" id="bnpr-review-form-slider1-{{ i }}" name="quality" value="{{ i }}">
+                    <label for="bnpr-review-form-slider1-{{ i }}" title="{{ i }}">
+                        <span>{{ i }}</span>
+                    </label>
+                    {% endfor %}
+                    <span class="bnpr-label bnpr-start-label">Poor</span>
+                    <span class="bnpr-label bnpr-end-label">Excellent</span>
+                </div>
+
+            </div>
+
+            <div class="bnpr-review-form-slider">
+                <label>Sizing</label>
+                <div class="bnpr-review-form-slider-container">
+                    {% for i in (1..5) %}
+                    <input type="radio" id="review-form-slider2-{{ i }}" name="sizing" value="{{ i | minus: 3}}">
+                    <label for="review-form-slider2-{{ i }}" title="{{ i }}">
+                        <span>
+                            <svg height="10" width="10">
+                                <circle cx="5" cy="5" r="5" fill="black" />
+                            </svg>
+                        </span>
+                    </label>
+                    {% endfor %}
+                    <span class="bnpr-label bnpr-start-label">Runs Small</span>
+                    <span class="bnpr-label bnpr-mid-label">True to size</span>
+                    <span class="bnpr-label bnpr-end-label">Runs Large</span>
+                </div>
+            </div>
+
+            <button type="submit" class="bnpr-review-submit-btn">
+                Submit Review
+            </button>
+        </form>
+    </div>
+    <div class="bnpr-loader"></div>
+</div>
+
+{% schema %}
+{
+"name": "Review Form",
+"target": "body",
+"settings": [
+{
+"type": "color",
+"id": "color",
+"label": "Star Color",
+"default": "#FFD700"
+},
+{
+"type": "text",
+"id": "slider-qualilty-title",
+"label": "Quality Slider Title",
+"default": "Quality"
+},
+{
+"type": "text",
+"id": "slider-quality-start",
+"label": "Quality Slider Start Value",
+"default": "Poor"
+},
+{
+"type": "text",
+"id": "slider-quality-end",
+"label": "Quality Slider End Value",
+"default": "Excellent"
+},
+{
+"type": "text",
+"id": "slider-sizing-title",
+"label": "Sizing Slider Title",
+"default": "Sizing"
+},
+{
+"type": "text",
+"id": "slider-sizing-start-value",
+"label": "Sizing Slider Start Value",
+"default": "Runs Small"
+},
+{
+"type": "text",
+"id": "slider-sizing-mid-value",
+"label": "Sizing Slider Mid Value",
+"default": "True to Size"
+},
+{
+"type": "text",
+"id": "slider-sizing-end-value",
+"label": "Sizing Slider End Value",
+"default": "Runs Large"
+}
+]
+}
+{% endschema %}
