@@ -1,5 +1,7 @@
 import DashboardCard from "../components/dashboardCard";
 import { useLoaderData } from "@remix-run/react";
+import StarRating from "../components/starComponent";
+import { format } from 'date-fns';
 import { json } from "@remix-run/node";
 
 export const loader = async () => {
@@ -8,7 +10,7 @@ export const loader = async () => {
     formData.append("action", "FETCH_ALL");
     formData.append("shop", "bradnextgenwishlist.myshopify.com");
 
-    const appUrl = `https://musical-careers-english-luxury.trycloudflare.com/api/reviews`;
+    const appUrl = `https://topics-bibliography-inter-mature.trycloudflare.com/api/reviews`;
 
     const response = await fetch(
         appUrl,
@@ -23,8 +25,8 @@ export const loader = async () => {
 }
 
 export default function DashboardContent() {
-    const { fetchAllReviews } = useLoaderData();
-
+    const fetchAllReviews = useLoaderData();
+    const data = fetchAllReviews.data[6]
 
     return (
         <div
@@ -36,7 +38,7 @@ export default function DashboardContent() {
                 minHeight: "100vh",
                 minWidth: "100%",
                 borderTopRadius: "8px",
-
+                fontFamily: "Montserrat",
             }}
         >
             <div style={{ display: "flex" }}>
@@ -92,9 +94,10 @@ export default function DashboardContent() {
                     display: "flex",
                     justifyContent: "space-between",
                     marginBottom: "30px",
+                    padding: "32px",
                 }}
             >
-                <DashboardCard />
+                <DashboardCard ReviewsCollected="3,515" CardName="Reviews collected" Progress="6.5%" TimePeriod="over previous 30 days" />
                 <DashboardCard />
                 <DashboardCard />
 
@@ -117,7 +120,7 @@ export default function DashboardContent() {
                     Pending Activity
                 </div>
                 <div style={{ fontSize: "16px", marginBottom: "20px" }}>
-                    starRating
+                    {data.starRating}
                 </div>
                 <div
                     style={{
@@ -133,13 +136,17 @@ export default function DashboardContent() {
                             marginRight: "10px",
                         }}
                     >
-                        <span style={{ fontSize: "24px", marginRight: "5px" }}>★★★★★</span>
+                        <span style={{ fontSize: "24px", marginRight: "5px" }}><StarRating ratings="4.3" /></span>
                         <div
                             style={{
                                 backgroundColor: "#505050",
                                 color: "#fff",
                                 padding: "5px 10px",
-                                borderRadius: "4px",
+                                paddingRight: "16px",
+                                paddingLeft: "16px",
+                                borderRadius: "10%",
+                                marginLeft: "16px",
+
                             }}
                         >
                             Pending
@@ -166,32 +173,36 @@ export default function DashboardContent() {
                     <div
                         style={{
                             fontSize: "18px",
-                            fontWeight: "bold",
                             marginBottom: "10px",
                         }}
                     >
-                        reviewassss
+                        <bold>{data.reviewTitle}</bold>
                     </div>
                     <div
                         style={{
-                            fontSize: "16px",
+                            fontSize: "18px",
                             fontWeight: "bold",
                             marginBottom: "10px",
                         }}
                     >
-                        Amazing workout pants!
+                        {data.reviewTitle}
                     </div>
-                    <div style={{ fontSize: "14px", marginBottom: "10px" }}>
-                        customerName{" "}
+                    <div style={{ fontSize: "14px", marginBottom: "10px", }}>
+                        {data.customerName}
                         <span
-                            style={{ fontSize: "14px", color: "#fff", marginRight: "5px" }}
+                            style={{
+                                fontSize: "14px",
+                                color: "#fff",
+                                marginRight: "5px"
+                            }}
                         >
-                            &#10004;
-                        </span>{" "}
-                        createdAt
+                            {(data.customerId == "Guest") ? " " : "&#10004"}
+                        </span>
+                        {format(new Date(data.createdAt), 'MMMM do, yyyy, h:mm:ss a')}
+
                     </div>
                     <p style={{ fontSize: "14px" }}>
-                        reviewDescription
+                        {data.reviewDescription}
                     </p>
                 </div>
             </div>
