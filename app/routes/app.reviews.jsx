@@ -8,7 +8,7 @@ export const loader = async ({ request }) => {
   formData.append("action", "FETCH_ALL");
   formData.append("shop", "bradnextgenwishlist.myshopify.com");
 
-  const response = await fetch("https://topics-bibliography-inter-mature.trycloudflare.com/api/reviews", {
+  const response = await fetch("https://adventures-thousand-pound-object.trycloudflare.com/api/reviews", {
     method: "POST",
     body: formData,
   });

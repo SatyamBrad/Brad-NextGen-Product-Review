@@ -10,7 +10,7 @@ export const loader = async () => {
     formData.append("action", "FETCH_ALL");
     formData.append("shop", "bradnextgenwishlist.myshopify.com");
 
-    const appUrl = `https://topics-bibliography-inter-mature.trycloudflare.com/api/reviews`;
+    const appUrl = `https://adventures-thousand-pound-object.trycloudflare.com/api/reviews`;
 
     const response = await fetch(
         appUrl,
@@ -120,7 +120,7 @@ export default function DashboardContent() {
                     Pending Activity
                 </div>
                 <div style={{ fontSize: "16px", marginBottom: "20px" }}>
-                    {data.starRating}
+
                 </div>
                 <div
                     style={{
@@ -198,7 +198,7 @@ export default function DashboardContent() {
                         >
                             {(data.customerId == "Guest") ? " " : "&#10004"}
                         </span>
-                        {format(new Date(data.createdAt), 'MMMM do, yyyy, h:mm:ss a')}
+                        {format(new Date(data.createdAt), 'MMMM do, h:mm a')}
 
                     </div>
                     <p style={{ fontSize: "14px" }}>
