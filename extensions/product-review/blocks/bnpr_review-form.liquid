@@ -25,9 +25,22 @@
                     {% for i in (1..5) %}
                     <input type="radio" id="bnpr-form-star-{{ i }}" name="starRating" value="{{ i }}">
                     <label for="bnpr-form-star-{{ i }}" title="{{ i }} stars">
+                        {% comment %} <svg class="bnpr-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            width="24" height="24">
+                            <polygon fill="none" stroke={{ app.metafields.bnpr_form.star_color }} stroke-width="2"
+                                points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
+                        </svg> {% endcomment %}
                         <svg class="bnpr-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                             height="24">
-                            <polygon fill="none" stroke="#FFD700" stroke-width="2"
+                            <defs>
+                                <clipPath id="bnpr-form-star-clip-{{ i }}">
+                                    <rect x="0" y="0" width="0%" height="100%"></rect>
+                                </clipPath>
+                            </defs>
+                            <polygon fill="none" stroke={{ app.metafields.bnpr_form.star_color }} stroke-width="2"
+                                points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
+                            <polygon fill={{ app.metafields.bnpr_form.star_color }}
+                                clip-path="url(#bnpr-form-star-clip-{{ i }})"
                                 points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
                         </svg>
                     </label>
@@ -47,7 +60,11 @@
 
             <div>
                 <label for="bnpr-review-form-author">Your Name</label>
-                <input type="text" id="bnpr-review-form-author" name="customerName">
+                <input type="text" id="bnpr-review-form-author" name="customerName"
+                {% if customer.id %}
+                    value="{{ customer.name }}"
+                {% endif %}
+                >
             </div>
 
             <div class="bnpr-review-form-image">
@@ -67,40 +84,26 @@
                 </div>
             </div>
 
+            {% assign attributes = app.metafields.bnpr_form.attribute.value | parse_json %}
+            {% for attribute in attributes %}
             <div class="bnpr-review-form-slider">
-                <label>Quality</label>
+                <label>{{ attribute.header }}</label>
                 <div class="bnpr-review-form-slider-container">
-                    {% for i in (1..5) %}
-                    <input type="radio" id="bnpr-review-form-slider1-{{ i }}" name="quality" value="{{ i }}">
-                    <label for="bnpr-review-form-slider1-{{ i }}" title="{{ i }}">
-                        <span>{{ i }}</span>
-                    </label>
-                    {% endfor %}
-                    <span class="bnpr-label bnpr-start-label">Poor</span>
-                    <span class="bnpr-label bnpr-end-label">Excellent</span>
-                </div>
 
-            </div>
-
-            <div class="bnpr-review-form-slider">
-                <label>Sizing</label>
-                <div class="bnpr-review-form-slider-container">
+                    {% assign index = forloop.index %}
                     {% for i in (1..5) %}
-                    <input type="radio" id="review-form-slider2-{{ i }}" name="sizing" value="{{ i | minus: 3}}">
-                    <label for="review-form-slider2-{{ i }}" title="{{ i }}">
-                        <span>
-                            <svg height="10" width="10">
-                                <circle cx="5" cy="5" r="5" fill="black" />
-                            </svg>
-                        </span>
-                    </label>
+                        <input type="radio" id="bnpr-review-form-{{ index }}-{{ i }}" name="attribute-{{ attribute.header }}" value="{{ i }}">
+                        <label for="bnpr-review-form-{{ index }}-{{ i }}">
+                            <span>{{ i }}</span>
+                        </label>
                     {% endfor %}
-                    <span class="bnpr-label bnpr-start-label">Runs Small</span>
-                    <span class="bnpr-label bnpr-mid-label">True to size</span>
-                    <span class="bnpr-label bnpr-end-label">Runs Large</span>
+
+                    <span class="bnpr-label bnpr-start-label">{{ attribute.start }}</span>
+                    <span class="bnpr-label bnpr-mid-label">{{ attribute.mid }}</span>
+                    <span class="bnpr-label bnpr-end-label">{{ attribute.end }}</span>
                 </div>
             </div>
-
+            {% endfor %}
             <button type="submit" class="bnpr-review-submit-btn">
                 Submit Review
             </button>
@@ -113,55 +116,6 @@
 {
 "name": "Review Form",
 "target": "body",
-"settings": [
-{
-"type": "color",
-"id": "color",
-"label": "Star Color",
-"default": "#FFD700"
-},
-{
-"type": "text",
-"id": "slider-qualilty-title",
-"label": "Quality Slider Title",
-"default": "Quality"
-},
-{
-"type": "text",
-"id": "slider-quality-start",
-"label": "Quality Slider Start Value",
-"default": "Poor"
-},
-{
-"type": "text",
-"id": "slider-quality-end",
-"label": "Quality Slider End Value",
-"default": "Excellent"
-},
-{
-"type": "text",
-"id": "slider-sizing-title",
-"label": "Sizing Slider Title",
-"default": "Sizing"
-},
-{
-"type": "text",
-"id": "slider-sizing-start-value",
-"label": "Sizing Slider Start Value",
-"default": "Runs Small"
-},
-{
-"type": "text",
-"id": "slider-sizing-mid-value",
-"label": "Sizing Slider Mid Value",
-"default": "True to Size"
-},
-{
-"type": "text",
-"id": "slider-sizing-end-value",
-"label": "Sizing Slider End Value",
-"default": "Runs Large"
-}
-]
+"settings": []
 }
 {% endschema %}

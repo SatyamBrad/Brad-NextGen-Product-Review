@@ -1,15 +1,22 @@
+{% assign attributes = app.metafields.bnpr_form.attribute.value | parse_json %}
+{% assign attribute_list = '' %}
+{% for attribute in attributes %}
+{% assign attribute_list = attribute_list | append: attribute.header | append: ',' %}
+{% endfor %}
+{% assign attribute_list = attribute_list | split: ',' %}
+
 <div class="bnpr-review-section-container" id="brad-nextgen-product-review" data-bnpr-shop="{{ shop.permanent_domain }}"
-  data-bnpr-productId="{{ product.id }}" data-bnpr-backendApi="https://dot-floating-equipped-care.trycloudflare.com"
-  data-bnpr-starColor="{{ block.settings.color }}">
+  data-bnpr-productId="{{ product.id }}" data-bnpr-backendApi="https://sh-tiger-circle-covers.trycloudflare.com"
+  data-bnpr-starColor="{{ app.metafields.bnpr_form.star_color }}" data-bnpr-attributes={{ attribute_list | json}}>
   <h1>Customer Reviews</h1>
   <div class="bnpr-review-section-app">
     <div>
-      {% render 'bnpr_review-section-summary', starColor: block.settings.color %}
-      {% render 'bnpr_review-section-ratings', starColor: block.settings.color %}
+      {% render 'bnpr_review-section-summary' %}
+      {% render 'bnpr_review-section-ratings' %}
     </div>
-    {% render 'bnpr_review-section-sliders' %}
+    {% render 'bnpr_review-section-attributes' %}
   </div>
-  {% render 'bnpr_review-section-list', starColor: block.settings.color %}
+  {% render 'bnpr_review-section-list' %}
 </div>
 
 {% schema %}

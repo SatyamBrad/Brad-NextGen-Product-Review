@@ -21,21 +21,22 @@ const filterOptions = {
   orderBy: "desc",
 };
 
+const attributes = JSON.parse(
+  document
+    .querySelector(".bnpr-review-section-container")
+    .getAttribute("data-bnpr-attributes"),
+);
+
 const modal = document.querySelector(".bnpr-review-form-container");
 const form = document.querySelector(".bnpr-review-form");
 var uploadedImages = [];
 const formStars = document.querySelectorAll(
-  ".bnpr-review-form-rating .bnpr-star-container .bnpr-star polygon",
+  ".bnpr-review-form-rating .bnpr-star-container svg",
 );
 
 // * All Event Listeners
 
-/**
- * Handles the modal appearing and dissapearing. Window onClick function removes the modal
- * if clicked outside of the modal.
- * This only works if the loader is inactive else if the loader is active then the modal
- * does not dissapear (unless the form submits).
- */
+// form modal opening and closing handlers
 document.querySelector(".bnpr-open-form-btn").addEventListener("click", () => {
   modal.style.display = "flex";
 });
@@ -52,32 +53,21 @@ window.onclick = function (event) {
   }
 };
 
-/**
- * Event listener to fill the stars inside the form. The stars are filled as such that
- * all other stars before the currently clicked one are also selected. For eg, if the
- * nth star is selected then all stars from 1 to n are filled.
- * Used variables: formStars
- */
+// form stars clicking handler
 formStars.forEach((star, index) => {
-  star.parentNode.addEventListener("click", () => {
-    // Clears the existing rating.
-    formStars.forEach((s) => {
-      s.style.fill = "";
+  star.addEventListener("click", () => {
+    formStars.forEach((star) => {
+      star.querySelector("rect").setAttribute("width", `0%`);
     });
-    // Fills the new rating.
+
     for (let i = 0; i <= index; i++) {
-      formStars[i].style.fill = starColor;
+      formStars[i].querySelector("rect").setAttribute("width", `100%`);
     }
   });
 });
 
-/**
- * Event listener to store the uploded images from the form into a separate container
- * to send during form submission and show the uploaded images by creating a temporary
- * URL to the file object and using that URL in an img tag
- * Used Variables: uploadedImages
- */
-document
+// form image uploader handler
+form
   .querySelector("#bnpr-review-upload-image")
   .addEventListener("change", (event) => {
     const images = event.target.files;
@@ -116,22 +106,14 @@ document
     event.target.value = "";
   });
 
-/**
- * Form Submission
- * Used variables: form, uploadedImages, backendApi, modal
- * Used Functions: renderNotifications(), fetchSummary(), fetchReviewSummaryOnBlock()
- */
+// form submission handler
 form.addEventListener("submit", async (e) => {
   try {
     e.preventDefault();
-    // Activates the Loader.
     document.querySelector(".bnpr-loader").style.display = "block";
-    // Disables the form section so that no changes can be done to it during submission.
     document
       .querySelector(".bnpr-review-form-app")
       .classList.add("bnpr-disabled-div");
-
-    // Checks for star rating input and throws error if empty
     const starRatingInputs = form.querySelectorAll('input[name="starRating"]');
     let isAnyChecked = false;
 
@@ -145,12 +127,8 @@ form.addEventListener("submit", async (e) => {
       throw new Error("Please select a star rating.");
     }
 
-    // Creates a FormData.
     const formData = new FormData(form);
-    // CREATE action is added to notify the backend that the user wants to add data.
     formData.append("action", "CREATE");
-    // Uploads the images into the FormData. Appending all the images into the same key
-    // puts all the images into a list[] format
     uploadedImages.forEach((image) => {
       formData.append("images", image);
     });
@@ -161,61 +139,48 @@ form.addEventListener("submit", async (e) => {
     });
 
     const data = await response.json();
-    // Handles any kind of error coming from the backend.
     if (!data.ok) {
       throw new Error(data.message);
     }
 
     console.log("Success:", data);
     renderNotification("Review submitted Successfully");
-
-    // Resets the form.
     form.reset();
-    // Removes the loader.
     document.querySelector(".bnpr-loader").style.display = "";
-    // Removes the disabled form.
     document
       .querySelector(".bnpr-review-form-app")
       .classList.remove("bnpr-disabled-div");
-    // Removes the modal.
     modal.style.display = "none";
-    // Re-fetches the summary of the reviews of the product so as to see the changes
-    // uploaded by the review (Subject to change)
-    fetchSummary();
-    // fetchReviewSummaryOnBlock();
+
+    init()
   } catch (err) {
     console.error(err);
     renderNotification(err.message);
-    // Removes the loader.
     document.querySelector(".bnpr-loader").style.display = "";
-    // Removes the disabled form.
     document
       .querySelector(".bnpr-review-form-app")
       .classList.remove("bnpr-disabled-div");
   }
 });
 
-/**
- * Form Reset
- * Used Variables: form, formStars
- */
+// Form reset
 form.addEventListener("reset", () => {
-  // Clears all the filled stars in the form
-  formStars.forEach((s) => {
-    s.style.fill = "";
+  formStars.forEach((star) => {
+    star.querySelector("rect").setAttribute("width", `0%`);
   });
-  // Clears all the uploaded images container and its preview
   uploadedImages = [];
   document.querySelector(
     ".bnpr-review-form-image .bnpr-image-preview",
   ).innerHTML = "";
 });
 
+// toggling the display of the filter options
 document.querySelector(".bnpr-filter-btn").addEventListener("click", () => {
   const options = document.querySelector(".bnpr-filter-options");
   options.classList.toggle("bnpr-filter-options-display");
 });
 
+// selecting star rating filter option
 document.querySelectorAll("#bnpr-filter-options-ratings li").forEach((item) => {
   item.addEventListener("click", () => {
     const value = item.getAttribute("data-bnpr-value");
@@ -231,10 +196,11 @@ document.querySelectorAll("#bnpr-filter-options-ratings li").forEach((item) => {
     document
       .querySelector(".bnpr-filter-options")
       .classList.remove("bnpr-filter-options-display");
-    fetchSummaryWithOptions();
+    fetchReviewsWithFilters();
   });
 });
 
+// selecting order by filter option
 document.querySelectorAll("#bnpr-filter-options-orderBy li").forEach((item) => {
   item.addEventListener("click", () => {
     const value = item.getAttribute("data-bnpr-value");
@@ -251,21 +217,37 @@ document.querySelectorAll("#bnpr-filter-options-orderBy li").forEach((item) => {
     document
       .querySelector(".bnpr-filter-options")
       .classList.remove("bnpr-filter-options-display");
-    fetchSummaryWithOptions();
+    fetchReviewsWithFilters();
   });
 });
 
 // * All Function definations
 
-/**
- * fetchSummary() function is the first function that runs on app load.
- * Used Functions: displaySummaryDetails(), displaySummaryRatings(),
- *                 displaySummarySliders(), pageNavigationSetup()
- */
+const init = async () => {
+  const body = new FormData();
+  body.append("action", "FETCH_COUNT");
+  body.append("shop", shop);
+  body.append("productId", productId);
+  const response = await fetch(backendApi + "/api/reviews", {
+    method: "POST",
+    body,
+  });
+  const fetchedData = await response.json();
+  if (!fetchedData.ok) {
+    console.error(fetchedData.message);
+  }
+  const { data } = fetchedData;
+  if (data > 0) {
+    await fetchReviewSummary();
+    if (attributes.length > 0) {
+      await fetchReviewAttributes();
+    }
+    displayReviewList(data)
+  }
+};
+init();
 
-const fetchSummary = async () => {
-  // FETCH_SUMMARY action is used to denote the backend that the user
-  // wants to fetch the summary of the product
+const fetchReviewSummary = async () => {
   const body = new FormData();
   body.append("action", "FETCH_SUMMARY");
   body.append("shop", shop);
@@ -275,33 +257,36 @@ const fetchSummary = async () => {
     body,
   });
 
-  const { data } = await response.json();
-  // console.log(data)
-
-  // If there is some data then only do the following things
-  // display summary section + sllider section -> display the filter button
-  // and give it style -> setup page navigation which in turn sets up the list
-  if (data?.summary?._count?.id !== 0) {
-    document.querySelector(".bnpr-review-section-app").style.display = "flex";
-    displaySummaryDetails(data);
-    displaySummaryRatings(data);
-    displaySummarySliders(data);
-
-    document.querySelector(".bnpr-filter-btn").style.display = "block";
-    document.querySelector(
-      ".bnpr-review-section-list-buttons",
-    ).style.justifyContent = "space-between";
-
-    pageNavigationSetup(1, data?.summary?._count?.id);
+  const fetchedData = await response.json();
+  if (!fetchedData.ok) {
+    console.error(fetchedData.message);
   }
+  const { data } = fetchedData;
+  document.querySelector(".bnpr-review-section-app").style.display = "flex";
+  displaySummaryDetails(data);
+  displaySummaryRatings(data);
 };
 
-/**
- * displaySummaryDetails() function displays the details of the summary section
- * including the the avgerage rating of the product and the total reviews.
- * It calls another function to display the average summary in stars
- * Used functions: displayStars()
- */
+const fetchReviewAttributes = async () => {
+  const body = new FormData();
+  body.append("action", "FETCH_ATTRIBUTES");
+  body.append("shop", shop);
+  body.append("productId", productId);
+  attributes.map((item) => {
+    body.append("attributes", item);
+  });
+  const response = await fetch(backendApi + "/api/reviews", {
+    method: "POST",
+    body,
+  });
+  const fetchedData = await response.json();
+  if (!fetchedData.ok) {
+    console.error(fetchedData.message);
+  }
+  const { data } = fetchedData;
+  displaySummaryAttibutes(data);
+};
+
 const displaySummaryDetails = ({ summary }) => {
   const rating = parseFloat(summary?._avg?.starRating.toFixed(1));
   document.querySelector(".bnpr-summary-heading h1").innerHTML = rating;
@@ -310,9 +295,6 @@ const displaySummaryDetails = ({ summary }) => {
   displaySummaryDetailsStars(rating);
 };
 
-/**
- * displaySummaryDetailsStars() function displays the average summary in stars
- */
 const displaySummaryDetailsStars = (rating) => {
   var i = 1;
   // Fully fill the stars
@@ -336,11 +318,6 @@ const displaySummaryDetailsStars = (rating) => {
   }
 };
 
-/**
- * displaySummaryRatings() function display the number of reviews per star.
- * This includes displaying the number of reviews and percentage of that number
- * over the total reviews per star rating.
- */
 const displaySummaryRatings = ({ summary, ratings }) => {
   // For every available rating coming from backend we run this code
   // The rest are untouched and it reverts to its default state
@@ -358,52 +335,20 @@ const displaySummaryRatings = ({ summary, ratings }) => {
   });
 };
 
-/**
- * displaySummarySliders() functions adjusts the width of the inner bars of the sliders
- */
-const displaySummarySliders = ({ sliders }) => {
-  document
-    .getElementById("bnpr-review-section-slider-quality")
-    .querySelector(".bnpr-inner-bar").style.width = `${sliders.quality * 100}%`;
-  document
-    .getElementById("bnpr-review-section-slider-sizing")
-    .querySelector(".bnpr-inner-bar").style.width = `${sliders.sizing * 100}%`;
+const displaySummaryAttibutes = (data) => {
+  data.forEach(item=>{
+    const [key, value] = Object.entries(item)[0]
+    document
+    .getElementById(`bnpr-review-section-attributes-${key}`)
+    .querySelector(".bnpr-inner-bar").style.width = `${value * 20}%`;
+  })
 };
 
-/**
- * fetchSummaryWithOptions() function is called when the filter options are used
- * returns the total count of reviews matching the filter which is used by pageNavigationSetup()
- * Used functions: pageNavigationSetup()
- * Used variables: filterOptions
- */
-const fetchSummaryWithOptions = async () => {
-  const body = new FormData();
-  body.append("shop", shop);
-  body.append("productId", productId);
-  body.append("action", "FETCH_COUNT");
-  filterOptions.starRating.forEach((item) => {
-    body.append("starRatingOption", item);
-  });
-  body.append("orderByOption", filterOptions.orderBy);
-  const response = await fetch(backendApi + "/api/reviews", {
-    method: "POST",
-    body,
-  });
-  const data = await response.json();
-  if (data?.data > 0) {
-    pageNavigationSetup(1, data?.data);
-  } else {
-    document.querySelector(".bnpr-list-container").innerText =
-      "No review match such filter.";
-    document.querySelector(".bnpr-page-nav-container").innerText = "";
-  }
-};
+const displayReviewList = (count) => {
+  document.querySelector(".bnpr-filter-btn").style.display = "block";
+  pageNavigationSetup(1, count)
+}
 
-/**
- * pageNavigationSetup() function sets the page navigation system
- * It calls itself recursively when the user clicks on a certain page
- * fetches the current page reviews -> sets up the navigation system around the current page
- */
 const pageNavigationSetup = async (currentPage, totalReviews) => {
   const createPageButton = (index, text) => {
     const button = document.createElement("button");
@@ -469,10 +414,6 @@ const pageNavigationSetup = async (currentPage, totalReviews) => {
   }
 };
 
-/**
- * fetchReviews() function fetches the reviews for the specific page number
- * Used functions: fillReviewList()
- */
 const fetchReviews = async (pageNo) => {
   const body = new FormData();
   body.append("action", "FETCH_BY_PRODUCT");
@@ -493,9 +434,6 @@ const fetchReviews = async (pageNo) => {
   fillReviewList(container, data);
 };
 
-/**
- * fillReviewList() function populates the screen with the fetched reviews.
- */
 const fillReviewList = (container, data) => {
   data.forEach((item) => {
     const userDetails = document.createElement("div");
@@ -561,9 +499,29 @@ const fillReviewList = (container, data) => {
   });
 };
 
-/**
- * renderNotification() function notifies the user about any success message or error message
- */
+const fetchReviewsWithFilters = async () => {
+  const body = new FormData();
+  body.append("shop", shop);
+  body.append("productId", productId);
+  body.append("action", "FETCH_COUNT");
+  filterOptions.starRating.forEach((item) => {
+    body.append("starRatingOption", item);
+  });
+  body.append("orderByOption", filterOptions.orderBy);
+  const response = await fetch(backendApi + "/api/reviews", {
+    method: "POST",
+    body,
+  });
+  const data = await response.json();
+  if (data?.data > 0) {
+    pageNavigationSetup(1, data?.data);
+  } else {
+    document.querySelector(".bnpr-list-container").innerText =
+      "No review match such filter.";
+    document.querySelector(".bnpr-page-nav-container").innerText = "";
+  }
+};
+
 const renderNotification = (message) => {
   const notify = document.querySelector(".bnpr-review-notification-container");
   notify.style.display = "flex";
@@ -572,7 +530,3 @@ const renderNotification = (message) => {
     notify.style.display = "none";
   }, 1500);
 };
-
-// * All function calls
-
-fetchSummary();

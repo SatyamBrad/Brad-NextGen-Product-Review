@@ -3,8 +3,15 @@ import db from "../db.server.js";
 import { cors } from "remix-utils/cors";
 
 export const action = async ({ request }) => {
-  var imageUrls = [];
   const formData = await request.formData();
+
+  const formAttributes = {};
+  for (const [key, value] of formData.entries()) {
+    if (key.includes("attribute")) {
+      const newKey = key.replace("attribute-", "");
+      formAttributes[newKey] = value;
+    }
+  }
 
   const shop = formData.get("shop");
   const productId = formData.get("productId");
@@ -13,16 +20,12 @@ export const action = async ({ request }) => {
   const reviewTitle = formData.get("reviewTitle");
   const reviewDescription = formData.get("reviewDescription");
   const starRating = Number(formData.get("starRating"));
-  const images = formData.getAll("images");
   const action = formData.get("action");
   const pageNo = formData.get("pageNo");
-  const quality = formData.get("quality");
-  const sizing = formData.get("sizing");
   const starRatingOption = formData.getAll("starRatingOption");
   const orderByOption = formData.get("orderByOption");
 
-
-  async function uploadImages(images) {
+  async function uploadImages(imageUrls, images) {
     const uploadPromises = images.map(async (image) => {
       const imageFormData = new FormData();
       imageFormData.append("file", image);
@@ -64,7 +67,7 @@ export const action = async ({ request }) => {
               },
             }),
           },
-        });   
+        });
 
         const fetchCountResponse = json({
           ok: true,
@@ -77,6 +80,7 @@ export const action = async ({ request }) => {
       case "FETCH_SUMMARY":
         if (!shop) throw new Error("Required Field: shop");
         if (!productId) throw new Error("Required Field: productId");
+
         const fetchSummaryReviews1 = await db.review.aggregate({
           _avg: {
             starRating: true,
@@ -101,47 +105,45 @@ export const action = async ({ request }) => {
           },
         });
 
-        const fetchSummaryReviews3 = await db.reviewDetail.aggregate({
-          _avg: {
-            value: true,
-          },
-          where: {
-            key: "quality",
-            review: {
-              shop,
-              productId,
-            },
-          },
-        });
-
-        const fetchSummaryReviews4 = await db.reviewDetail.aggregate({
-          _avg: {
-            value: true,
-          },
-          where: {
-            key: "sizing",
-            review: {
-              shop,
-              productId,
-            },
-          },
-        });
-
         const fetchSummaryResponse = json({
           ok: true,
           message: "Successfully fetched the summary from shop",
           data: {
             ...{ summary: fetchSummaryReviews1 },
             ...{ ratings: fetchSummaryReviews2 },
-            ...{
-              sliders: {
-                quality: fetchSummaryReviews3?._avg?.value / 4 - 0.25,
-                sizing: fetchSummaryReviews4?._avg?.value / 4 + 0.5,
-              },
-            },
           },
         });
         return cors(request, fetchSummaryResponse);
+
+      case "FETCH_ATTRIBUTES":
+        if (!shop) throw new Error("Required Field: shop");
+        if (!productId) throw new Error("Required Field: productId");
+
+        const fetchedAttributes = [];
+        await Promise.all(
+          formData.getAll("attributes").map(async (item) => {
+            const attributesToFetch = await db.reviewDetail.aggregate({
+              _avg: {
+                value: true,
+              },
+              where: {
+                key: item,
+                review: {
+                  shop,
+                  productId,
+                },
+              },
+            });
+            fetchedAttributes.push({ [item]: attributesToFetch?._avg?.value });
+          }),
+        );
+
+        const fetchAttributesResponse = json({
+          ok: true,
+          message: "Successfully fetched all attributes from shop.",
+          data: fetchedAttributes,
+        });
+        return cors(request, fetchAttributesResponse);
 
       case "FETCH_ALL":
         if (!shop) throw new Error("Required Field: shop");
@@ -198,8 +200,9 @@ export const action = async ({ request }) => {
         if (!shop) throw new Error("Required fields: shop");
         if (!productId) throw new Error("Required fields: productId");
 
-        await uploadImages(images);
-        const createdReview = await db.review.create({
+        const imageUrls = [];
+        await uploadImages(imageUrls, formData.getAll("images"));
+        const reviewToCreate = await db.review.create({
           data: {
             shop,
             productId,
@@ -215,16 +218,10 @@ export const action = async ({ request }) => {
             },
             details: {
               createMany: {
-                data: [
-                  {
-                    key: "quality",
-                    value: quality && Number(quality),
-                  },
-                  {
-                    key: "sizing",
-                    value: sizing && Number(sizing),
-                  },
-                ],
+                data: Object.entries(formAttributes).map(([key, value]) => ({
+                  key,
+                  value: value && Number(value),
+                })),
               },
             },
           },
@@ -234,17 +231,19 @@ export const action = async ({ request }) => {
           },
         });
 
-        const createdResponse = json({
+        const createdReview = json({
           ok: true,
           message: "Review record successfully created",
-          created_data: createdReview,
+          created_data: reviewToCreate,
         });
 
-        return cors(request, createdResponse);
+        return cors(request, createdReview);
+
+      default:
+        throw new Error("No such action defined");
     }
   } catch (err) {
-    console.error(err);
-    const response = json({ ok: false, message: err.message });
-    return cors(request, response);
+    const errorResponse = json({ ok: false, message: err.message });
+    return cors(request, errorResponse);
   }
 };
