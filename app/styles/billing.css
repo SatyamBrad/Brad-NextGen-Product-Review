@@ -1,64 +1,100 @@
 .billing-container {
   background-color: var(--background-color);
   color: var(--text-color);
-  height: 100vh;
+  min-height: 100vh;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
-  gap: 2rem;
   padding: 2rem;
 }
 
-.billing-plan-container {
-  width: 70%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
+.billing-container > h1 {
+  font-size: 2rem;
+  text-decoration: underline;
+  text-transform: capitalize;
+  margin-bottom: 2rem;
+  text-underline-offset: 0.2rem;
 }
 
-.billing-plan-current {
-  background-color: var(--highlight-color);
+.billing-app {
   width: 100%;
-  padding: 2rem 1rem;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.billing-plan-current button {
-  padding: 0.5rem 2rem;
-  transition: all 0.3s ease-in;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-}
-
-.billing-plan-current button:hover {
-  background-color: #ff6868;
-  color: #fff;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
 .billing-plans {
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.billing-current-plan {
+  background-color: var(--highlight-color);
+  /* width: 100%; */
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 4px;
+  font-size: 1rem;
+  gap: 1rem;
+}
+
+.billing-current-plan h2 {
+  font-size: 1.2rem;
+  margin-block: 0.5rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+
+.billing-current-plan button {
+  padding: 0.5rem 2rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.billing-current-plan button:hover {
+  background-color: #ff6868;
+  color: #fff;
+}
+
+.billing-available-plans {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .billing-plan-item {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: space-evenly;
   background-color: var(--highlight-color);
-  padding: 1rem 2rem;
+  padding: 2rem;
   gap: 0.5rem;
-  border-radius: 8px;
-  width: 40%;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.billing-plan-item h2 {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.billing-plan-item ul {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
 }
 
 .billing-plan-item form {
@@ -70,10 +106,11 @@
   margin-block: 0.3rem;
   align-self: center;
   padding: 0.5rem 2rem;
-  transition: all 0.3s ease-in;
-  border-radius: 8px;
+  border-radius: 4px;
   border: none;
   cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .billing-plan-item button:hover {
@@ -83,11 +120,53 @@
 
 .billing-item-disabled {
   pointer-events: none;
-  opacity: 0.5; /* Optional: To visually indicate that the div is disabled */
+  opacity: 0.5;
 }
 
-.billing-account-container {
-  width: 30%;
+.billing-account {
+  width: 100%;
   background-color: var(--highlight-color);
-  padding: 1rem;
+  padding: 2rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.billing-account h2 {
+  font-size: 1.2rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+  margin-block: 1rem;
+}
+
+@media screen and (min-width: 480px) {
+  .billing-plans {
+    width: 70%;
+  }
+
+  .billing-current-plan {
+    flex-direction: row;
+  }
+
+  .billing-current-plan button {
+    font-size: 1rem;
+  }
+
+  .billing-available-plans {
+    flex-direction: row;
+  }
+
+  .billing-account {
+    width: 30%;
+    align-items: flex-start;
+  }
+
+  .billing-app {
+    flex-direction: row;
+  }
+
+  .billing-plan-item {
+    width: 50%;
+  }
 }

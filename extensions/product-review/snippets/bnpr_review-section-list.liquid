@@ -1,0 +1,41 @@
+{{ 'bnpr_review-section-list.css' | asset_url | stylesheet_tag }}
+
+<div class="bnpr-review-section-list-container">
+
+  <div class="bnpr-review-section-list-buttons">
+    <button class="bnpr-btn bnpr-filter-btn">Filter</button>
+    <button class="bnpr-btn bnpr-open-form-btn">Write a Review</button>
+  </div>
+
+  <div class="bnpr-filter-options">
+    <label for="bnpr-filter-options-ratings">
+      <h3>Ratings</h3>
+    </label>
+    <ul id="bnpr-filter-options-ratings">
+      {% for i in (1..5) %}
+      <li data-bnpr-value="{{ i }}">
+        {{ i }}
+        {% for j in (1..i) %}
+        <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+          <polygon fill="black" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
+        </svg>
+        {% endfor %}
+      </li>
+      {% endfor %}
+    </ul>
+    <label for="bnpr-filter-options-orderBy">
+      <h3>Order By</h3>
+    </label>
+    <ul id="bnpr-filter-options-orderBy">
+      <li data-bnpr-value="desc" class="bnpr-filter-options-selected">
+        Latest First
+      </li>
+      <li data-bnpr-value="asc">
+        Oldest First
+      </li>
+    </ul>
+  </div>
+
+  <div class="bnpr-list-container">No reviews yet. Be the first one to review this product.</div>
+  <div class="bnpr-page-nav-container"></div>
+</div>

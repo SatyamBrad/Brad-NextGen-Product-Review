@@ -144,49 +144,32 @@ const PLANS = {
   },
 };
 
-// const fetchShopPlan = async (admin, session) => {
-//   const data = await admin.rest.resources.Shop.all({
-//     session: session,
-//     fields: "plan_name",
-//   });
-//   return data.data[0].plan_name;
-// };
-
 export const loader = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
-
+  const obj = await authenticate.admin(request);
   // Uncomment below line in production
+  // const fetchShopPlan = async (admin, session) => {
+  //   const data = await admin.rest.resources.Shop.all({
+  //     session: session,
+  //     fields: "plan_name",
+  //   });
+  //   return data.data[0].plan_name;
+  // };
   // const shopPlan = await fetchShopPlan(admin, session);
 
   // For testing
   // const shopPlan = "partner_test"
-  // const shopPlan = "basic";
+  const shopPlan = "basic";
   // const shopPlan = "shopify";
   // const shopPlan = "advanced";
-  const shopPlan = "enterprise";
+  // const shopPlan = "enterprise";
 
   const isShopFree = shopPlan === "partner_test";
 
-  const response = await admin.graphql(`
+  const response = await obj.admin.graphql(`
     {
       currentAppInstallation {
         activeSubscriptions {
-          # createdAt
-          # currentPeriodEnd
           id
-          # lineItems {
-            # id
-            # plan {
-              # pricingDetails {
-                # ... on AppRecurringPricing {
-                  # price {
-                    # amount
-                  # }
-                # }
-              # }
-            # }
-          # }
-          # status
           name
           test
         }
@@ -231,124 +214,133 @@ export default function Billing() {
 
   return (
     <div className="billing-container">
-      <TitleBar title="Billings" />
-
-      <div className="billing-plan-container">
-        <div className="billing-plan-current">
-          <div>
-            <h2>Current Subscription:</h2>
-            <p>
-              {shop.isShopFree
-                ? "No Subscription"
-                : app?.name
-                  ? app?.name
-                  : "Free Subscription"}
-            </p>
+      <h1>Billings</h1>
+      <div className="billing-app">
+        <div className="billing-plans">
+          <div className="billing-current-plan">
+            <div>
+              <h2>Current Subscription</h2>
+              <p>
+                {shop.isShopFree
+                  ? "No Subscription"
+                  : app?.name
+                    ? app?.name
+                    : "Free Subscription"}
+              </p>
+            </div>
+            <Form action="/app/billing" method="DELETE" onSubmit={handleSubmit}>
+              <input type="hidden" name="id" value={app?.id || ""} />
+              <button type="submit">Cancel Plan</button>
+            </Form>
           </div>
-          <Form action="/app/billing" method="DELETE" onSubmit={handleSubmit}>
-            <input type="hidden" name="id" value={app?.id || ""} />
-            <button type="submit">Cancel Plan</button>
-          </Form>
+
+          {!shop.isShopFree && (
+            <div className="billing-available-plans">
+              <div
+                className={`billing-plan-item ${isMonthly ? "billing-item-disabled" : ""}`}
+              >
+                <div>
+                  <h2>{monthly.name}</h2>
+                </div>
+                <div>
+                  <p>
+                    <i>$ {monthly.amount}/month</i>
+                  </p>
+                </div>
+                <div>
+                  <ul>
+                    {monthly.features.map((feature, index) => (
+                      <li key={index}>{feature}</li>
+                    ))}
+                  </ul>
+                </div>
+                <Form method="POST">
+                  <input
+                    type="hidden"
+                    name="name"
+                    value={shop?.plans?.monthly.name || ""}
+                  />
+                  <input
+                    type="hidden"
+                    name="amount"
+                    value={shop?.plans?.monthly.amount || ""}
+                  />
+                  <input
+                    type="hidden"
+                    name="currencyCode"
+                    value={shop?.plans?.monthly.currency || ""}
+                  />
+                  <input type="hidden" name="interval" value="EVERY_30_DAYS" />
+                  <button type="submit">
+                    {isMonthly
+                      ? "Active Plan"
+                      : isYearly
+                        ? "Downgrade to Monthly Plan"
+                        : "Upgrade to Monthly plan"}
+                  </button>
+                </Form>
+              </div>
+              <div
+                className={`billing-plan-item ${isYearly ? "billing-item-disabled" : ""}`}
+              >
+                <div>
+                  <h2>{yearly.name}</h2>
+                </div>
+                <div>
+                  <span style={{ display: "flex", gap: "0.5rem" }}>
+                    <p>
+                      <i>$ {yearly.amount}/year</i>
+                    </p>
+                    <p style={{ textDecorationLine: "line-through" }}>
+                      <i>$ {yearly.originalPrice}/year</i>
+                    </p>
+                  </span>
+                </div>
+                <div>
+                  <ul>
+                    {yearly.features.map((feature, index) => (
+                      <li key={index}>{feature}</li>
+                    ))}
+                  </ul>
+                </div>
+                <Form method="POST">
+                  <input
+                    type="hidden"
+                    name="name"
+                    value={shop?.plans?.yearly.name || ""}
+                  />
+                  <input
+                    type="hidden"
+                    name="amount"
+                    value={shop?.plans?.yearly.amount || ""}
+                  />
+                  <input
+                    type="hidden"
+                    name="currencyCode"
+                    value={shop?.plans?.yearly.currency || ""}
+                  />
+                  <input type="hidden" name="interval" value="ANNUAL" />
+                  <button type="submit">
+                    {isYearly ? "Active Plan" : "Upgrade to Annual Plan"}
+                  </button>
+                </Form>
+              </div>
+            </div>
+          )}
         </div>
 
-        {!shop.isShopFree && (
-          <div className="billing-plans">
-            <div
-              className={`billing-plan-item ${isMonthly ? "billing-item-disabled" : ""}`}
-            >
-              <div>
-                <h2>{monthly.name}</h2>
-              </div>
-              <div>
-                <p>$ {monthly.amount}/month</p>
-              </div>
-              <div>
-                {monthly.features.map((feature, index) => (
-                  <li key={index}>{feature}</li>
-                ))}
-              </div>
-              <Form method="POST">
-                <input
-                  type="hidden"
-                  name="name"
-                  value={shop?.plans?.monthly.name || ""}
-                />
-                <input
-                  type="hidden"
-                  name="amount"
-                  value={shop?.plans?.monthly.amount || ""}
-                />
-                <input
-                  type="hidden"
-                  name="currencyCode"
-                  value={shop?.plans?.monthly.currency || ""}
-                />
-                <input type="hidden" name="interval" value="EVERY_30_DAYS" />
-                <button type="submit">
-                  {isMonthly
-                    ? "Active Plan"
-                    : isYearly
-                      ? "Downgrade to Monthly Plan"
-                      : "Upgrade to Monthly plan"}
-                </button>
-              </Form>
-            </div>
-            <div
-              className={`billing-plan-item ${isYearly ? "billing-item-disabled" : ""}`}
-            >
-              <div>
-                <h2>{yearly.name}</h2>
-              </div>
-              <div>
-                <span style={{ display: "flex", gap: "0.5rem" }}>
-                  <p>$ {yearly.amount}/year</p>
-                  <p style={{ textDecorationLine: "line-through" }}>
-                    $ {yearly.originalPrice}/year
-                  </p>
-                </span>
-              </div>
-              <div>
-                {yearly.features.map((feature, index) => (
-                  <li key={index}>{feature}</li>
-                ))}
-              </div>
-              <Form method="POST">
-                <input
-                  type="hidden"
-                  name="name"
-                  value={shop?.plans?.yearly.name || ""}
-                />
-                <input
-                  type="hidden"
-                  name="amount"
-                  value={shop?.plans?.yearly.amount || ""}
-                />
-                <input
-                  type="hidden"
-                  name="currencyCode"
-                  value={shop?.plans?.yearly.currency || ""}
-                />
-                <input type="hidden" name="interval" value="ANNUAL" />
-                <button type="submit">
-                  {isYearly ? "Active Plan" : "Upgrade to Annual Plan"}
-                </button>
-              </Form>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="billing-account-container">
-        <h2>Account details</h2>
-        <p>John Doe</p>
-        <p>Johndoe@gmail.com</p>
+        <div className="billing-account">
+          <h2>Account details</h2>
+          <p>John Doe</p>
+          <p>Johndoe@gmail.com</p>
+        </div>
       </div>
     </div>
   );
 }
 
 export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, redirect } = await authenticate.admin(request);
   const method = request.method;
   const formData = await request.formData();
 
@@ -407,11 +399,9 @@ export const action = async ({ request }) => {
 
         const data = await response.json();
         const result = data?.data?.appSubscriptionCreate;
-
         if (result?.userErrors?.length > 0) {
           return json({ errors: result.userErrors }, { status: 400 });
         }
-
         return json(result);
       }
 

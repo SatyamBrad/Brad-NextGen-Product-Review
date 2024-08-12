@@ -13,7 +13,7 @@ export const loader = async () => {
     const appUrl = `https://adventures-thousand-pound-object.trycloudflare.com/api/reviews`;
 
     const response = await fetch(
-        appUrl,
+        "https://yea-lie-cork-vital.trycloudflare.com/api/reviews",
         {
             method: "POST",
             body: formData,

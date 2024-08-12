@@ -1,0 +1,84 @@
+.bnpr-review-section-attributes-container {
+  align-items: normal !important;
+}
+
+.bnpr-review-section-attributes-container > h2 {
+  text-align: center;
+}
+
+.bnpr-review-section-attributes-container > div {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-block: 1.5rem;
+}
+
+.bnpr-review-section-attributes-container .bnpr-bar {
+  width: 90%;
+  height: 0.6rem;
+  border-radius: 10px;
+  background-color: #eee;
+  position: relative;
+}
+
+.bnpr-review-section-attributes-container .bnpr-bar .bnpr-inner-bar {
+  height: 100%;
+  border-radius: 10px;
+  background-color: #333;
+  position: relative;
+}
+
+.bnpr-review-section-attributes-container .bnpr-bar .bnpr-inner-bar .bnpr-slider {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: black;
+  display: block;
+  position: absolute;
+
+  top: -2px;
+  left: calc(100% - 10px);
+}
+
+.bnpr-review-section-attributes-container .bnpr-bar .bnpr-label {
+  position: absolute;
+  top: 10px;
+}
+
+.bnpr-review-section-attributes-container .bnpr-bar .bnpr-start-label {
+  left: 0;
+}
+.bnpr-review-section-attributes-container .bnpr-bar .bnpr-mid-label {
+  left: 35%;
+}
+
+.bnpr-review-section-attributes-container .bnpr-bar .bnpr-end-label {
+  right: 0;
+}
+
+@media screen and (min-width: 480px) {
+  .bnpr-review-section-attributes-container > h2 {
+    text-align: left;
+  }
+  .bnpr-review-section-attributes-container > div {
+    align-items: flex-start;
+  }
+  .bnpr-review-section-attributes-container .bnpr-bar {
+    height: 1rem;
+  }
+  .bnpr-review-section-attributes-container
+    .bnpr-bar
+    .bnpr-inner-bar
+    .bnpr-slider {
+    width: 16px;
+    height: 16px;
+
+    top: -3px;
+    left: calc(100% - 16px);
+  }
+  .bnpr-review-section-attributes-container .bnpr-bar .bnpr-mid-label {
+    left: 38%;
+  }
+}
