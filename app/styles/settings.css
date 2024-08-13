@@ -13,6 +13,11 @@
     gap: 0.5rem;
 }
 
+.settings-form-disable-div {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .settings-submit-button {
     width: 100%;
     padding: 0.5rem;

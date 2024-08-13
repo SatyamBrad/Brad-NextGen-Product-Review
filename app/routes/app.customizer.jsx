@@ -26,7 +26,7 @@ export default function ThemeSetup() {
                             </div>
                         </div>
                         <div className="image-container">
-                            <img src="../../public/Customizer_Image_1.svg" alt="Setup Illustration" />
+                            <img src="../../Customizer_Image_1.svg" alt="Setup Illustration" />
                         </div>
                     </div>
                 </section>
@@ -39,7 +39,7 @@ export default function ThemeSetup() {
                         <li>Refer the screen guideline &gt;</li>
                     </ul>
                     <div className="image-container">
-                        <img src="../../public/Customizer_Image_2.svg" alt="Step by step guidelines" />
+                        <img src="../../Customizer_Image_2.svg" alt="Step by step guidelines" />
                     </div>
                 </section>
             </main>
