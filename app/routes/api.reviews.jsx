@@ -44,7 +44,7 @@ export const action = async ({ request }) => {
         const data = await res.json();
         imageUrls.push({ imageUrl: data.url });
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     });
 
@@ -53,6 +53,7 @@ export const action = async ({ request }) => {
 
   try {
     switch (action) {
+
       case "FETCH_COUNT":
         if (!shop) throw new Error("Required Field: shop");
         if (!productId) throw new Error("Required Field: productId");
@@ -118,7 +119,6 @@ export const action = async ({ request }) => {
       case "FETCH_ATTRIBUTES":
         if (!shop) throw new Error("Required Field: shop");
         if (!productId) throw new Error("Required Field: productId");
-
         const fetchedAttributes = [];
         await Promise.all(
           formData.getAll("attributes").map(async (item) => {
@@ -127,7 +127,7 @@ export const action = async ({ request }) => {
                 value: true,
               },
               where: {
-                key: item,
+                attributeId: item,
                 review: {
                   shop,
                   productId,
@@ -166,6 +166,7 @@ export const action = async ({ request }) => {
         return cors(request, fetchAllResponse);
 
       case "FETCH_BY_PRODUCT":
+        const reviewsPerPage = Number(formData.get("reviewsPerPage"))
         if (!shop) throw new Error("Required field: shop");
         if (!productId) throw new Error("Required field: productId");
         const fetchByProductReviews = await db.review.findMany({
@@ -181,8 +182,8 @@ export const action = async ({ request }) => {
           include: {
             images: true,
           },
-          skip: (pageNo - 1) * 5,
-          take: 5,
+          skip: (pageNo - 1) * reviewsPerPage,
+          take: reviewsPerPage,
           orderBy: {
             createdAt: orderByOption,
           },
@@ -199,7 +200,6 @@ export const action = async ({ request }) => {
       case "CREATE":
         if (!shop) throw new Error("Required fields: shop");
         if (!productId) throw new Error("Required fields: productId");
-
         const imageUrls = [];
         await uploadImages(imageUrls, formData.getAll("images"));
         const reviewToCreate = await db.review.create({
@@ -219,7 +219,7 @@ export const action = async ({ request }) => {
             details: {
               createMany: {
                 data: Object.entries(formAttributes).map(([key, value]) => ({
-                  key,
+                  attributeId: key,
                   value: value && Number(value),
                 })),
               },

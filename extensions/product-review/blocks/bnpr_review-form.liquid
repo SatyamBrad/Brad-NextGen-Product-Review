@@ -25,11 +25,6 @@
                     {% for i in (1..5) %}
                     <input type="radio" id="bnpr-form-star-{{ i }}" name="starRating" value="{{ i }}">
                     <label for="bnpr-form-star-{{ i }}" title="{{ i }} stars">
-                        {% comment %} <svg class="bnpr-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            width="24" height="24">
-                            <polygon fill="none" stroke={{ app.metafields.bnpr_form.star_color }} stroke-width="2"
-                                points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
-                        </svg> {% endcomment %}
                         <svg class="bnpr-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                             height="24">
                             <defs>
@@ -37,9 +32,19 @@
                                     <rect x="0" y="0" width="0%" height="100%"></rect>
                                 </clipPath>
                             </defs>
-                            <polygon fill="none" stroke={{ app.metafields.bnpr_form.star_color }} stroke-width="2"
-                                points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
-                            <polygon fill={{ app.metafields.bnpr_form.star_color }}
+                            <polygon fill="none" 
+                                {% if app.metafields.bnpr_global.form_star_color %} 
+                                    stroke={{ app.metafields.bnpr_global.form_star_color }} 
+                                {% else %} 
+                                    stroke="#FFD700" 
+                                {% endif %}
+                                stroke-width="2" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
+                            <polygon 
+                                {% if app.metafields.bnpr_global.form_star_color %} 
+                                    fill={{ app.metafields.bnpr_global.form_star_color }} 
+                                {% else %} 
+                                    fill="#FFD700" 
+                                {% endif %}
                                 clip-path="url(#bnpr-form-star-clip-{{ i }})"
                                 points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
                         </svg>
@@ -60,11 +65,8 @@
 
             <div>
                 <label for="bnpr-review-form-author">Your Name</label>
-                <input type="text" id="bnpr-review-form-author" name="customerName"
-                {% if customer.id %}
-                    value="{{ customer.name }}"
-                {% endif %}
-                >
+                <input type="text" id="bnpr-review-form-author" name="customerName" {% if customer.id %}
+                    value="{{ customer.name }}" {% endif %}>
             </div>
 
             <div class="bnpr-review-form-image">
@@ -84,18 +86,21 @@
                 </div>
             </div>
 
-            {% assign attributes = app.metafields.bnpr_form.attribute.value | parse_json %}
+            {% if app.metafields.bnpr_global.has_attribute %}
+            {% assign attributes = app.metafields.bnpr_global.attribute.value | parse_json %}
             {% for attribute in attributes %}
             <div class="bnpr-review-form-slider">
                 <label>{{ attribute.header }}</label>
                 <div class="bnpr-review-form-slider-container">
-
                     {% assign index = forloop.index %}
                     {% for i in (1..5) %}
-                        <input type="radio" id="bnpr-review-form-{{ index }}-{{ i }}" name="attribute-{{ attribute.header }}" value="{{ i }}">
-                        <label for="bnpr-review-form-{{ index }}-{{ i }}">
-                            <span>{{ i }}</span>
-                        </label>
+                    <input type="radio" id="bnpr-review-form-{{ attribute.id }}-{{ i }}"
+                        name="attribute-{{ attribute.id }}" value="{{ i }}">
+                    <label for="bnpr-review-form-{{ attribute.id }}-{{ i }}">
+                        <svg height="10" width="10">
+                            <circle cx="5" cy="5" r="5" fill="black" />
+                        </svg>
+                    </label>
                     {% endfor %}
 
                     <span class="bnpr-label bnpr-start-label">{{ attribute.start }}</span>
@@ -104,6 +109,8 @@
                 </div>
             </div>
             {% endfor %}
+            {% endif %}
+
             <button type="submit" class="bnpr-review-submit-btn">
                 Submit Review
             </button>

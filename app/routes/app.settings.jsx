@@ -1,8 +1,13 @@
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
-import { useState } from "react";
-import { json } from "@remix-run/node";
+import { useEffect, useState } from "react";
+import { json, redirect } from "@remix-run/node";
 import "../styles/settings.css";
+import SettingsForm from "../components/SettingsForm";
+import SettingsSummary from "../components/SettingsSummary";
+import SettingsList from "../components/SettingsList";
+import SettingsGlobal from "../components/SettingsGlobal";
+import SettingsPreview from "../components/SettingsPreview";
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
@@ -23,200 +28,122 @@ export const loader = async ({ request }) => {
         }
       }
     }
-    `);
+  `);
 
   const { data } = await response.json();
   const appMetafields = data?.currentAppInstallation?.metafields?.edges;
-  if (appMetafields.length > 0) {
-    return appMetafields.map((item) => item.node);
-  }
-  return json(appMetafields);
+  return json(appMetafields.map((item) => item.node));
 };
 
 export default function Settings() {
   const loaderData = useLoaderData();
-  const actionData = useActionData();
-  const [color, setColor] = useState(() => {
-    if (loaderData.length > 0) {
-      return (
-        loaderData.filter((item) => item.key === "star_color")[0]?.value ||
-        "#FFD700"
-      );
-    } else {
-      return "#FFD700";
-    }
-  });
 
-  const [attributes, setAttributes] = useState(() => {
-    if (loaderData.length > 0) {
-      const value = loaderData.filter((item) => item.key === "attribute")[0]
-        ?.value;
+  const [tab, setTab] = useState("global");
+
+  const [formColor, setFormColor] = useState("#FFD700");
+  const [summaryColor, setSummaryColor] = useState("#FFD700");
+  const [listColor, setListColor] = useState("#FFD700");
+  const [hasAttribute, setHasAttribute] = useState(false);
+  const [attributes, setAttributes] = useState([]);
+  const [listType, setListType] = useState("list");
+  const [reviewsPerPage, setReviewsPerPage] = useState(5);
+
+  useEffect(() => {
+    setFormColor(
+      loaderData.find((item) => item.key === "form_star_color")?.value ||
+        "#FFD700",
+    );
+    setSummaryColor(
+      loaderData.find((item) => item.key === "summary_star_color")?.value ||
+        "#FFD700",
+    );
+    setListColor(
+      loaderData.find((item) => item.key === "list_star_color")?.value ||
+        "#FFD700",
+    );
+    setHasAttribute(
+      loaderData.find((item) => item.key === "has_attribute")?.value ===
+        "true" || false,
+    );
+    setAttributes(() => {
+      const value = loaderData.find((item) => item.key === "attribute")?.value;
       return value ? JSON.parse(value) : [];
-    } else {
-      return [];
-    }
-  });
+    });
+    setListType(
+      loaderData.find((item) => item.key === "list_type")?.value || "list",
+    );
+    setReviewsPerPage(
+      loaderData.find((item) => item.key === "reviews_per_page")?.value || 5,
+    );
+  }, [loaderData]);
 
   return (
-    <div>
-      <Form action="/app/settings" method="DELETE">
-        <button>Reset</button>
-      </Form>
-
-      <Form className="settings-form" method="POST" action="/app/settings">
-        <div className="settings-form-item">
-          <input
-            type="color"
-            name="bnpr_form-color-star_color"
-            value={color}
-            onChange={(e) => {
-              setColor(e.target.value);
-            }}
-          />
-        </div>
-
-        <div className="settings-form-item">
-          <button
-            type="button"
+    <div className="settings-container">
+      <div className="settings-navbar-container">
+        <ul>
+          <li
             onClick={() => {
-              setAttributes((prev) => [...prev, { type: "" }]);
+              setTab("global");
             }}
+            className={tab === "global" && "active-navbar-item"}
           >
-            Add Attribute
+            Global Settings
+          </li>
+          <li
+            onClick={() => {
+              setTab("form");
+            }}
+            className={tab === "form" && "active-navbar-item"}
+          >
+            Form Settings
+          </li>
+          <li
+            onClick={() => {
+              setTab("summary");
+            }}
+            className={tab === "summary" && "active-navbar-item"}
+          >
+            Summary Settings
+          </li>
+          <li
+            onClick={() => {
+              setTab("list");
+            }}
+            className={tab === "list" && "active-navbar-item"}
+          >
+            Display List Settings
+          </li>
+        </ul>
+
+        <Form action="/app/settings" method="DELETE">
+          <button className="settings-btn">Reset All Settings</button>
+        </Form>
+      </div>
+
+      <div className="settings-body-container">
+        <Form className="settings-form-container" method="POST" action="/app/settings">
+          <>
+            {tab === "global" && <SettingsGlobal {...{hasAttribute, setHasAttribute, attributes, setAttributes}} />}
+            {tab === "form" && <SettingsForm {...{ formColor, setFormColor }} />}
+            {tab === "summary" && <SettingsSummary {...{ summaryColor, setSummaryColor }} />}
+            {tab === "list" && <SettingsList {...{listColor, setListColor, listType, setListType, reviewsPerPage, setReviewsPerPage}} />}
+          </>
+          <button type="submit" className="settings-btn settings-submit-button">
+            Save
           </button>
-
-          <div className="settings-attribute-container">
-            {attributes?.map((attribute, index) => (
-              <div key={index}>
-                <select
-                  value={attribute.type}
-                  name=""
-                  onChange={(e) => {
-                    const newAttributes = [...attributes];
-                    newAttributes[index].type = e.target.value;
-                    setAttributes(newAttributes);
-                  }}
-                >
-                  <option value="">Select attribute type</option>
-                  <option value="range">Range</option>
-                  <option value="centered_range">Centered Range</option>
-                </select>
-
-                {attribute.type === "range" && (
-                  <>
-                    <input
-                      type="hidden"
-                      name={`bnpr_form-json-attribute-${index}-type`}
-                      value="range"
-                    />
-                    <label>Header</label>
-                    <input
-                      type="text"
-                      name={`bnpr_form-json-attribute-${index}-header`}
-                      value={attribute.header}
-                      onChange={(e) => {
-                        const newAttributes = [...attributes];
-                        newAttributes[index].header = e.target.value;
-                        setAttributes(newAttributes);
-                      }}
-                    />
-                    <label>Start Value</label>
-                    <input
-                      type="text"
-                      name={`bnpr_form-json-attribute-${index}-start`}
-                      value={attribute.start}
-                      onChange={(e) => {
-                        const newAttributes = [...attributes];
-                        newAttributes[index].start = e.target.value;
-                        setAttributes(newAttributes);
-                      }}
-                    />
-                    <label>End Value</label>
-                    <input
-                      type="text"
-                      name={`bnpr_form-json-attribute-${index}-end`}
-                      value={attribute.end}
-                      onChange={(e) => {
-                        const newAttributes = [...attributes];
-                        newAttributes[index].end = e.target.value;
-                        setAttributes(newAttributes);
-                      }}
-                    />
-                  </>
-                )}
-                {attribute.type === "centered_range" && (
-                  <>
-                    <input
-                      type="hidden"
-                      name={`bnpr_form-json-attribute-${index}-type`}
-                      value="centered_range"
-                    />
-                    <label>Header</label>
-                    <input
-                      type="text"
-                      name={`bnpr_form-json-attribute-${index}-header`}
-                      value={attribute.header}
-                      onChange={(e) => {
-                        const newAttributes = [...attributes];
-                        newAttributes[index].header = e.target.value;
-                        setAttributes(newAttributes);
-                      }}
-                    />
-                    <label>Start Value</label>
-                    <input
-                      type="text"
-                      name={`bnpr_form-json-attribute-${index}-start`}
-                      value={attribute.start}
-                      onChange={(e) => {
-                        const newAttributes = [...attributes];
-                        newAttributes[index].start = e.target.value;
-                        setAttributes(newAttributes);
-                      }}
-                    />
-                    <label>Mid Value</label>
-                    <input
-                      type="text"
-                      name={`bnpr_form-json-attribute-${index}-mid`}
-                      value={attribute.mid}
-                      onChange={(e) => {
-                        const newAttributes = [...attributes];
-                        newAttributes[index].mid = e.target.value;
-                        setAttributes(newAttributes);
-                      }}
-                    />
-                    <label>End Value</label>
-                    <input
-                      type="text"
-                      name={`bnpr_form-json-attribute-${index}-end`}
-                      value={attribute.end}
-                      onChange={(e) => {
-                        const newAttributes = [...attributes];
-                        newAttributes[index].end = e.target.value;
-                        setAttributes(newAttributes);
-                      }}
-                    />
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
+        </Form>
+        <div className="settings-preview-container">
+            <SettingsPreview formColor={formColor} summaryColor={summaryColor} hasAttribute={hasAttribute} attributes={attributes}/>
         </div>
-
-        <div className="settings-form-item">
-          <button type="submit" className="settings-submit-button">
-            Submit
-          </button>
-        </div>
-      </Form>
+      </div>
     </div>
   );
 }
 
 export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   const metafields = [];
   const m_json = {};
-
   const getAppId = async () => {
     const currentApp = await admin.graphql(`
       #graphql
@@ -227,10 +154,8 @@ export const action = async ({ request }) => {
       }
     `);
     const { data } = await currentApp.json();
-    // console.log(data)
     return data?.currentAppInstallation?.id;
   };
-
   const addToJson = (namespace, m_key, index, extraKey, value) => {
     if (!m_json[m_key]) {
       m_json[m_key] = {
@@ -247,114 +172,131 @@ export const action = async ({ request }) => {
   };
 
   const formData = await request.formData();
-
   switch (request.method) {
     case "DELETE":
-      const appMetafieldsFetch = await admin.graphql(`
-        #graphql
-        query {
-          currentAppInstallation {
-            metafields(first: 100) {
-              edges {
-                node {
-                  id
+      try {
+        const appMetafieldsFetch = await admin.graphql(`
+          #graphql
+          query {
+            currentAppInstallation {
+              metafields(first: 100) {
+                edges {
+                  node {
+                    id
+                  }
                 }
               }
             }
           }
-        }
         `);
+        const appMetafieldsResponse = await appMetafieldsFetch.json();
 
-      const appMetafieldsResponse = await appMetafieldsFetch.json();
-      const metafieldsToDelete =
-        appMetafieldsResponse?.data?.currentAppInstallation?.metafields.edges.map(
-          ({ node }) => node.id,
-        );
+        const metafieldsToDelete =
+          appMetafieldsResponse?.data?.currentAppInstallation?.metafields.edges.map(
+            ({ node }) => node.id,
+          );
+        for (const id of metafieldsToDelete) {
+          try {
+            const deleteMetafield = await admin.graphql(
+              `
+                #graphql
+                mutation metafieldDelete($input: MetafieldDeleteInput!) {
+                  metafieldDelete(input: $input) {
+                    deletedId
+                    userErrors {
+                      field
+                      message
+                    }
+                  }
+                }`,
+              {
+                variables: {
+                  input: {
+                    id,
+                  },
+                },
+              },
+            );
+            const { data } = await deleteMetafield.json();
+          } catch (error) {
+            console.error(`Failed to delete metafield with id ${id}:`, error);
+          }
+        }
+      } catch (error) {
+        console.error("Error during DELETE operation:", error);
+      }
 
-      metafieldsToDelete.forEach(async (id) => {
-        const deleteMetafield = await admin.graphql(
+      return redirect("/app/settings");
+
+    case "POST":
+      try {
+        // Process the form data and prepare metafields
+        for (const [key, value] of formData.entries()) {
+          const [m_namespace, m_type, m_key, index, extraKey] = key.split("-");
+          if (m_type === "json") {
+            addToJson(m_namespace, m_key, parseInt(index), extraKey, value);
+          } else {
+            metafields[m_key] = {
+              namespace: m_namespace,
+              type: m_type,
+              key: m_key,
+              value: value,
+            };
+          }
+        }
+        // Convert JSON metafields to standard format
+        Object.entries(m_json).forEach(([key, value]) => {
+          metafields[key] = value;
+        });
+
+        // Fetch the app ID
+        const appId = await getAppId();
+
+        // Create the metafields
+        const metafieldsToCreate = await admin.graphql(
           `
           #graphql
-          mutation metafieldDelete($input: MetafieldDeleteInput!) {
-            metafieldDelete(input: $input) {
-              deletedId
-              userErrors {
-                field
-                message
-              }
-            }
-          }`,
-          {
-            variables: {
-              input: {
-                id,
-              },
-            },
-          },
-        );
-        const { data } = await deleteMetafield.json();
-        console.log(data);
-      });
-      return null;
-    case "POST":
-      // iterates through all the data and stores in metafields
-      for (const [key, value] of formData.entries()) {
-        const [m_namespace, m_type, m_key, index, extraKey] = key.split("-");
-        if (m_type === "json") {
-          addToJson(m_namespace, m_key, parseInt(index), extraKey, value);
-        } else {
-          metafields[m_key] = {
-            namespace: m_namespace,
-            type: m_type,
-            key: m_key,
-            value: value,
-          };
-        }
-      }
-      // converts all json metafields into normal metafields of type json
-      Object.entries(m_json).forEach(([key, value]) => {
-        metafields[key] = value;
-      });
-
-      // fetches the app id
-      const appId = await getAppId();
-      // creates the metafields
-      const metafieldsToCreate = await admin.graphql(
-        `
-    #graphql
-    mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
-        metafieldsSet(metafields: $metafields) {
-            metafields {
+          mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+            metafieldsSet(metafields: $metafields) {
+              metafields {
                 key
                 namespace
                 value
                 createdAt
                 updatedAt
-            }
-            userErrors {
+              }
+              userErrors {
                 field
                 message
                 code
+              }
             }
-        }
-    }`,
-        {
-          variables: {
-            metafields: Object.values(metafields).map((item) => ({
-              ownerId: appId,
-              namespace: item.namespace,
-              type: item.type,
-              key: item.key,
-              value:
-                item.type === "json" ? JSON.stringify(item.value) : item.value,
-            })),
+          }`,
+          {
+            variables: {
+              metafields: Object.values(metafields).map((item) => ({
+                ownerId: appId,
+                namespace: item.namespace,
+                type: item.type,
+                key: item.key,
+                value:
+                  item.type === "json"
+                    ? JSON.stringify(item.value)
+                    : item.value,
+              })),
+            },
           },
-        },
-      );
+        );
 
-      const createdMetafields = await metafieldsToCreate.json();
-      return json(createdMetafields);
+        const createdMetafields = await metafieldsToCreate.json();
+
+        return redirect("/app/settings");
+      } catch (error) {
+        console.error("Error during POST operation:", error);
+        return json({ error: "Failed to save settings" }, { status: 500 });
+      }
+
     default:
-      json("return no such method");
+      return json("Invalid request method", { status: 405 });
   }
 };

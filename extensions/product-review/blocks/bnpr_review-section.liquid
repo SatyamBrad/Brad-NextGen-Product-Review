@@ -1,14 +1,5 @@
-{% assign attributes = app.metafields.bnpr_form.attribute.value | parse_json %}
-{% assign attribute_list = '' %}
-{% for attribute in attributes %}
-{% assign attribute_list = attribute_list | append: attribute.header | append: ',' %}
-{% endfor %}
-{% assign attribute_list = attribute_list | split: ',' %}
-
 <div class="bnpr-review-section-container" id="brad-nextgen-product-review" data-bnpr-shop="{{ shop.permanent_domain }}"
-  data-bnpr-productId="{{ product.id }}" 
-  data-bnpr-backendApi="https://goes-roads-flame-pl.trycloudflare.com"
-  data-bnpr-starColor="{{ app.metafields.bnpr_form.star_color }}" data-bnpr-attributes={{ attribute_list | json}}>
+  data-bnpr-productId="{{ product.id }}">
   <h1>Customer Reviews</h1>
   <div class="bnpr-review-section-app">
     <div>
@@ -26,61 +17,6 @@
 "target": "section",
 "stylesheet": "bnpr_review-section.css",
 "javascript": "bnpr_review-section.js",
-"settings": [
-{
-"type": "product",
-"id": "product",
-"label": "Product",
-"autofill": true
-},
-{
-"type": "color",
-"id": "color",
-"label": "Star Color",
-"default": "#FFD700"
-},
-{
-"type": "text",
-"id": "slider-qualilty-title",
-"label": "Quality Slider Title",
-"default": "Quality"
-},
-{
-"type": "text",
-"id": "slider-quality-start",
-"label": "Quality Slider Start Value",
-"default": "Poor"
-},
-{
-"type": "text",
-"id": "slider-quality-end",
-"label": "Quality Slider End Value",
-"default": "Excellent"
-},
-{
-"type": "text",
-"id": "slider-sizing-title",
-"label": "Sizing Slider Title",
-"default": "Sizing"
-},
-{
-"type": "text",
-"id": "slider-sizing-start-value",
-"label": "Sizing Slider Start Value",
-"default": "Runs Small"
-},
-{
-"type": "text",
-"id": "slider-sizing-mid-value",
-"label": "Sizing Slider Mid Value",
-"default": "True to Size"
-},
-{
-"type": "text",
-"id": "slider-sizing-end-value",
-"label": "Sizing Slider End Value",
-"default": "Runs Large"
-}
-]
+"settings": []
 }
 {% endschema %}
