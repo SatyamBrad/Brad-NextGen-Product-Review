@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaStar, FaRegStarHalfStroke, FaRegStar } from 'react-icons/fa6';
+import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 import "./star-component.css";
 
 const StarRating = ({ ratings }) => {
@@ -7,7 +7,6 @@ const StarRating = ({ ratings }) => {
         return <p>No ratings available</p>;
     }
 
-    // const averageRating = ratings.reduce((acc, rating) => acc + rating, 0) / ratings.length;
     const fullStars = Math.floor(ratings);
     const halfStar = ratings - fullStars >= 0.5;
     const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
@@ -19,7 +18,7 @@ const StarRating = ({ ratings }) => {
                 .map((_, index) => (
                     <FaStar key={index} color="#ffffff" />
                 ))}
-            {halfStar && <FaRegStarHalfStroke color="#ffffff" />}
+            {halfStar && <FaStarHalfAlt color="#ffffff" />}
             {Array(emptyStars)
                 .fill(0)
                 .map((_, index) => (

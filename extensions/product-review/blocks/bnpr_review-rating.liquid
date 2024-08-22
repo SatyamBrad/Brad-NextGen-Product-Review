@@ -2,7 +2,7 @@
 {% assign total_reviews = 4763 %}
 {% assign full_stars = rating | floor %}
 {% assign half_star = rating | modulo: 1 %}
-{% assign empty_stars = 5 | minus: full_stars | minus: half_star > 0 %}
+{% assign empty_stars = 5 | minus: full_stars  %}
 
 <div style="display: flex; align-items: center;">
   <div>

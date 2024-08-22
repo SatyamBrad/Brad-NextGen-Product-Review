@@ -40,28 +40,29 @@ export default function ReviewComponent({ item }) {
   };
 
   return (
-    <div className="review-component-container">
-      <div className="review-component-applets">
-        <div className="flex-row">
-          <Checkbox checked={item.checked} onChange={handleCheck} />
-          <Badge tone="info">{item.status}</Badge>
-        </div>
+    <div className="review-component-container" >
+      <div>
+        <div className="review-component-applets">
+          <div className="flex-row">
+            <Checkbox checked={item.checked} onChange={handleCheck} />
+            <Badge tone="info">{item.status}</Badge>
+          </div>
 
-        <div className="flex-row">
-          <Icon source={InfoIcon} />
-          <Icon source={ChatIcon} />
-          <div className="flex-row" style={{ color: "black" }}>
-            <Select
-              options={[
-                { label: "Pending", value: "pending" },
-                { label: "Approved", value: "approved" },
-              ]}
-            // value={selected}
-            // onChange={(val) => {
-            //   setSelected(val);
-            // }}
-            />
-            {/* <Select
+          <div className="flex-row">
+            <Icon source={InfoIcon} />
+            <Icon source={ChatIcon} />
+            <div className="flex-row" style={{ color: "black" }}>
+              <Select
+                options={[
+                  { label: "Pending", value: "pending" },
+                  { label: "Approved", value: "approved" },
+                ]}
+              // value={selected}
+              // onChange={(val) => {
+              //   setSelected(val);
+              // }}
+              />
+              {/* <Select
               options={[
                 { label: "Pending", value: "pending" },
                 { label: "Approved", value: "approved" },
@@ -71,27 +72,28 @@ export default function ReviewComponent({ item }) {
               setSelected(val);
             }}
             /> */}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="review-component-heading">
-        <div>
-          <h1>{item.reviewTitle}</h1>
+        <div className="review-component-heading">
+          <div>
+            <h1>{item.reviewTitle}</h1>
+          </div>
+          <div style={{ ...flexStyle }}>
+            <h2
+              style={{ textDecoration: "underline", textUnderlineOffset: "4px" }}
+            >
+              {item.customerName}
+            </h2>
+            {item.verified && <Icon source={CheckCircleIcon} />}
+            <p>{handleTimeShow()}</p>
+          </div>
         </div>
-        <div style={{ ...flexStyle }}>
-          <h2
-            style={{ textDecoration: "underline", textUnderlineOffset: "4px" }}
-          >
-            {item.customerName}
-          </h2>
-          {item.verified && <Icon source={CheckCircleIcon} />}
-          <p>{handleTimeShow()}</p>
-        </div>
-      </div>
 
-      <div className="review-component-body">
-        <p>{item.reviewDescription}</p>
+        <div className="review-component-body">
+          <p>{item.reviewDescription}</p>
+        </div>
       </div>
 
       <div className="review-component-image">

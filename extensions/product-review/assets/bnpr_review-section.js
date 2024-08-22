@@ -152,7 +152,7 @@ form.addEventListener("submit", async (e) => {
       .classList.remove("bnpr-disabled-div");
     modal.style.display = "none";
 
-    init()
+    init();
   } catch (err) {
     console.error(err);
     renderNotification(err.message);
@@ -242,7 +242,7 @@ const init = async () => {
     if (attributes.length > 0) {
       await fetchReviewAttributes();
     }
-    displayReviewList(data)
+    displayReviewList(data);
   }
 };
 init();
@@ -336,18 +336,18 @@ const displaySummaryRatings = ({ summary, ratings }) => {
 };
 
 const displaySummaryAttibutes = (data) => {
-  data.forEach(item=>{
-    const [key, value] = Object.entries(item)[0]
+  data.forEach((item) => {
+    const [key, value] = Object.entries(item)[0];
     document
-    .getElementById(`bnpr-review-section-attributes-${key}`)
-    .querySelector(".bnpr-inner-bar").style.width = `${value * 20}%`;
-  })
+      .getElementById(`bnpr-review-section-attributes-${key}`)
+      .querySelector(".bnpr-inner-bar").style.width = `${value * 20}%`;
+  });
 };
 
 const displayReviewList = (count) => {
   document.querySelector(".bnpr-filter-btn").style.display = "block";
-  pageNavigationSetup(1, count)
-}
+  pageNavigationSetup(1, count);
+};
 
 const pageNavigationSetup = async (currentPage, totalReviews) => {
   const createPageButton = (index, text) => {
