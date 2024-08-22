@@ -56,35 +56,35 @@ export default function ReviewComponent({ item }) {
                 { label: "Pending", value: "pending" },
                 { label: "Approved", value: "approved" },
               ]}
-              // value={selected}
-              // onChange={(val) => {
-              //   setSelected(val);
-              // }}
+            // value={selected}
+            // onChange={(val) => {
+            //   setSelected(val);
+            // }}
             />
-            <Select
+            {/* <Select
               options={[
                 { label: "Pending", value: "pending" },
                 { label: "Approved", value: "approved" },
               ]}
-              // value={selected}
-              // onChange={(val) => {
-              //   setSelected(val);
-              // }}
-            />
+            value={selected}
+            onChange={(val) => {
+              setSelected(val);
+            }}
+            /> */}
           </div>
         </div>
       </div>
 
       <div className="review-component-heading">
         <div>
-          <h2>{item.reviewTitle}</h2>
+          <h1>{item.reviewTitle}</h1>
         </div>
         <div style={{ ...flexStyle }}>
-          <p
+          <h2
             style={{ textDecoration: "underline", textUnderlineOffset: "4px" }}
           >
             {item.customerName}
-          </p>
+          </h2>
           {item.verified && <Icon source={CheckCircleIcon} />}
           <p>{handleTimeShow()}</p>
         </div>
@@ -96,7 +96,7 @@ export default function ReviewComponent({ item }) {
 
       <div className="review-component-image">
         {item.images?.map((image, index) => (
-          <img key={index} src={image.imageUrl} alt="" />
+          <img key={index} src={image.imageUrl} style={{ height: "200px", padding: "2px" }} alt="" />
         ))}
       </div>
     </div>
