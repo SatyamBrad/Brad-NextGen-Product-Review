@@ -8,13 +8,7 @@ const productId = document
   .querySelector(".bnpr-review-section-container")
   .getAttribute("data-bnpr-productId");
 
-const backendApi = document
-  .querySelector(".bnpr-review-section-container")
-  .getAttribute("data-bnpr-backendApi");
-
-const starColor = document
-  .querySelector(".bnpr-review-section-container")
-  .getAttribute("data-bnpr-starColor");
+const backendApi = "https://jesus-truck-divorce-destiny.trycloudflare.com"
 
 const filterOptions = {
   starRating: [],
@@ -23,8 +17,8 @@ const filterOptions = {
 
 const attributes = JSON.parse(
   document
-    .querySelector(".bnpr-review-section-container")
-    .getAttribute("data-bnpr-attributes"),
+    .querySelector(".bnpr-review-section-attributes-container")
+    ?.getAttribute("data-bnpr-attributes") || "{}",
 );
 
 const modal = document.querySelector(".bnpr-review-form-container");
@@ -152,7 +146,7 @@ form.addEventListener("submit", async (e) => {
       .classList.remove("bnpr-disabled-div");
     modal.style.display = "none";
 
-    init()
+    init();
   } catch (err) {
     console.error(err);
     renderNotification(err.message);
@@ -242,7 +236,7 @@ const init = async () => {
     if (attributes.length > 0) {
       await fetchReviewAttributes();
     }
-    displayReviewList(data)
+    displayReviewList(data);
   }
 };
 init();
@@ -299,20 +293,26 @@ const displaySummaryDetailsStars = (rating) => {
   var i = 1;
   // Fully fill the stars
   while (i <= Math.floor(rating)) {
-    const clipRect = document.querySelector(`#bnpr-star-clip-${i} rect`);
+    const clipRect = document.querySelector(
+      `#bnpr-summary-star-clip-${i} rect`,
+    );
     clipRect.setAttribute("width", `100%`);
     i++;
   }
   // Half fill a single star
   if (i <= 5) {
     const percentage = (rating - Math.floor(rating)) * 100;
-    const clipRect = document.querySelector(`#bnpr-star-clip-${i} rect`);
+    const clipRect = document.querySelector(
+      `#bnpr-summary-star-clip-${i} rect`,
+    );
     clipRect.setAttribute("width", `${percentage}%`);
     i++;
   }
   // Empty fill the stars
   while (i <= 5) {
-    const clipRect = document.querySelector(`#bnpr-star-clip-${i} rect`);
+    const clipRect = document.querySelector(
+      `#bnpr-summary-star-clip-${i} rect`,
+    );
     clipRect.setAttribute("width", `0%`);
     i++;
   }
@@ -336,18 +336,21 @@ const displaySummaryRatings = ({ summary, ratings }) => {
 };
 
 const displaySummaryAttibutes = (data) => {
-  data.forEach(item=>{
-    const [key, value] = Object.entries(item)[0]
-    document
-    .getElementById(`bnpr-review-section-attributes-${key}`)
-    .querySelector(".bnpr-inner-bar").style.width = `${value * 20}%`;
-  })
+  data.forEach((item) => {
+    const [key, value] = Object.entries(item)[0];
+    const element = document
+      .getElementById(`bnpr-review-section-attributes-${key}`)
+      ?.querySelector(".bnpr-inner-bar");
+    if (element) {
+      element.style.width = `${(value / 4 - 0.25) * 100}%`;
+    }
+  });
 };
 
 const displayReviewList = (count) => {
   document.querySelector(".bnpr-filter-btn").style.display = "block";
-  pageNavigationSetup(1, count)
-}
+  pageNavigationSetup(1, count);
+};
 
 const pageNavigationSetup = async (currentPage, totalReviews) => {
   const createPageButton = (index, text) => {
@@ -415,11 +418,16 @@ const pageNavigationSetup = async (currentPage, totalReviews) => {
 };
 
 const fetchReviews = async (pageNo) => {
+  const reviewsPerPage =
+    document
+      .querySelector(".bnpr-review-section-list-container")
+      .getAttribute("data-bnpr-reviewsPerPage") || 5;
   const body = new FormData();
   body.append("action", "FETCH_BY_PRODUCT");
   body.append("shop", shop);
   body.append("productId", productId);
   body.append("pageNo", pageNo);
+  body.append("reviewsPerPage", reviewsPerPage);
   filterOptions.starRating.forEach((item) => {
     body.append("starRatingOption", item);
   });
@@ -429,12 +437,19 @@ const fetchReviews = async (pageNo) => {
     body,
   });
   const { data } = await response.json();
-  const container = document.querySelector(".bnpr-list-container");
-  container.innerHTML = "";
-  fillReviewList(container, data);
+  fillReviewList(data);
 };
 
-const fillReviewList = (container, data) => {
+const fillReviewList = (data) => {
+  const container = document.querySelector(".bnpr-list-container");
+  container.innerHTML = "";
+  const listType = container.getAttribute("data-bnpr-listType") || "list";
+  container.classList.add(`bnpr-list-type-${listType}`);
+  const starColor =
+    document
+      .querySelector(".bnpr-review-section-list-container")
+      .getAttribute("data-bnpr-starColor") || "#FFD700";
+
   data.forEach((item) => {
     const userDetails = document.createElement("div");
     userDetails.classList.add("bnpr-user-details");
@@ -455,11 +470,12 @@ const fillReviewList = (container, data) => {
             </svg>`;
       } else {
         star.innerHTML = `<svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-            <polygon fill="none" stroke="{{ starColor }}" stroke-width="2" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"/>
+            <polygon fill="none" stroke="${starColor}" stroke-width="2" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2"/>
             </svg>`;
       }
       starContainer.appendChild(star);
     }
+
     const reviewTitle = document.createElement("div");
     reviewTitle.innerHTML = item.reviewTitle;
     reviewTitle.classList.add("bnpr-review-title");
@@ -479,6 +495,7 @@ const fillReviewList = (container, data) => {
         imageContainer.appendChild(img);
       });
     }
+
     const header = document.createElement("div");
     header.classList.add("bnpr-list-item-header");
     header.appendChild(userDetails);

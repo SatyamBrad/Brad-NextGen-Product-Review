@@ -1,12 +1,21 @@
 {{ 'bnpr_review-section-attributes.css' | asset_url | stylesheet_tag }}
-<div class="bnpr-review-section-attributes-container">
+
+{% assign attributes = app.metafields.bnpr_global.attribute.value | parse_json %}
+{% assign attribute_list = '' %}
+{% for attribute in attributes %}
+{% assign attribute_list = attribute_list | append: attribute.id | append: ',' %}
+{% endfor %}
+{% assign attribute_list = attribute_list | split: ',' %}
+
+{% if app.metafields.bnpr_global.has_attribute %}
+<div class="bnpr-review-section-attributes-container" data-bnpr-attributes={{ attribute_list | json }}>
   <h2>100% people will recommend this</h2>
 
-{% assign attributes = app.metafields.bnpr_form.attribute.value | parse_json %}
-{% for attribute in attributes %}
+  {% assign attributes = app.metafields.bnpr_global.attribute.value | parse_json %}
+  {% for attribute in attributes %}
   <div id="bnpr-review-section-slider-sizing">
-    <h3>{{ attribute.header |  camelize }}</h3>
-    <div class="bnpr-bar" id="bnpr-review-section-attributes-{{ attribute.header }}">
+    <h3>{{ attribute.header | camelize }}</h3>
+    <div class="bnpr-bar" id="bnpr-review-section-attributes-{{ attribute.id }}">
       <div class="bnpr-inner-bar">
         <div class="bnpr-slider"></div>
       </div>
@@ -15,5 +24,7 @@
       <div class="bnpr-label bnpr-end-label">{{ attribute.end }}</div>
     </div>
   </div>
-{% endfor %}
+  {% endfor %}
+
 </div>
+{% endif %}

@@ -3,6 +3,11 @@ import { authenticate } from "../shopify.server";
 import { useEffect, useState } from "react";
 import { json, redirect } from "@remix-run/node";
 import "../styles/settings.css";
+import SettingsForm from "../components/SettingsForm";
+import SettingsSummary from "../components/SettingsSummary";
+import SettingsList from "../components/SettingsList";
+import SettingsGlobal from "../components/SettingsGlobal";
+import SettingsPreview from "../components/SettingsPreview";
 
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
@@ -32,14 +37,29 @@ export const loader = async ({ request }) => {
 
 export default function Settings() {
   const loaderData = useLoaderData();
-  const [color, setColor] = useState("#FFD700");
+
+  const [tab, setTab] = useState("global");
+
+  const [formColor, setFormColor] = useState("#FFD700");
+  const [summaryColor, setSummaryColor] = useState("#FFD700");
+  const [listColor, setListColor] = useState("#FFD700");
   const [hasAttribute, setHasAttribute] = useState(false);
   const [attributes, setAttributes] = useState([]);
+  const [listType, setListType] = useState("list");
+  const [reviewsPerPage, setReviewsPerPage] = useState(5);
 
-  
   useEffect(() => {
-    setColor(
-      loaderData.find((item) => item.key === "star_color")?.value || "#FFD700",
+    setFormColor(
+      loaderData.find((item) => item.key === "form_star_color")?.value ||
+        "#FFD700",
+    );
+    setSummaryColor(
+      loaderData.find((item) => item.key === "summary_star_color")?.value ||
+        "#FFD700",
+    );
+    setListColor(
+      loaderData.find((item) => item.key === "list_star_color")?.value ||
+        "#FFD700",
     );
     setHasAttribute(
       loaderData.find((item) => item.key === "has_attribute")?.value ===
@@ -49,182 +69,81 @@ export default function Settings() {
       const value = loaderData.find((item) => item.key === "attribute")?.value;
       return value ? JSON.parse(value) : [];
     });
+    setListType(
+      loaderData.find((item) => item.key === "list_type")?.value || "list",
+    );
+    setReviewsPerPage(
+      loaderData.find((item) => item.key === "reviews_per_page")?.value || 5,
+    );
   }, [loaderData]);
 
   return (
-    <div>
-      <Form action="/app/settings" method="DELETE">
-        <button>Reset</button>
-      </Form>
-
-      <Form className="settings-form" method="POST" action="/app/settings">
-        <div className="settings-form-item">
-          <input
-            type="color"
-            name="bnpr_form-color-star_color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-          />
-        </div>
-
-        <div className="settings-form-item">
-          <button
-            type="button"
-            onClick={() => setHasAttribute((prev) => !prev)}
+    <div className="settings-container">
+      <div className="settings-navbar-container">
+        <ul>
+          <li
+            onClick={() => {
+              setTab("global");
+            }}
+            className={tab === "global" && "active-navbar-item"}
           >
-            {hasAttribute ? "Disable Attributes" : "Enable Attributes"}
+            Global Settings
+          </li>
+          <li
+            onClick={() => {
+              setTab("form");
+            }}
+            className={tab === "form" && "active-navbar-item"}
+          >
+            Form Settings
+          </li>
+          <li
+            onClick={() => {
+              setTab("summary");
+            }}
+            className={tab === "summary" && "active-navbar-item"}
+          >
+            Summary Settings
+          </li>
+          <li
+            onClick={() => {
+              setTab("list");
+            }}
+            className={tab === "list" && "active-navbar-item"}
+          >
+            Display List Settings
+          </li>
+        </ul>
+
+        <Form action="/app/settings" method="DELETE">
+          <button className="settings-btn">Reset All Settings</button>
+        </Form>
+      </div>
+
+      <div className="settings-body-container">
+        <Form className="settings-form-container" method="POST" action="/app/settings">
+          <>
+            {tab === "global" && <SettingsGlobal {...{hasAttribute, setHasAttribute, attributes, setAttributes}} />}
+            {tab === "form" && <SettingsForm {...{ formColor, setFormColor }} />}
+            {tab === "summary" && <SettingsSummary {...{ summaryColor, setSummaryColor }} />}
+            {tab === "list" && <SettingsList {...{listColor, setListColor, listType, setListType, reviewsPerPage, setReviewsPerPage}} />}
+          </>
+          <button type="submit" className="settings-btn settings-submit-button">
+            Save
           </button>
-          <input
-            type="hidden"
-            name="bnpr_form-boolean-has_attribute"
-            value={hasAttribute}
-          />
-
-          <div className={hasAttribute ? "" : "settings-form-disable-div"}>
-            <button
-              type="button"
-              onClick={() => setAttributes((prev) => [...prev, { type: "" }])}
-            >
-              Add Attribute
-            </button>
-
-            <div className="settings-attribute-container">
-              {attributes?.map((attribute, index) => (
-                <div key={index}>
-                  <select
-                    value={attribute.type}
-                    name=""
-                    onChange={(e) => {
-                      const newAttributes = [...attributes];
-                      newAttributes[index].type = e.target.value;
-                      setAttributes(newAttributes);
-                    }}
-                  >
-                    <option value="">Select attribute type</option>
-                    <option value="range">Range</option>
-                    <option value="centered_range">Centered Range</option>
-                  </select>
-                  <input
-                    type="hidden"
-                    name={`bnpr_form-json-attribute-${index}-id`}
-                    value={attribute.id ? attribute.id : Date.now()}
-                  />
-                  {attribute.type === "range" && (
-                    <>
-                      <input
-                        type="hidden"
-                        name={`bnpr_form-json-attribute-${index}-type`}
-                        value="range"
-                      />
-                      <label>Header</label>
-                      <input
-                        type="text"
-                        name={`bnpr_form-json-attribute-${index}-header`}
-                        value={attribute.header}
-                        onChange={(e) => {
-                          const newAttributes = [...attributes];
-                          newAttributes[index].header = e.target.value;
-                          setAttributes(newAttributes);
-                        }}
-                      />
-                      <label>Start Value</label>
-                      <input
-                        type="text"
-                        name={`bnpr_form-json-attribute-${index}-start`}
-                        value={attribute.start}
-                        onChange={(e) => {
-                          const newAttributes = [...attributes];
-                          newAttributes[index].start = e.target.value;
-                          setAttributes(newAttributes);
-                        }}
-                      />
-                      <label>End Value</label>
-                      <input
-                        type="text"
-                        name={`bnpr_form-json-attribute-${index}-end`}
-                        value={attribute.end}
-                        onChange={(e) => {
-                          const newAttributes = [...attributes];
-                          newAttributes[index].end = e.target.value;
-                          setAttributes(newAttributes);
-                        }}
-                      />
-                    </>
-                  )}
-                  {attribute.type === "centered_range" && (
-                    <>
-                      <input
-                        type="hidden"
-                        name={`bnpr_form-json-attribute-${index}-type`}
-                        value="centered_range"
-                      />
-                      <label>Header</label>
-                      <input
-                        type="text"
-                        name={`bnpr_form-json-attribute-${index}-header`}
-                        value={attribute.header}
-                        onChange={(e) => {
-                          const newAttributes = [...attributes];
-                          newAttributes[index].header = e.target.value;
-                          setAttributes(newAttributes);
-                        }}
-                      />
-                      <label>Start Value</label>
-                      <input
-                        type="text"
-                        name={`bnpr_form-json-attribute-${index}-start`}
-                        value={attribute.start}
-                        onChange={(e) => {
-                          const newAttributes = [...attributes];
-                          newAttributes[index].start = e.target.value;
-                          setAttributes(newAttributes);
-                        }}
-                      />
-                      <label>Mid Value</label>
-                      <input
-                        type="text"
-                        name={`bnpr_form-json-attribute-${index}-mid`}
-                        value={attribute.mid}
-                        onChange={(e) => {
-                          const newAttributes = [...attributes];
-                          newAttributes[index].mid = e.target.value;
-                          setAttributes(newAttributes);
-                        }}
-                      />
-                      <label>End Value</label>
-                      <input
-                        type="text"
-                        name={`bnpr_form-json-attribute-${index}-end`}
-                        value={attribute.end}
-                        onChange={(e) => {
-                          const newAttributes = [...attributes];
-                          newAttributes[index].end = e.target.value;
-                          setAttributes(newAttributes);
-                        }}
-                      />
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+        </Form>
+        <div className="settings-preview-container">
+            <SettingsPreview formColor={formColor} summaryColor={summaryColor} hasAttribute={hasAttribute} attributes={attributes}/>
         </div>
-
-        <div className="settings-form-item">
-          <button type="submit" className="settings-submit-button">
-            Submit
-          </button>
-        </div>
-      </Form>
+      </div>
     </div>
   );
 }
 
 export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
   const metafields = [];
   const m_json = {};
-
   const getAppId = async () => {
     const currentApp = await admin.graphql(`
       #graphql
@@ -237,7 +156,6 @@ export const action = async ({ request }) => {
     const { data } = await currentApp.json();
     return data?.currentAppInstallation?.id;
   };
-
   const addToJson = (namespace, m_key, index, extraKey, value) => {
     if (!m_json[m_key]) {
       m_json[m_key] = {
@@ -254,7 +172,6 @@ export const action = async ({ request }) => {
   };
 
   const formData = await request.formData();
-
   switch (request.method) {
     case "DELETE":
       try {
@@ -278,7 +195,6 @@ export const action = async ({ request }) => {
           appMetafieldsResponse?.data?.currentAppInstallation?.metafields.edges.map(
             ({ node }) => node.id,
           );
-
         for (const id of metafieldsToDelete) {
           try {
             const deleteMetafield = await admin.graphql(
@@ -302,7 +218,6 @@ export const action = async ({ request }) => {
               },
             );
             const { data } = await deleteMetafield.json();
-            console.log(data);
           } catch (error) {
             console.error(`Failed to delete metafield with id ${id}:`, error);
           }
@@ -329,7 +244,6 @@ export const action = async ({ request }) => {
             };
           }
         }
-
         // Convert JSON metafields to standard format
         Object.entries(m_json).forEach(([key, value]) => {
           metafields[key] = value;
@@ -375,7 +289,7 @@ export const action = async ({ request }) => {
         );
 
         const createdMetafields = await metafieldsToCreate.json();
-        console.log(createdMetafields);
+
         return redirect("/app/settings");
       } catch (error) {
         console.error("Error during POST operation:", error);

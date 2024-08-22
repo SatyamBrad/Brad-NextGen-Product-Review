@@ -11,14 +11,25 @@
       {% for i in (1..5) %}
       <svg class="bnpr-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
         <defs>
-          <clipPath id="bnpr-star-clip-{{ i }}">
+          <clipPath id="bnpr-summary-star-clip-{{ i }}">
             <rect x="0" y="0" width="0%" height="100%"></rect>
           </clipPath>
         </defs>
-        <polygon fill="none" stroke="{{ app.metafields.bnpr_form.star_color }}" stroke-width="2"
-          points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
-        <polygon fill="{{ app.metafields.bnpr_form.star_color }}" clip-path="url(#bnpr-star-clip-{{ i }})"
-          points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
+        <polygon fill="none" 
+        {% if app.metafields.bnpr_global.summary_star_color %} 
+            stroke={{ app.metafields.bnpr_global.summary_star_color }} 
+        {% else %} 
+            stroke="#FFD700" 
+        {% endif %}
+        stroke-width="2" points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
+    <polygon 
+        {% if app.metafields.bnpr_global.summary_star_color %} 
+            fill={{ app.metafields.bnpr_global.summary_star_color }} 
+        {% else %} 
+            fill="#FFD700" 
+        {% endif %}
+        clip-path="url(#bnpr-summary-star-clip-{{ i }})"
+        points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
       </svg>
       {% endfor %}
     </div>

@@ -1,6 +1,6 @@
 {{ 'bnpr_review-section-list.css' | asset_url | stylesheet_tag }}
 
-<div class="bnpr-review-section-list-container">
+<div class="bnpr-review-section-list-container" data-bnpr-reviewsPerPage="{{ app.metafields.bnpr_global.reviews_per_page }}" data-bnpr-starColor="{{ app.metafields.bnpr_global.list_star_color }}">
 
   <div class="bnpr-review-section-list-buttons">
     <button class="bnpr-btn bnpr-filter-btn">Filter</button>
@@ -36,6 +36,6 @@
     </ul>
   </div>
 
-  <div class="bnpr-list-container">No reviews yet. Be the first one to review this product.</div>
+  <div class="bnpr-list-container" data-bnpr-listType="{{ app.metafields.bnpr_global.list_type }}">No reviews yet. Be the first one to review this product.</div>
   <div class="bnpr-page-nav-container"></div>
 </div>

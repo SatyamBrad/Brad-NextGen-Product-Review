@@ -23,7 +23,6 @@ export const loader = async ({ request }) => {
 
 export default function Review() {
   const fetchAllReviews = useLoaderData();
-  console.log(fetchAllReviews.data);
   return (
     <div className="review-container">
       <TitleBar title="Reviews" />
