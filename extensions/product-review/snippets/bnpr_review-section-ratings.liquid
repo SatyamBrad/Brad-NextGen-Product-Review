@@ -1,5 +1,4 @@
 {{ 'bnpr_review-section-ratings.css' | asset_url | stylesheet_tag }}
-
 <div class="bnpr-review-section-ratings-container">
   <div class="bnpr-review-section-ratings-inner-container">
     {% for index in (1..5) reversed %}
@@ -8,8 +7,15 @@
         <div>{{ index }}</div>
         <div>
           <svg class="bnpr-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-            <polygon fill="{{ app.metafields.bnpr_form.star_color }}" stroke="{{ app.metafields.bnpr_form.star_color }}" stroke-width="2"
-              points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
+          <polygon 
+          {% if app.metafields.bnpr_global.summary_star_color %}
+            fill="{{ app.metafields.bnpr_global.summary_star_color }}" 
+            stroke="{{ app.metafields.bnpr_global.summary_star_color }}" stroke-width="2"
+          {% else %}
+            fill="#FFD700"
+            stroke="#FFD700"
+          {% endif %}
+          points="12 2 15 9 22 9 17 14 18.5 21 12 17 5.5 21 7 14 2 9 9 9 12 2" />
           </svg>
         </div>
       </div>

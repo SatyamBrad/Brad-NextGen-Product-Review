@@ -1,5 +1,4 @@
 .bnpr-review-section-list-container {
-  width: 90%;
   margin: 2rem auto;
 }
 
@@ -80,13 +79,23 @@
 }
 
 .bnpr-list-container {
-  text-align: center;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-  gap: 1rem;
   padding: 2rem;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.bnpr-list-type-list {
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.bnpr-list-type-block {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.bnpr-list-type-block > div {
+  width: 40% !important;
 }
 
 .bnpr-list-container .bnpr-list-item {

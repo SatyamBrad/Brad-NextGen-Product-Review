@@ -32,16 +32,16 @@ model Session {
 }
 
 model Review {
-  id                Int           @id @default(autoincrement())
+  id                Int            @id @default(autoincrement())
   shop              String
   productId         String
-  customerId        String?       @default("Guest")
-  customerName      String?       @default("Anonymous")
-  reviewTitle       String?       @default("")
-  reviewDescription String?       @default("")
-  starRating        Int?          @default(0)
-  createdAt         DateTime      @default(now())
-  status            String?       @default("Published")
+  customerId        String?        @default("Guest")
+  customerName      String?        @default("Anonymous")
+  reviewTitle       String?        @default("")
+  reviewDescription String?        @default("")
+  starRating        Int?           @default(0)
+  createdAt         DateTime       @default(now())
+  status            String?        @default("Published")
   images            ReviewImage[]
   details           ReviewDetail[]
 }
@@ -54,9 +54,10 @@ model ReviewImage {
 }
 
 model ReviewDetail {
-  id       Int     @id @default(autoincrement())
-  reviewId Int
-  review   Review  @relation(fields: [reviewId], references: [id])
-  key      String?
-  value    Int?
+  id              Int             @id @default(autoincrement())
+  reviewId        Int
+  review          Review          @relation(fields: [reviewId], references: [id])
+  attributeId     String
+  value           Int?
 }
+
