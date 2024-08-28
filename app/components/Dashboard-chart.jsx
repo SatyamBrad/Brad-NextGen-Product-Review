@@ -1,7 +1,7 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
-import 'chart.js/auto';  // Required for Chart.js 3 and above
-import './DashboardChart.css';  // Custom CSS for styling
+import 'chart.js/auto';
+import './DashboardChart.css';
 
 const ReviewChart = () => {
     const data = {
@@ -23,7 +23,7 @@ const ReviewChart = () => {
     const options = {
         plugins: {
             legend: {
-                display: false,  // Hides the legend
+                display: true,  // Hides the legend
             },
         },
         scales: {
