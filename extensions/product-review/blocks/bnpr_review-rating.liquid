@@ -2,20 +2,20 @@
 {% assign total_reviews = 4763 %}
 {% assign full_stars = rating | floor %}
 {% assign half_star = rating | modulo: 1 %}
-{% assign empty_stars = 5 | minus: full_stars  %}
+{% assign empty_stars = 5 | minus: full_stars %}
 
 <div style="display: flex; align-items: center;">
   <div>
     {% for i in (1..full_stars) %}
-      <span style="color: #FFA500;">&#9733;</span> <!-- Full Star -->
+    <span style="color: #FFA500;">&#9733;</span> <!-- Full Star -->
     {% endfor %}
 
     {% if half_star > 0 %}
-      <span style="color: #FFA500;">&#9733;</span> <!-- Half Star -->
+    <span style="color: #FFA500;">&#9733;</span> <!-- Half Star -->
     {% endif %}
 
     {% for i in (1..empty_stars) %}
-      <span style="color: #ccc;">&#9733;</span> <!-- Empty Star -->
+    <span style="color: #ccc;">&#9733;</span> <!-- Empty Star -->
     {% endfor %}
   </div>
 

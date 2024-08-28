@@ -3,7 +3,7 @@
 client_id = "53eb8bac00dcac185e719de2e1721e66"
 name = "Brad NextGen Wishlist"
 handle = "brad-nextgen-wishlist-1"
-application_url = "https://habitat-hitting-revolution-utah.trycloudflare.com"
+application_url = "https://breaking-term-wider-brook.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,16 +16,16 @@ scopes = "read_customers,write_customers,write_products"
 
 [auth]
 redirect_urls = [
-  "https://habitat-hitting-revolution-utah.trycloudflare.com/auth/callback",
-  "https://habitat-hitting-revolution-utah.trycloudflare.com/auth/shopify/callback",
-  "https://habitat-hitting-revolution-utah.trycloudflare.com/api/auth/callback"
+  "https://breaking-term-wider-brook.trycloudflare.com/auth/callback",
+  "https://breaking-term-wider-brook.trycloudflare.com/auth/shopify/callback",
+  "https://breaking-term-wider-brook.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
 
 [app_proxy]
-url = "https://habitat-hitting-revolution-utah.trycloudflare.com/api"
+url = "https://breaking-term-wider-brook.trycloudflare.com/api"
 subpath = "prapp"
 prefix = "apps"
 

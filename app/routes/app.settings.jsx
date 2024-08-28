@@ -39,6 +39,7 @@ export default function Settings() {
   const loaderData = useLoaderData();
 
   const [tab, setTab] = useState("global");
+  const [notification, setNotification] = useState("")
 
   const [formColor, setFormColor] = useState("#FFD700");
   const [summaryColor, setSummaryColor] = useState("#FFD700");
@@ -46,9 +47,10 @@ export default function Settings() {
   const [hasAttribute, setHasAttribute] = useState(false);
   const [attributes, setAttributes] = useState([]);
   const [listType, setListType] = useState("list");
-  const [reviewsPerPage, setReviewsPerPage] = useState(5);
+  const [reviewsPerPage, setReviewsPerPage] = useState(2);
 
   useEffect(() => {
+    setNotification("")
     setFormColor(
       loaderData.find((item) => item.key === "form_star_color")?.value ||
         "#FFD700",
@@ -79,13 +81,17 @@ export default function Settings() {
 
   return (
     <div className="settings-container">
+      {notification && <div className="settings-notification-container">
+        <h1>{notification}</h1>
+      </div>}
+
       <div className="settings-navbar-container">
         <ul>
           <li
             onClick={() => {
               setTab("global");
             }}
-            className={tab === "global" && "active-navbar-item"}
+            className={tab === "global" ? "active-navbar-item" : ""}
           >
             Global Settings
           </li>
@@ -93,7 +99,7 @@ export default function Settings() {
             onClick={() => {
               setTab("form");
             }}
-            className={tab === "form" && "active-navbar-item"}
+            className={tab === "form" ? "active-navbar-item" : ""}
           >
             Form Settings
           </li>
@@ -101,7 +107,7 @@ export default function Settings() {
             onClick={() => {
               setTab("summary");
             }}
-            className={tab === "summary" && "active-navbar-item"}
+            className={tab === "summary" ? "active-navbar-item" : ""}
           >
             Summary Settings
           </li>
@@ -109,31 +115,67 @@ export default function Settings() {
             onClick={() => {
               setTab("list");
             }}
-            className={tab === "list" && "active-navbar-item"}
+            className={tab === "list" ? "active-navbar-item" : ""}
           >
             Display List Settings
           </li>
         </ul>
 
         <Form action="/app/settings" method="DELETE">
-          <button className="settings-btn">Reset All Settings</button>
+          <button onClick={()=>{setNotification("Deleting all settings")}} className="settings-btn">Reset All Settings</button>
         </Form>
       </div>
 
       <div className="settings-body-container">
-        <Form className="settings-form-container" method="POST" action="/app/settings">
+        <Form
+          className="settings-form-container"
+          method="POST"
+          action="/app/settings"
+        >
           <>
-            {tab === "global" && <SettingsGlobal {...{hasAttribute, setHasAttribute, attributes, setAttributes}} />}
-            {tab === "form" && <SettingsForm {...{ formColor, setFormColor }} />}
-            {tab === "summary" && <SettingsSummary {...{ summaryColor, setSummaryColor }} />}
-            {tab === "list" && <SettingsList {...{listColor, setListColor, listType, setListType, reviewsPerPage, setReviewsPerPage}} />}
+            {tab === "global" && (
+              <SettingsGlobal
+                {...{
+                  hasAttribute,
+                  setHasAttribute,
+                  attributes,
+                  setAttributes,
+                }}
+              />
+            )}
+            {tab === "form" && (
+              <SettingsForm {...{ formColor, setFormColor }} />
+            )}
+            {tab === "summary" && (
+              <SettingsSummary {...{ summaryColor, setSummaryColor }} />
+            )}
+            {tab === "list" && (
+              <SettingsList
+                {...{
+                  listColor,
+                  setListColor,
+                  listType,
+                  setListType,
+                  reviewsPerPage,
+                  setReviewsPerPage,
+                }}
+              />
+            )}
           </>
           <button type="submit" className="settings-btn settings-submit-button">
             Save
           </button>
         </Form>
         <div className="settings-preview-container">
-            <SettingsPreview formColor={formColor} summaryColor={summaryColor} hasAttribute={hasAttribute} attributes={attributes}/>
+          <SettingsPreview
+            formColor={formColor}
+            summaryColor={summaryColor}
+            listColor={listColor}
+            hasAttribute={hasAttribute}
+            attributes={attributes}
+            listType={listType}
+            reviewsPerPage={reviewsPerPage}
+          />
         </div>
       </div>
     </div>
@@ -141,7 +183,7 @@ export default function Settings() {
 }
 
 export const action = async ({ request }) => {
-  const { admin, session } = await authenticate.admin(request);
+  const { admin } = await authenticate.admin(request);
   const metafields = [];
   const m_json = {};
   const getAppId = async () => {
