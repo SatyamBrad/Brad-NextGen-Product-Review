@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Form } from '@remix-run/react';
+import { Form } from "@remix-run/react";
 import { Badge, Checkbox, Icon, Select } from "@shopify/polaris";
 import { InfoIcon, ChatIcon, CheckCircleIcon } from "@shopify/polaris-icons";
 import "./review-component.css";
 
-export default function ReviewComponent({ item, status }) {
-
+export default function ReviewComponent({ item }) {
   const flexStyle = {
     display: "flex",
     justifyContent: "center",
@@ -40,24 +39,13 @@ export default function ReviewComponent({ item, status }) {
     const isAmOrPm = hours > 12 ? "PM" : "AM";
     return `${month} ${date} at ${finalHours}:${mins} ${isAmOrPm}`;
   };
-  const [isPublished, setIsPublished] = useState(status === 'published');
 
-  const handleButtonClick = () => {
-    // Toggle the published state
-    const newStatus = !isPublished ? 'published' : 'unpublished';
-    setIsPublished(!isPublished);
-    console.log("state was changed to :", isPublished)
-
-    // if (onToggle) {
-    //   onToggle(newStatus);
-    // }
-  };
   return (
     <div className="review-component-container">
       <div>
         <div className="review-component-applets">
           <div className="flex-row">
-            <Checkbox checked={item.checked} onChange={handleCheck} />
+            {/* <Checkbox checked={item.checked} onChange={handleCheck} /> */}
             <Badge tone="info">{item.status}</Badge>
           </div>
 
@@ -68,22 +56,22 @@ export default function ReviewComponent({ item, status }) {
               {/* // publish button  */}
               <Form action="/app/reviews" method="POST">
                 <input type="hidden" name="id" value={item.id} />
-                <button
-
-                  onClick={handleButtonClick}
+                <input type="hidden" name="newStatus" value={item.status === "Published" ? "Unpublished" : "Published"}/>
+                <button type="submit"
                   style={{
-                    width: '110px',
-                    padding: '10px 20px',
-                    backgroundColor: isPublished ? 'green' : 'red',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    fontSize: '13px',
-                    textAlign: 'center'
+                    width: "110px",
+                    padding: "10px 20px",
+                    backgroundColor:
+                      item.status === "Published" ? "red" : "green",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    fontSize: "13px",
+                    textAlign: "center",
                   }}
                 >
-                  {isPublished ? 'Publish' : 'Unpublish'}
+                  {item.status === "Published" ? "Unpublish" : "Publish"}
                 </button>
               </Form>
             </div>
@@ -96,7 +84,10 @@ export default function ReviewComponent({ item, status }) {
           </div>
           <div style={{ ...flexStyle }}>
             <h2
-              style={{ textDecoration: "underline", textUnderlineOffset: "4px" }}
+              style={{
+                textDecoration: "underline",
+                textUnderlineOffset: "4px",
+              }}
             >
               {item.customerName}
             </h2>
@@ -112,7 +103,12 @@ export default function ReviewComponent({ item, status }) {
 
       <div className="review-component-image">
         {item.images?.map((image, index) => (
-          <img key={index} src={image.imageUrl} style={{ height: "200px", padding: "2px" }} alt="" />
+          <img
+            key={index}
+            src={image.imageUrl}
+            style={{ height: "200px", padding: "2px" }}
+            alt=""
+          />
         ))}
       </div>
     </div>

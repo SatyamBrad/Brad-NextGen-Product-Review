@@ -1,68 +1,63 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 import DashboardCard from "../components/dashboardCard";
-import ReviewComponent from "../components/ReviewComponent"
+import ReviewComponent from "../components/ReviewComponent";
 import { useLoaderData } from "@remix-run/react";
 import StarRating from "../components/starComponent";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import { json } from "@remix-run/node";
 import db from "../db.server.js";
-import ReviewChart from '../components/Dashboard-chart.jsx';
+import ReviewChart from "../components/Dashboard-chart.jsx";
+import { authenticate } from "../shopify.server.js";
 
-
-export const loader = async () => {
-
-  const shop = "bradnextgenwishlist.myshopify.com";
+export const loader = async ({ request }) => {
+  const { session } = await authenticate.admin(request);
 
   const fetchAllReviews = await db.review.findMany({
     where: {
-      shop,
+      shop: session.shop,
     },
     include: {
       images: true,
     },
   });
-
-  const fetchAllResponse = json({
-    ok: true,
-    message: "Successfully fetched all data from shop",
-    data: fetchAllReviews,
-  });
-  return fetchAllResponse;
-}
+  return json({ fetchAllReviews });
+};
 
 export default function DashboardContent() {
-  const fetchAllResponse = useLoaderData();
+  const loaderData = useLoaderData();
+  const { fetchAllReviews } = loaderData;
 
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState("overview");
 
-  // console.log(fetchAllResponse);
-  const reviewData = fetchAllResponse.data[6];
+  // console.log(fetchAllReviews);
+  // const reviewData = fetchAllReviews.data[6];
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-  }
+  };
   const averageReviews = (input) => {
     let ratingSum = 0;
 
-    for (var i = 0; i < input.data.length; i++) {
-      ratingSum += input.data[i].starRating;
+    for (var i = 0; i < input.length; i++) {
+      ratingSum += input[i].starRating;
     }
-    let avg = ratingSum / input.data.length;
+    let avg = ratingSum / input.length;
     avg = parseFloat(avg.toFixed(1));
 
     return avg;
-  }
+  };
   return (
-    <div style={{
-      backgroundColor: "#0B0B22",
-      width: "80%",
-      padding: "20px",
-      color: "white",
-      minHeight: "100vh",
-      minWidth: "100%",
-      borderTopRadius: "8px",
-      fontFamily: "Montserrat"
-    }}>
-
+    <div
+      style={{
+        backgroundColor: "#0B0B22",
+        width: "80%",
+        padding: "20px",
+        color: "white",
+        minHeight: "100vh",
+        minWidth: "100%",
+        borderTopRadius: "8px",
+        fontFamily: "Montserrat",
+      }}
+    >
       <div style={{ display: "flex" }}>
         <div
           style={{
@@ -78,9 +73,7 @@ export default function DashboardContent() {
               fontWeight: "bold",
               marginBottom: "10px",
             }}
-          >
-
-          </div>
+          ></div>
 
           <div
             style={{ display: "flex", alignItems: "center", paddingTop: "8px" }}
@@ -93,11 +86,11 @@ export default function DashboardContent() {
                 padding: "8px 16px",
                 borderRadius: "4px",
                 marginRight: "10px",
-                textDecoration: activeTab === 'overview' ? "underline 2px" : " ",
-                cursor: 'pointer',
+                textDecoration:
+                  activeTab === "overview" ? "underline 2px" : " ",
+                cursor: "pointer",
               }}
-              onClick={() => handleTabClick('overview')}
-
+              onClick={() => handleTabClick("overview")}
             >
               Overview
             </button>
@@ -108,32 +101,43 @@ export default function DashboardContent() {
                 border: "none",
                 padding: "8px 16px",
                 borderRadius: "4px",
-                textDecoration: activeTab === 'reviews' ? "underline 2px" : " ", cursor: 'pointer',
+                textDecoration: activeTab === "reviews" ? "underline 2px" : " ",
+                cursor: "pointer",
               }}
-              onClick={() => handleTabClick('reviews')}
+              onClick={() => handleTabClick("reviews")}
             >
               All Reviews
             </button>
           </div>
         </div>
       </div>
-      {activeTab === 'overview' ? (<div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "30px",
-            padding: "32px",
-          }}
-        >
-          <DashboardCard ReviewsCollected={fetchAllResponse.data.length} CardName="Reviews collected" Progress="6.5%" TimePeriod="over previous 30 days" />
+      {activeTab === "overview" ? (
+        <div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "30px",
+              padding: "32px",
+            }}
+          >
+            <DashboardCard
+              ReviewsCollected={fetchAllReviews.length}
+              CardName="Reviews collected"
+              Progress="6.5%"
+              TimePeriod="over previous 30 days"
+            />
 
-          <DashboardCard ReviewsCollected={averageReviews(fetchAllResponse)} CardName="Overall Avg. Rating" Progress="6.5%" TimePeriod="over previous 30 days" />
+            <DashboardCard
+              ReviewsCollected={averageReviews(fetchAllReviews)}
+              CardName="Overall Avg. Rating"
+              Progress="6.5%"
+              TimePeriod="over previous 30 days"
+            />
 
-          <DashboardCard />
-
-        </div>
-        {/* <div
+            <DashboardCard />
+          </div>
+          {/* <div
           style={{
             backgroundColor: "#0B0B22",
             color: "#fff",
@@ -229,50 +233,41 @@ export default function DashboardContent() {
             </p>
           </div>
         </div> */}
-        <div className="review-card">
-          <ReviewChart />
+          <div className="review-card">
+            <ReviewChart />
+          </div>
         </div>
-
-      </div>)
-        :
-        (<div className="review-container" >
+      ) : (
+        <div className="review-container">
           <div className="review-list">
-            {fetchAllResponse.data.map((item, index) => (
+            {fetchAllReviews.map((item, index) => (
               <ReviewComponent key={index} item={item} />
-
             ))}
           </div>
-        </div>)}
+        </div>
+      )}
     </div>
   );
-};
+}
 
-export const action = async ({ request, params }) => {
-  const { id } = params;
+export const action = async ({ request }) => {
+  const { session } = await authenticate.admin(request);
   const formData = await request.formData();
-  // const id = formData.get("id");
-  const newStatus = formData.get('status');
-  console.log(id, newStatus);
+
   try {
-    // Assume `db` is your database instance
-    const updatedComment = await db.comment.update({
-      where: { id: Number(id) },
-      data: { status: newStatus },
+    const reviewStatusToChange = await db.review.update({
+      where: {
+        shop: session.shop,
+        id: Number(formData.get("id")),
+      },
+      data: {
+        status: formData.get("newStatus"),
+      },
     });
-
-    return json({
-      ok: true,
-      message: "Status updated successfully",
-      data: updatedComment,
-    });
-  } catch (error) {
-    console.error('Error updating status:', error);
-    return json({
-      ok: false,
-      message: 'Error updating status',
-      error: error.message,
-    }, { status: 500 });
+    console.log(reviewStatusToChange);
+  } catch (err) {
+    console.error(err);
   }
+
+  return null;
 };
-
-
