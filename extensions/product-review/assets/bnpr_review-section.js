@@ -8,7 +8,7 @@ const productId = document
   .querySelector(".bnpr-review-section-container")
   .getAttribute("data-bnpr-productId");
 
-const backendApi = "https://jesus-truck-divorce-destiny.trycloudflare.com"
+const backendApi = "https://paper-insured-asian-talk.trycloudflare.com"
 
 const filterOptions = {
   starRating: [],
@@ -456,7 +456,7 @@ const fillReviewList = (data) => {
     if (item.customerId === "Guest" && item.customerName === "Anonymous") {
       userDetails.innerHTML = "Guest";
     } else {
-      userDetails.innerHTML = item.customerName.toUpperCase();
+      userDetails.innerHTML = item.customerName?.toUpperCase();
     }
 
     const starContainer = document.createElement("div");
