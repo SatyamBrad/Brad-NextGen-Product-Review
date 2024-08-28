@@ -338,8 +338,12 @@
   gap: 0.1rem;
   border-radius: 15px;
   border: 1px solid black;
-  padding: 0.3rem 0.5rem;
+  padding: 0.2rem 0.6rem;
   cursor: pointer;
+}
+.settings-preview-filter-option:hover polygon {
+  stroke: white;
+  fill: white;
 }
 
 .settings-preview-filter-option:hover {
