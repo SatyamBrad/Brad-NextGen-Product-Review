@@ -1,8 +1,10 @@
+import { useState } from "react";
+import { Form } from '@remix-run/react';
 import { Badge, Checkbox, Icon, Select } from "@shopify/polaris";
 import { InfoIcon, ChatIcon, CheckCircleIcon } from "@shopify/polaris-icons";
 import "./review-component.css";
 
-export default function ReviewComponent({ item }) {
+export default function ReviewComponent({ item, status }) {
 
   const flexStyle = {
     display: "flex",
@@ -38,9 +40,20 @@ export default function ReviewComponent({ item }) {
     const isAmOrPm = hours > 12 ? "PM" : "AM";
     return `${month} ${date} at ${finalHours}:${mins} ${isAmOrPm}`;
   };
+  const [isPublished, setIsPublished] = useState(status === 'published');
 
+  const handleButtonClick = () => {
+    // Toggle the published state
+    const newStatus = !isPublished ? 'published' : 'unpublished';
+    setIsPublished(!isPublished);
+    console.log("state was changed to :", isPublished)
+
+    // if (onToggle) {
+    //   onToggle(newStatus);
+    // }
+  };
   return (
-    <div className="review-component-container" >
+    <div className="review-component-container">
       <div>
         <div className="review-component-applets">
           <div className="flex-row">
@@ -51,27 +64,28 @@ export default function ReviewComponent({ item }) {
           <div className="flex-row">
             <Icon source={InfoIcon} />
             <Icon source={ChatIcon} />
-            <div className="flex-row" style={{ color: "black" }}>
-              <Select
-                options={[
-                  { label: "Pending", value: "pending" },
-                  { label: "Approved", value: "approved" },
-                ]}
-              // value={selected}
-              // onChange={(val) => {
-              //   setSelected(val);
-              // }}
-              />
-              {/* <Select
-              options={[
-                { label: "Pending", value: "pending" },
-                { label: "Approved", value: "approved" },
-              ]}
-            value={selected}
-            onChange={(val) => {
-              setSelected(val);
-            }}
-            /> */}
+            <div className="flex-row">
+              {/* // publish button  */}
+              <Form action="/app/reviews" method="POST">
+                <input type="hidden" name="id" value={item.id} />
+                <button
+
+                  onClick={handleButtonClick}
+                  style={{
+                    width: '110px',
+                    padding: '10px 20px',
+                    backgroundColor: isPublished ? 'green' : 'red',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    textAlign: 'center'
+                  }}
+                >
+                  {isPublished ? 'Publish' : 'Unpublish'}
+                </button>
+              </Form>
             </div>
           </div>
         </div>

@@ -1,17 +1,10 @@
-import React from "react";
-import { useLoaderData } from "@remix-run/react";
-import { json } from "@remix-run/node";
-import "../styles/customizer.css";
-
-export const loader = async () => {
-    return json({});
-};
-
-export default function ThemeSetup() {
-    const data = useLoaderData();
+import React from 'react'
+import "../styles/support.css"
+export default function support() {
     return (
         <div className="container">
             <main className="main">
+                <h1>Support</h1>
                 <section className="section">
                     <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center" }}>
                         <div style={{ marginRight: "24px", paddingRight: "64px" }}>
@@ -23,25 +16,25 @@ export default function ThemeSetup() {
                             </div>
                         </div>
                         <div className="image-container">
-                            <img style={{ width: "300px" }} src="/Customizer_Image_1.svg" alt="Setup Illustration" />
+                            <img style={{ width: "300px" }} src="/amico.svg" alt="Setup Illustration" />
                         </div>
                     </div>
                 </section>
 
-                <section className="section guidelines" style={{ display: "flex" }}>
-                    <div>
-                        <h2>Step by step guidelines</h2>
-                        <ul>
-                            <li>Click on online stores &gt;</li>
-                            <li>Click on Customize button &gt;</li>
-                            <li>Refer the screen guideline &gt;</li>
-                        </ul>
+                <div class="contact-icons">
+                    <div class="icon">
+                        <img src="/whatsapp.svg" alt="WhatsApp" />
                     </div>
-                    <div className="image-container" style={{ padding: "0px" }}>
-                        <img style={{ height: "370px", width: "600px", marginLeft: "60%" }} src="/Customizer_Image_2.svg" alt="Step by step guidelines" />
+                    <div class="icon">
+                        <img src="/email.svg" alt="Email" />
                     </div>
-                </section>
+                    <div class="icon">
+                        <img src="/tutorial.svg" alt="Setup" />
+                    </div>
+                </div>
             </main>
         </div>
     );
 }
+
+

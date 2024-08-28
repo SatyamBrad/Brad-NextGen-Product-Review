@@ -8,7 +8,7 @@ const productId = document
   .querySelector(".bnpr-review-section-container")
   .getAttribute("data-bnpr-productId");
 
-const backendApi = "https://jesus-truck-divorce-destiny.trycloudflare.com"
+const backendApi = "https://analog-bbc-styles-mix.trycloudflare.com";
 
 const filterOptions = {
   starRating: [],
@@ -338,18 +338,12 @@ const displaySummaryRatings = ({ summary, ratings }) => {
 const displaySummaryAttibutes = (data) => {
   data.forEach((item) => {
     const [key, value] = Object.entries(item)[0];
-<<<<<<< HEAD
-    document
-      .getElementById(`bnpr-review-section-attributes-${key}`)
-      .querySelector(".bnpr-inner-bar").style.width = `${value * 20}%`;
-=======
     const element = document
       .getElementById(`bnpr-review-section-attributes-${key}`)
       ?.querySelector(".bnpr-inner-bar");
     if (element) {
       element.style.width = `${(value / 4 - 0.25) * 100}%`;
     }
->>>>>>> a2e2845d797e41f837b71e19639f613bdeda4363
   });
 };
 
