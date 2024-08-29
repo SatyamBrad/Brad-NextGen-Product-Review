@@ -8,7 +8,7 @@ const productId = document
   .querySelector(".bnpr-review-section-container")
   .getAttribute("data-bnpr-productId");
 
-const backendApi = "https://products-native-metabolism-wu.trycloudflare.com";
+const backendApi = "https://adopt-doll-questions-polished.trycloudflare.com";
 
 const filterOptions = {
   starRating: [],
