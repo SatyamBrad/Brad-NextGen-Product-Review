@@ -1,11 +1,11 @@
 .review-chart-container {
-  background-color: #48475a; /* Dark background matching original */
+  background-color: #3c3c4e; /* Dark background matching original */
+  margin: 5px;
   padding: 20px;
   border-radius: 10px;
   color: #ffffff;
-  width: 400px; /* Increased width */
-  height: 310px; /* Increased height */
-  margin-left: 3rem;
+  width: 500px; /* Increased width */
+  height: 380px; /* Increased height */
 }
 
 .chart-title {

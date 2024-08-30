@@ -1,9 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import DashboardCard from "../components/dashboardCard";
 import ReviewComponent from "../components/ReviewComponent";
 import { useLoaderData } from "@remix-run/react";
-import StarRating from "../components/starComponent";
-import { format } from "date-fns";
 import { json } from "@remix-run/node";
 import db from "../db.server.js";
 import ReviewChart from "../components/Dashboard-chart.jsx";
@@ -112,13 +110,13 @@ export default function DashboardContent() {
         </div>
       </div>
       {activeTab === "overview" ? (
-        <div>
+        <div >
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
-              marginBottom: "30px",
-              padding: "32px",
+              margin: "1rem",
+
             }}
           >
             <DashboardCard
@@ -233,7 +231,8 @@ export default function DashboardContent() {
             </p>
           </div>
         </div> */}
-          <div className="review-card">
+          <div className="review-card" style={{ display: "flex", justifyContent: "space-around" }} >
+            <ReviewChart />
             <ReviewChart />
           </div>
         </div>

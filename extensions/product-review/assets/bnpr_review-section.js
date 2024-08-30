@@ -8,7 +8,7 @@ const productId = document
   .querySelector(".bnpr-review-section-container")
   .getAttribute("data-bnpr-productId");
 
-const backendApi = "https://paper-insured-asian-talk.trycloudflare.com"
+const backendApi = "https://rules-massive-sh-touched.trycloudflare.com";
 
 const filterOptions = {
   starRating: [],
