@@ -39,7 +39,7 @@ export default function Settings() {
   const loaderData = useLoaderData();
 
   const [tab, setTab] = useState("global");
-  const [notification, setNotification] = useState("")
+  const [notification, setNotification] = useState("");
 
   const [formColor, setFormColor] = useState("#FFD700");
   const [summaryColor, setSummaryColor] = useState("#FFD700");
@@ -50,7 +50,7 @@ export default function Settings() {
   const [reviewsPerPage, setReviewsPerPage] = useState(2);
 
   useEffect(() => {
-    setNotification("")
+    setNotification("");
     setFormColor(
       loaderData.find((item) => item.key === "form_star_color")?.value ||
         "#FFD700",
@@ -81,9 +81,11 @@ export default function Settings() {
 
   return (
     <div className="settings-container">
-      {notification && <div className="settings-notification-container">
-        <h1>{notification}</h1>
-      </div>}
+      {notification && (
+        <div className="settings-notification-container">
+          <h1>{notification}</h1>
+        </div>
+      )}
 
       <div className="settings-navbar-container">
         <ul>
@@ -122,7 +124,14 @@ export default function Settings() {
         </ul>
 
         <Form action="/app/settings" method="DELETE">
-          <button onClick={()=>{setNotification("Deleting all settings")}} className="settings-btn">Reset All Settings</button>
+          <button
+            onClick={() => {
+              setNotification("Deleting all settings...");
+            }}
+            className="settings-btn"
+          >
+            Reset All Settings
+          </button>
         </Form>
       </div>
 
@@ -162,7 +171,11 @@ export default function Settings() {
               />
             )}
           </>
-          <button type="submit" className="settings-btn settings-submit-button">
+          <button
+            type="submit"
+            className="settings-btn settings-submit-button"
+            onClick={() => setNotification(`Saving ${tab} settings...`)}
+          >
             Save
           </button>
         </Form>
@@ -186,6 +199,8 @@ export const action = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
   const metafields = [];
   const m_json = {};
+  const formData = await request.formData();
+
   const getAppId = async () => {
     const currentApp = await admin.graphql(`
       #graphql
@@ -213,10 +228,9 @@ export const action = async ({ request }) => {
     m_json[m_key].value[index][extraKey] = value;
   };
 
-  const formData = await request.formData();
-  switch (request.method) {
-    case "DELETE":
-      try {
+  try {
+    switch (request.method) {
+      case "DELETE":
         const appMetafieldsFetch = await admin.graphql(`
           #graphql
           query {
@@ -238,9 +252,8 @@ export const action = async ({ request }) => {
             ({ node }) => node.id,
           );
         for (const id of metafieldsToDelete) {
-          try {
-            const deleteMetafield = await admin.graphql(
-              `
+          const deleteMetafield = await admin.graphql(
+            `
                 #graphql
                 mutation metafieldDelete($input: MetafieldDeleteInput!) {
                   metafieldDelete(input: $input) {
@@ -251,27 +264,19 @@ export const action = async ({ request }) => {
                     }
                   }
                 }`,
-              {
-                variables: {
-                  input: {
-                    id,
-                  },
+            {
+              variables: {
+                input: {
+                  id,
                 },
               },
-            );
-            const { data } = await deleteMetafield.json();
-          } catch (error) {
-            console.error(`Failed to delete metafield with id ${id}:`, error);
-          }
+            },
+          );
         }
-      } catch (error) {
-        console.error("Error during DELETE operation:", error);
-      }
 
-      return redirect("/app/settings");
+        return redirect("/app/settings");
 
-    case "POST":
-      try {
+      case "POST":
         // Process the form data and prepare metafields
         for (const [key, value] of formData.entries()) {
           const [m_namespace, m_type, m_key, index, extraKey] = key.split("-");
@@ -333,12 +338,11 @@ export const action = async ({ request }) => {
         const createdMetafields = await metafieldsToCreate.json();
 
         return redirect("/app/settings");
-      } catch (error) {
-        console.error("Error during POST operation:", error);
-        return json({ error: "Failed to save settings" }, { status: 500 });
-      }
 
-    default:
-      return json("Invalid request method", { status: 405 });
+      default:
+        return json("Invalid request method", { status: 405 });
+    }
+  } catch (err) {
+    console.error(err);
   }
 };

@@ -166,9 +166,10 @@ export const action = async ({ request }) => {
         return cors(request, fetchAllResponse);
 
       case "FETCH_BY_PRODUCT":
-        const reviewsPerPage = Number(formData.get("reviewsPerPage"))
         if (!shop) throw new Error("Required field: shop");
         if (!productId) throw new Error("Required field: productId");
+        
+        const reviewsPerPage = Number(formData.get("reviewsPerPage"))
         const fetchByProductReviews = await db.review.findMany({
           where: {
             shop,
@@ -180,7 +181,11 @@ export const action = async ({ request }) => {
             }),
           },
           include: {
-            images: true,
+            images: {
+              select: {
+                imageUrl: true
+              }
+            }
           },
           skip: (pageNo - 1) * reviewsPerPage,
           take: reviewsPerPage,
