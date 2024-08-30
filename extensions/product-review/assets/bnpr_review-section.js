@@ -8,7 +8,7 @@ const productId = document
   .querySelector(".bnpr-review-section-container")
   .getAttribute("data-bnpr-productId");
 
-const backendApi = "https://rules-massive-sh-touched.trycloudflare.com";
+const backendApi = "https://adopt-doll-questions-polished.trycloudflare.com";
 
 const filterOptions = {
   starRating: [],
@@ -451,18 +451,14 @@ const fillReviewList = (data) => {
       .getAttribute("data-bnpr-starColor") || "#FFD700";
 
   data.forEach((item) => {
-    const userDetails = document.createElement("div");
-    userDetails.classList.add("bnpr-user-details");
-    if (item.customerId === "Guest" && item.customerName === "Anonymous") {
-      userDetails.innerHTML = "Guest";
-    } else {
-      userDetails.innerHTML = item.customerName?.toUpperCase();
-    }
+    const reviewAuthor = document.createElement("div");
+    reviewAuthor.classList.add("bnpr-review-author");
+    reviewAuthor.innerText = item.customerName;
 
     const starContainer = document.createElement("div");
     starContainer.classList.add("bnpr-star-container");
     for (let i = 1; i <= 5; i++) {
-      const star = document.createElement("div");
+      const star = document.createElement("span");
       star.classList.add("bnpr-star");
       if (i <= item.starRating) {
         star.innerHTML = `<svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -485,32 +481,28 @@ const fillReviewList = (data) => {
     reviewDescription.classList.add("bnpr-review-description");
 
     const imageContainer = document.createElement("div");
-    if (item.images.length !== 0) {
+    if (item.images.length > 0) {
       imageContainer.classList.add("bnpr-image-container");
 
-      item.images.forEach((image) => {
+      item.images.forEach(({ imageUrl }) => {
         const img = document.createElement("img");
         img.classList.add("bnpr-image");
-        img.src = image?.imageUrl;
+        img.src = imageUrl;
         imageContainer.appendChild(img);
+
+        img.addEventListener("click", () => {
+          window.open(imageUrl, "_blank");
+        });
       });
     }
 
-    const header = document.createElement("div");
-    header.classList.add("bnpr-list-item-header");
-    header.appendChild(userDetails);
-
-    const body = document.createElement("div");
-    body.classList.add("bnpr-list-item-body");
-    body.appendChild(starContainer);
-    body.appendChild(reviewTitle);
-    body.appendChild(reviewDescription);
-    body.appendChild(imageContainer);
-
     const listItem = document.createElement("div");
     listItem.classList.add("bnpr-list-item");
-    listItem.appendChild(header);
-    listItem.appendChild(body);
+    listItem.appendChild(reviewAuthor);
+    listItem.appendChild(starContainer);
+    listItem.appendChild(reviewTitle);
+    listItem.appendChild(reviewDescription);
+    listItem.appendChild(imageContainer);
 
     container.appendChild(listItem);
   });
