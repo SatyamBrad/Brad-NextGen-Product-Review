@@ -1,7 +1,7 @@
-export default function SettingsList({listColor, setListColor, listType, setListType, reviewsPerPage, setReviewsPerPage}) {
+export default function CustomizerList({listColor, setListColor, listType, setListType, reviewsPerPage, setReviewsPerPage}) {
     return (
         <>
-        <div className="settings-form-item">
+        <div className="customizer-form-item">
           <label>Review List Star Color</label>
           <input
             type="color"
@@ -11,21 +11,21 @@ export default function SettingsList({listColor, setListColor, listType, setList
           />
         </div>
 
-        <div className="settings-form-item-col">
+        <div className="customizer-form-item-col">
           <label>Select Review List Display Type</label>
-          <div className="settings-list-type">
+          <div className="customizer-list-type">
             <span>
               <input
                 type="radio"
                 name="bnpr_global-single_line_text_field-list_type"
-                id="settings-list-type-1"
+                id="customizer-list-type-1"
                 value="block"
                 checked={listType === "block"}
                 onChange={() => {
                   setListType("block");
                 }}
               />
-              <label htmlFor="settings-list-type-1">
+              <label htmlFor="customizer-list-type-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="100"
@@ -73,14 +73,14 @@ export default function SettingsList({listColor, setListColor, listType, setList
               <input
                 type="radio"
                 name="bnpr_global-single_line_text_field-list_type"
-                id="settings-list-type-2"
+                id="customizer-list-type-2"
                 value="list"
                 checked={listType === "list"}
                 onChange={() => {
                   setListType("list");
                 }}
               />
-              <label htmlFor="settings-list-type-2">
+              <label htmlFor="customizer-list-type-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="100"
@@ -119,7 +119,7 @@ export default function SettingsList({listColor, setListColor, listType, setList
           </div>
         </div>
 
-        <div className="settings-form-item">
+        <div className="customizer-form-item">
           <label>Number of reviews per page:</label>
           <input
             type="number"

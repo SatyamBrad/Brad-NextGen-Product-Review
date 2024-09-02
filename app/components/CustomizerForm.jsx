@@ -1,9 +1,8 @@
-export default function SettingsForm({formColor, setFormColor}) {
-  console.log(formColor)
+export default function CustomizerForm({formColor, setFormColor}) {
 
   return (
     <>
-      <div className="settings-form-item">
+      <div className="customizer-form-item">
         <label>Form Star Color</label>
         <input
           type="color"

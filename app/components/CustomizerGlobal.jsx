@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function SettingsGlobal({
+export default function CustomizerGlobal({
   hasAttribute,
   setHasAttribute,
   attributes,
@@ -18,17 +18,17 @@ export default function SettingsGlobal({
   return (
     <>
       <div
-        className="settings-form-item-col"
+        className="customizer-form-item-col"
         style={{ position: "relative", width: "80%" }}
       >
-        <div className="settings-form-attribute-buttons">
+        <div className="customizer-form-attribute-buttons">
           <input
             type="hidden"
             name="bnpr_global-single_line_text_field-has_attribute"
             value={hasAttribute}
           />
           <button
-            className="settings-btn"
+            className="customizer-btn"
             type="button"
             onClick={() => setHasAttribute((prev) => !prev)}
           >
@@ -37,7 +37,7 @@ export default function SettingsGlobal({
 
           <button
             type="button"
-            className="settings-btn"
+            className="customizer-btn"
             onClick={() => {
               setOpenModal(true);
               setAddAttribute({
@@ -55,7 +55,7 @@ export default function SettingsGlobal({
         </div>
 
         {openModal && (
-          <div className="settings-form-attribute-modal">
+          <div className="customizer-form-attribute-modal">
             <div>
               <label>Attribute Type</label>
               <select
@@ -158,8 +158,8 @@ export default function SettingsGlobal({
         <div
           className={
             hasAttribute
-              ? `settings-form-attribute-content`
-              : `settings-form-attribute-content settings-disable-attribute`
+              ? `customizer-form-attribute-content`
+              : `customizer-form-attribute-content customizer-disable-attribute`
           }
         >
           {attributes?.map((attribute, index) => (
@@ -195,7 +195,6 @@ export default function SettingsGlobal({
                 value={attribute.end}
               />
               <div>
-                <p>{attribute.id}</p>
                 <h3>{attribute.header}</h3>
                 <p>{attribute.type === "range" ? "Range" : "Centered Range"}</p>
                 <p>

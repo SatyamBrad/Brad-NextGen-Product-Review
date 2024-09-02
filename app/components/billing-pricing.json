@@ -1,0 +1,146 @@
+{
+    "monthly": [
+      {
+        "id": "free",
+        "name": "Free Plan",
+        "amount": 0,
+        "currencyCode": "USD",
+        "currencySymbol": "$",
+        "features": [
+          "For Shopify Plan Stores",
+          "Automatic Review Requests",
+          "Display Reviews On-Site",
+          "Collect Photos/Videos",
+          "Share Reviews to Facebook",
+          "Custom questions",
+          "Import existing reviews",
+          "Support within 24 Hrs"
+        ]
+      },
+      {
+        "id": "basic-monthly",
+        "name": "Basic Plan",
+        "amount": 9.99,
+        "currencyCode": "USD",
+        "currencySymbol": "$",
+        "features": [
+          "For Shopify Plan Stores",
+          "Automatic Review Requests",
+          "Display Reviews On-Site",
+          "Collect Photos/Videos",
+          "Share Reviews to Facebook",
+          "Custom questions",
+          "Import existing reviews",
+          "Support within 24 Hrs"
+        ]
+      },
+      {
+        "id": "pro-monthly",
+        "name": "Pro Plan",
+        "amount": 19.99,
+        "currencyCode": "USD",
+        "currencySymbol": "$",
+        "features": [
+          "For Shopify Plan Stores",
+          "Automatic Review Requests",
+          "Display Reviews On-Site",
+          "Collect Photos/Videos",
+          "Share Reviews to Facebook",
+          "Custom questions",
+          "Import existing reviews",
+          "Support within 24 Hrs"
+        ]
+      },
+      {
+        "id": "expert-monthly",
+        "name": "Expert Plan",
+        "amount": 29.99,
+        "currencyCode": "USD",
+        "currencySymbol": "$",
+        "features": [
+          "For Shopify Plan Stores",
+          "Automatic Review Requests",
+          "Display Reviews On-Site",
+          "Collect Photos/Videos",
+          "Share Reviews to Facebook",
+          "Custom questions",
+          "Import existing reviews",
+          "Support within 24 Hrs"
+        ]
+      }
+    ],
+    "annually": [
+      {
+        "id": "free",
+        "name": "Free Plan",
+        "amount": 0,
+        "currencyCode": "USD",
+        "currencySymbol": "$",
+        "features": [
+          "For Shopify Plan Stores",
+          "Automatic Review Requests",
+          "Display Reviews On-Site",
+          "Collect Photos/Videos",
+          "Share Reviews to Facebook",
+          "Custom questions",
+          "Import existing reviews",
+          "Support within 24 Hrs"
+        ]
+      },
+      {
+        "id": "basic-annually",
+        "name": "Basic Plan",
+        "amount": 95.9,
+        "currencyCode": "USD",
+        "currencySymbol": "$",
+        "originalPrice": 119.88,
+        "features": [
+          "For Shopify Plan Stores",
+          "Automatic Review Requests",
+          "Display Reviews On-Site",
+          "Collect Photos/Videos",
+          "Share Reviews to Facebook",
+          "Custom questions",
+          "Import existing reviews",
+          "Support within 24 Hrs"
+        ]
+      },
+      {
+        "id": "pro-annually",
+        "name": "Pro Plan",
+        "amount": 179.9,
+        "currencyCode": "USD",
+        "currencySymbol": "$",
+        "originalPrice": 239.88,
+        "features": [
+          "For Shopify Plan Stores",
+          "Automatic Review Requests",
+          "Display Reviews On-Site",
+          "Collect Photos/Videos",
+          "Share Reviews to Facebook",
+          "Custom questions",
+          "Import existing reviews",
+          "Support within 24 Hrs"
+        ]
+      },
+      {
+        "id": "expert-annually",
+        "name": "Expert Plan",
+        "amount": 251.9,
+        "currencyCode": "USD",
+        "currencySymbol": "$",
+        "originalPrice": 359.88,
+        "features": [
+          "For Shopify Plan Stores",
+          "Automatic Review Requests",
+          "Display Reviews On-Site",
+          "Collect Photos/Videos",
+          "Share Reviews to Facebook",
+          "Custom questions",
+          "Import existing reviews",
+          "Support within 24 Hrs"
+        ]
+      }
+    ]
+  }
+  
