@@ -205,6 +205,7 @@ export const action = async ({ request }) => {
       case "CREATE":
         if (!shop) throw new Error("Required fields: shop");
         if (!productId) throw new Error("Required fields: productId");
+        
         const imageUrls = [];
         await uploadImages(imageUrls, formData.getAll("images"));
         console.log(Object.entries(formAttributes).map(([key, value]) => ({

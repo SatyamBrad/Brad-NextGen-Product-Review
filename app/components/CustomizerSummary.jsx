@@ -1,7 +1,7 @@
-export default function SettingsSummary({ summaryColor, setSummaryColor }) {
+export default function CustomizerSummary({ summaryColor, setSummaryColor }) {
     return (
         <>
-         <div className="settings-form-item">
+         <div className="customizer-form-item">
           <label>Review Summary Star Color</label>
           <input
             type="color"

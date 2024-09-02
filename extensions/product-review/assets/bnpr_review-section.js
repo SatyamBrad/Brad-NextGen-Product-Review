@@ -8,7 +8,7 @@ const productId = document
   .querySelector(".bnpr-review-section-container")
   .getAttribute("data-bnpr-productId");
 
-const backendApi = "https://authors-resulted-walked-oaks.trycloudflare.com";
+const backendApi = "https://publishers-marco-turkish-oldest.trycloudflare.com"
 
 const filterOptions = {
   starRating: [],

@@ -1,4 +1,4 @@
-.settings-preview {
+.customizer-preview {
   margin: auto;
   width: 100%;
   height: 100%;
@@ -8,14 +8,14 @@
   padding-block: 0.5rem;
 }
 
-.settings-preview > h1 {
+.customizer-preview > h1 {
   text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
   margin-block: 1rem 1.5rem;
 }
 
-.settings-preview-form {
+.customizer-preview-form {
   margin: auto;
   width: 100%;
   height: 100%;
@@ -26,7 +26,7 @@
   align-items: center;
 }
 
-.settings-preview-form-app {
+.customizer-preview-form-app {
   box-shadow:
     rgba(0, 0, 0, 0.16) 0px 3px 6px,
     rgba(0, 0, 0, 0.23) 0px 3px 6px;
@@ -41,14 +41,14 @@
   scrollbar-width: thin;
 }
 
-.settings-preview-form-app > h1 {
+.customizer-preview-form-app > h1 {
   text-align: center;
   margin-block: 1rem;
   font-size: 1.2rem;
   font-weight: bold;
 }
 
-.settings-preview-form-app > .close-form-btn {
+.customizer-preview-form-app > .close-form-btn {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -60,36 +60,36 @@
   justify-content: center;
 }
 
-.settings-preview-form-app > .close-form-btn:hover {
+.customizer-preview-form-app > .close-form-btn:hover {
   box-shadow:
     rgba(0, 0, 0, 0.16) 0px 3px 6px,
     rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
-.settings-preview-form-item {
+.customizer-preview-form-item {
   width: 100%;
   margin-bottom: 0.5rem;
 }
 
-.settings-preview-form-item > label {
+.customizer-preview-form-item > label {
   display: block;
   margin-bottom: 0.3rem;
   font-size: 1rem;
 }
 
-.settings-preview-form-item input[type="text"],
-.settings-preview-form-item textarea {
+.customizer-preview-form-item input[type="text"],
+.customizer-preview-form-item textarea {
   width: 100%;
   resize: vertical;
   padding: 0.3rem;
 }
 
-.settings-preview-form-item input[type="file"],
-.settings-preview-form-attributes input[type="radio"] {
+.customizer-preview-form-item input[type="file"],
+.customizer-preview-form-attributes input[type="radio"] {
   display: none;
 }
 
-.settings-preview-form-item .upload-image {
+.customizer-preview-form-item .upload-image {
   min-width: 4rem;
   height: 4rem;
   border-radius: 5px;
@@ -123,7 +123,7 @@
   border-radius: 8px;
 }
 
-.settings-preview-form-attributes {
+.customizer-preview-form-attributes {
   display: flex;
   width: fit-content;
   align-items: center;
@@ -132,7 +132,7 @@
   margin-bottom: 2rem;
 }
 
-.settings-preview-form-attributes label {
+.customizer-preview-form-attributes label {
   border: 1px solid black;
   padding: 0.3rem 1rem;
   border-radius: 5px;
@@ -140,11 +140,11 @@
   margin-block: 0.3rem;
 }
 
-.settings-preview-form-attributes input[type="radio"]:checked + label {
+.customizer-preview-form-attributes input[type="radio"]:checked + label {
   background-color: black;
 }
 
-.settings-preview-form-attributes
+.customizer-preview-form-attributes
   input[type="radio"]:checked
   + label
   > svg
@@ -152,7 +152,7 @@
   fill: white;
 }
 
-.settings-preview-form-attributes .label {
+.customizer-preview-form-attributes .label {
   position: absolute;
   bottom: -1.2rem;
 }
@@ -160,15 +160,15 @@
   left: 0;
 }
 
-.settings-preview-form-attributes .mid-label {
+.customizer-preview-form-attributes .mid-label {
   left: 50%;
   transform: translateX(-50%);
 }
-.settings-preview-form-attributes .end-label {
+.customizer-preview-form-attributes .end-label {
   right: 0;
 }
 
-.settings-preview-submit-form {
+.customizer-preview-submit-form {
   font-size: 1rem;
   width: 100%;
   margin-block: 1rem;
@@ -178,46 +178,46 @@
   background-color: white;
   cursor: pointer;
 }
-.settings-preview-submit-form:hover {
+.customizer-preview-submit-form:hover {
   background-color: black;
   color: white;
 }
 /* form css ends here */
 
-.settings-preview-summary {
+.customizer-preview-summary {
   display: flex;
   justify-content: space-around;
   align-items: flex-start;
 }
-.settings-preview-summary > div {
+.customizer-preview-summary > div {
   width: 40%;
 }
 
-.settings-preview-summary-details {
+.customizer-preview-summary-details {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.settings-preview-summary-details .summary-details {
+.customizer-preview-summary-details .summary-details {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.settings-preview-summary-details .summary-details h1 {
+.customizer-preview-summary-details .summary-details h1 {
   font-size: 1.5rem;
   font-weight: bold;
 }
 
-.settings-preview-summary-details .summary-ratings {
+.customizer-preview-summary-details .summary-ratings {
   width: 100%;
   margin-block: 1rem;
   display: flex;
   flex-direction: column;
 }
 
-.settings-preview-summary-details .summary-ratings > div {
+.customizer-preview-summary-details .summary-ratings > div {
   width: 100%;
   display: flex;
   align-items: center;
@@ -226,7 +226,7 @@
   gap: 0.3rem;
 }
 
-.settings-preview-summary-details .summary-ratings > div > .bar {
+.customizer-preview-summary-details .summary-ratings > div > .bar {
   justify-self: flex-end;
   display: block;
   width: 60%;
@@ -235,24 +235,24 @@
   border-radius: 15px;
 }
 
-.settings-preview-summary-details .summary-ratings > div .inner-bar {
+.customizer-preview-summary-details .summary-ratings > div .inner-bar {
   display: block;
   height: 100%;
   background-color: black;
   border-radius: 15px;
 }
 
-.settings-preview-summary-attributes {
+.customizer-preview-summary-attributes {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.settings-preview-summary-attributes > h1 {
+.customizer-preview-summary-attributes > h1 {
   font-size: 1.1rem;
 }
 
-.settings-preview-summary-attributes .bar {
+.customizer-preview-summary-attributes .bar {
   height: 10px;
   width: 80%;
   background-color: #ccc;
@@ -261,14 +261,14 @@
   position: relative;
 }
 
-.settings-preview-summary-attributes .inner-bar {
+.customizer-preview-summary-attributes .inner-bar {
   border-radius: 15px;
   width: 60%;
   height: 100%;
   background-color: black;
   position: relative;
 }
-.settings-preview-summary-attributes .slider {
+.customizer-preview-summary-attributes .slider {
   display: block;
   background-color: black;
   border-radius: 100%;
@@ -279,18 +279,18 @@
   left: calc(100% - 15px);
 }
 
-.settings-preview-summary-attributes .label {
+.customizer-preview-summary-attributes .label {
   position: absolute;
 }
 
-.settings-preview-summary-attributes .mid-label {
+.customizer-preview-summary-attributes .mid-label {
   left: 40%;
 }
-.settings-preview-summary-attributes .end-label {
+.customizer-preview-summary-attributes .end-label {
   right: 0;
 }
 
-.settings-preview-buttons {
+.customizer-preview-buttons {
   width: 80%;
   margin: 0.5rem auto;
   display: flex;
@@ -300,7 +300,7 @@
   padding-block: 1rem;
 }
 
-.settings-preview-buttons button {
+.customizer-preview-buttons button {
   padding: 0.5rem 1rem;
   border-radius: 5px;
   border: 2px solid black;
@@ -308,12 +308,12 @@
   cursor: pointer;
   font-weight: bold;
 }
-.settings-preview-buttons button:hover {
+.customizer-preview-buttons button:hover {
   background-color: black;
   color: white;
 }
 
-.settings-preview-filter {
+.customizer-preview-filter {
   width: 50%;
   display: flex;
   flex-direction: column;
@@ -325,14 +325,14 @@
   padding: 0.5rem;
   margin-left: 10%;
 }
-.settings-preview-filter-item {
+.customizer-preview-filter-item {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
 }
 
-.settings-preview-filter-option {
+.customizer-preview-filter-option {
   display: flex;
   align-items: center;
   gap: 0.1rem;
@@ -341,17 +341,17 @@
   padding: 0.2rem 0.6rem;
   cursor: pointer;
 }
-.settings-preview-filter-option:hover polygon {
+.customizer-preview-filter-option:hover polygon {
   stroke: white;
   fill: white;
 }
 
-.settings-preview-filter-option:hover {
+.customizer-preview-filter-option:hover {
   background-color: black;
   color: white;
 }
 
-.settings-preview-list {
+.customizer-preview-list {
   width: 80%;
   display: flex;
   margin: 1rem auto;
@@ -359,7 +359,7 @@
   gap: 1rem;
 }
 
-.settings-preview-list-item {
+.customizer-preview-list-item {
   box-shadow:
     rgba(0, 0, 0, 0.16) 0px 3px 6px,
     rgba(0, 0, 0, 0.23) 0px 3px 6px;
@@ -377,7 +377,7 @@
   width: 50%;
 }
 
-.settings-preview-list-item .review-details {
+.customizer-preview-list-item .review-details {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -385,7 +385,7 @@
   gap: 0.2rem;
 }
 
-.settings-preview-list-item .image-container {
+.customizer-preview-list-item .image-container {
   height: 4rem;
   width: 100%;
   overflow-x: auto;
@@ -396,27 +396,27 @@
   gap: 0.5rem;
 }
 
-.settings-preview-list-item .image-container img {
+.customizer-preview-list-item .image-container img {
   height: 100%;
   box-shadow:
     rgba(0, 0, 0, 0.16) 0px 3px 6px,
     rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
-.settings-preview-page-navigation {
+.customizer-preview-page-navigation {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.2rem;
   padding-bottom: 1rem;
 }
-.settings-preview-page-navigation > span {
+.customizer-preview-page-navigation > span {
   padding: 0.3rem 1rem;
   border: 1px solid black;
   border-radius: 5px;
   cursor: pointer;
 }
-.settings-preview-page-navigation > span:hover {
+.customizer-preview-page-navigation > span:hover {
   background-color: black;
   color: white;
 }

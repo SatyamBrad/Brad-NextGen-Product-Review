@@ -1,204 +1,39 @@
+import { useEffect, useState } from "react";
+import plans from "../components/billing-pricing.json";
+import "../styles/billing.css";
 import { authenticate } from "../shopify.server";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import { useEffect } from "react";
-import "../styles/billing.css";
-import { TitleBar } from "@shopify/app-bridge-react";
-
-const PLANS = {
-  partner_test: {
-    monthly: {},
-    yearly: {},
-  },
-  basic: {
-    monthly: {
-      name: "Basic Shopify Monthly Subscription",
-      amount: 9.99,
-      currency: "USD",
-      features: [
-        "For Shopify Plan Stores",
-        "Automatic Review Requests",
-        "Display Reviews On-Site",
-        "Collect Photos/Videos",
-        "Share Reviews to Facebook",
-        "Custom questions",
-        "Import existing reviews",
-        "Support within 24 Hrs",
-      ],
-    },
-    yearly: {
-      name: "Basic Shopify Yearly Subscription",
-      amount: 95.9,
-      currency: "USD",
-      originalPrice: 119.88,
-      features: [
-        "For Shopify Plan Stores",
-        "Automatic Review Requests",
-        "Display Reviews On-Site",
-        "Collect Photos/Videos",
-        "Share Reviews to Facebook",
-        "Custom questions",
-        "Import existing reviews",
-        "Support within 24 Hrs",
-      ],
-    },
-  },
-  shopify: {
-    monthly: {
-      name: "Shopify Monthly Subscription",
-      amount: 19.99,
-      currency: "USD",
-      features: [
-        "For Shopify Plan Stores",
-        "Automatic Review Requests",
-        "Display Reviews On-Site",
-        "Collect Photos/Videos",
-        "Share Reviews to Facebook",
-        "Custom questions",
-        "Import existing reviews",
-        "Support within 24 Hrs",
-      ],
-    },
-    yearly: {
-      name: "Shopify Yearly Subscription",
-      amount: 179.9,
-      currency: "USD",
-      originalPrice: 239.88,
-      features: [
-        "For Shopify Plan Stores",
-        "Automatic Review Requests",
-        "Display Reviews On-Site",
-        "Collect Photos/Videos",
-        "Share Reviews to Facebook",
-        "Custom questions",
-        "Import existing reviews",
-        "Support within 24 Hrs",
-      ],
-    },
-  },
-  advanced: {
-    monthly: {
-      name: "Advanced Shopify Monthly Subscription",
-      amount: 29.99,
-      currency: "USD",
-      features: [
-        "For Shopify Plan Stores",
-        "Automatic Review Requests",
-        "Display Reviews On-Site",
-        "Collect Photos/Videos",
-        "Share Reviews to Facebook",
-        "Custom questions",
-        "Import existing reviews",
-        "Support within 24 Hrs",
-      ],
-    },
-    yearly: {
-      name: "Advanced Shopify Yearly Subscription",
-      amount: 251.9,
-      currency: "USD",
-      originalPrice: 359.88,
-      features: [
-        "For Shopify Plan Stores",
-        "Automatic Review Requests",
-        "Display Reviews On-Site",
-        "Collect Photos/Videos",
-        "Share Reviews to Facebook",
-        "Custom questions",
-        "Import existing reviews",
-        "Support within 24 Hrs",
-      ],
-    },
-  },
-  enterprise: {
-    monthly: {
-      name: "Shopify Plus Monthly Subscription",
-      amount: 59.99,
-      currency: "USD",
-      features: [
-        "For Shopify Plan Stores",
-        "Automatic Review Requests",
-        "Display Reviews On-Site",
-        "Collect Photos/Videos",
-        "Share Reviews to Facebook",
-        "Custom questions",
-        "Import existing reviews",
-        "Support within 24 Hrs",
-      ],
-    },
-    yearly: {
-      name: "Shopify Plus Yearly Subscription",
-      amount: 479.9,
-      currency: "USD",
-      originalPrice: 719.88,
-      features: [
-        "For Shopify Plan Stores",
-        "Automatic Review Requests",
-        "Display Reviews On-Site",
-        "Collect Photos/Videos",
-        "Share Reviews to Facebook",
-        "Custom questions",
-        "Import existing reviews",
-        "Support within 24 Hrs",
-      ],
-    },
-  },
-};
 
 export const loader = async ({ request }) => {
-  const obj = await authenticate.admin(request);
-  // Uncomment below line in production
-  // const fetchShopPlan = async (admin, session) => {
-  //   const data = await admin.rest.resources.Shop.all({
-  //     session: session,
-  //     fields: "plan_name",
-  //   });
-  //   return data.data[0].plan_name;
-  // };
-  // const shopPlan = await fetchShopPlan(admin, session);
-
-  // For testing
-  // const shopPlan = "partner_test"
-  const shopPlan = "basic";
-  // const shopPlan = "shopify";
-  // const shopPlan = "advanced";
-  // const shopPlan = "enterprise";
-
-  const isShopFree = shopPlan === "partner_test";
-
-  const response = await obj.admin.graphql(`
+  const { admin } = await authenticate.admin(request);
+  const response = await admin.graphql(`
     {
       currentAppInstallation {
         activeSubscriptions {
           id
           name
-          test
         }
       }
     }
   `);
 
-  const currentPlan = await response.json();
-
-  return json({
-    shop: {
-      isShopFree,
-      plans: {
-        ...PLANS[shopPlan],
-      },
-    },
-    app: currentPlan?.data?.currentAppInstallation?.activeSubscriptions[0],
-  });
+  const currentPlan = (await response.json())?.data?.currentAppInstallation
+    ?.activeSubscriptions;
+  return json(currentPlan);
 };
 
 export default function Billing() {
   const loaderData = useLoaderData();
+  const currentPlan = loaderData[0]?.name;
+  const currentPlanId = loaderData[0]?.id;
+  const [currentPlanName, currentPlanDuration] = currentPlan?.split("-") || [
+    "free",
+    undefined,
+  ];
+
   const actionData = useActionData();
-
-  const { shop, app } = loaderData;
-  const { monthly, yearly } = shop.plans;
-
-  const isMonthly = shop?.plans?.monthly?.name === app?.name;
-  const isYearly = shop?.plans?.yearly?.name === app?.name;
+  const [planDuration, setPlanDuration] = useState("monthly");
 
   useEffect(() => {
     if (actionData?.confirmationUrl) {
@@ -206,248 +41,210 @@ export default function Billing() {
     }
   }, [actionData]);
 
-  const handleSubmit = (event) => {
-    if (!window.confirm("Are you sure you want to cancel the plan?")) {
-      event.preventDefault();
-    }
-  };
+  const isCurrentPlan = (item) => item.id.includes(currentPlanName);
 
   return (
     <div className="billing-container">
-      <h1>Billings</h1>
-      <div className="billing-app">
-        <div className="billing-plans">
-          <div className="billing-current-plan">
-            <div>
-              <h2>Current Subscription</h2>
-              <p>
-                {shop.isShopFree
-                  ? "No Subscription"
-                  : app?.name
-                    ? app?.name
-                    : "Free Subscription"}
-              </p>
+      <div className="billing-header">
+        <h1>Select a Plan</h1>
+        <div>
+          {["monthly", "annually"].map((duration) => (
+            <span key={duration}>
+              <input
+                type="radio"
+                name="billing-radio-plan"
+                id={`billing-radio-${duration}`}
+                onChange={() => setPlanDuration(duration)}
+                checked={planDuration === duration}
+              />
+              <label
+                className="custom-radio-btn"
+                onClick={() => setPlanDuration(duration)}
+              >
+                {planDuration === duration && (
+                  <label className="custom-radio-inner-btn"></label>
+                )}
+              </label>
+              <label htmlFor={`billing-radio-${duration}`}>
+                {duration.toUpperCase()}
+              </label>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="billing-plans">
+        {plans[planDuration].map((item, index) => (
+          <div
+            key={index}
+            className={`billing-plans-item ${isCurrentPlan(item) ? "active-plan" : ""}`}
+          >
+            <div className="billing-plans-item-header">
+              <h3>{item.name}</h3>
             </div>
-            <Form action="/app/billing" method="DELETE" onSubmit={handleSubmit}>
-              <input type="hidden" name="id" value={app?.id || ""} />
-              <button type="submit">Cancel Plan</button>
-            </Form>
+
+            <div className="billing-plans-item-price">
+              <span className="price">
+                {item.amount > 0
+                  ? `${item.currencySymbol} ${item.amount}`
+                  : "Free"}
+              </span>
+            </div>
+
+            <div className="billing-plans-item-information"></div>
+
+            <div className="billing-plans-item-buttons">
+              <Form action="/app/billing" method="POST">
+                <input type="hidden" name="name" value={item.id} />
+                <input type="hidden" name="amount" value={item.amount} />
+                <input
+                  type="hidden"
+                  name="currencyCode"
+                  value={item.currencyCode}
+                />
+                <input
+                  type="hidden"
+                  name="interval"
+                  value={
+                    planDuration === "monthly" ? "EVERY_30_DAYS" : "ANNUAL"
+                  }
+                />
+
+                {isCurrentPlan(item) ? (
+                  <>
+                    <button disabled>Current Plan</button>
+                    {currentPlanName !== "free" &&
+                      currentPlanDuration !== planDuration && (
+                        <button>
+                          {currentPlanDuration === "monthly"
+                            ? "Upgrade to Yearly Plan"
+                            : "Downgrade to Monthly Plan"}
+                        </button>
+                      )}
+                  </>
+                ) : (
+                  <button>Select Plan</button>
+                )}
+              </Form>
+
+              {item.id === currentPlan && (
+                <Form
+                  action="/app/billing"
+                  method="DELETE"
+                  id="billing-delete-button"
+                >
+                  <input type="hidden" name="id" value={currentPlanId} />
+                  <button
+                    className="cancel-btn"
+                    onClick={(event) => {
+                      if (
+                        !confirm("Are you sure you want to Cancel the Plan?")
+                      ) {
+                        event.preventDefault();
+                      }
+                    }}
+                  >
+                    Cancel Plan
+                  </button>
+                </Form>
+              )}
+            </div>
+
+            <div className="billling-plans-item-features">
+              {item.features.map((feature, index) => (
+                <li key={index}>{feature}</li>
+              ))}
+            </div>
           </div>
-
-          {!shop.isShopFree && (
-            <div className="billing-available-plans">
-              <div
-                className={`billing-plan-item ${isMonthly ? "billing-item-disabled" : ""}`}
-              >
-                <div>
-                  <h2>{monthly.name}</h2>
-                </div>
-                <div>
-                  <p>
-                    <i>$ {monthly.amount}/month</i>
-                  </p>
-                </div>
-                <div>
-                  <ul>
-                    {monthly.features.map((feature, index) => (
-                      <li key={index}>{feature}</li>
-                    ))}
-                  </ul>
-                </div>
-                <Form method="POST">
-                  <input
-                    type="hidden"
-                    name="name"
-                    value={shop?.plans?.monthly.name || ""}
-                  />
-                  <input
-                    type="hidden"
-                    name="amount"
-                    value={shop?.plans?.monthly.amount || ""}
-                  />
-                  <input
-                    type="hidden"
-                    name="currencyCode"
-                    value={shop?.plans?.monthly.currency || ""}
-                  />
-                  <input type="hidden" name="interval" value="EVERY_30_DAYS" />
-                  <button type="submit">
-                    {isMonthly
-                      ? "Active Plan"
-                      : isYearly
-                        ? "Downgrade to Monthly Plan"
-                        : "Upgrade to Monthly plan"}
-                  </button>
-                </Form>
-              </div>
-              <div
-                className={`billing-plan-item ${isYearly ? "billing-item-disabled" : ""}`}
-              >
-                <div>
-                  <h2>{yearly.name}</h2>
-                </div>
-                <div>
-                  <span style={{ display: "flex", gap: "0.5rem" }}>
-                    <p>
-                      <i>$ {yearly.amount}/year</i>
-                    </p>
-                    <p style={{ textDecorationLine: "line-through" }}>
-                      <i>$ {yearly.originalPrice}/year</i>
-                    </p>
-                  </span>
-                </div>
-                <div>
-                  <ul>
-                    {yearly.features.map((feature, index) => (
-                      <li key={index}>{feature}</li>
-                    ))}
-                  </ul>
-                </div>
-                <Form method="POST">
-                  <input
-                    type="hidden"
-                    name="name"
-                    value={shop?.plans?.yearly.name || ""}
-                  />
-                  <input
-                    type="hidden"
-                    name="amount"
-                    value={shop?.plans?.yearly.amount || ""}
-                  />
-                  <input
-                    type="hidden"
-                    name="currencyCode"
-                    value={shop?.plans?.yearly.currency || ""}
-                  />
-                  <input type="hidden" name="interval" value="ANNUAL" />
-                  <button type="submit">
-                    {isYearly ? "Active Plan" : "Upgrade to Annual Plan"}
-                  </button>
-                </Form>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="billing-account">
-          <h2>Account details</h2>
-          <p>John Doe</p>
-          <p>Johndoe@gmail.com</p>
-        </div>
+        ))}
       </div>
     </div>
   );
 }
 
 export const action = async ({ request }) => {
-  const { admin, redirect } = await authenticate.admin(request);
-  const method = request.method;
+  const { admin, session } = await authenticate.admin(request);
   const formData = await request.formData();
+  const { method } = request;
+
+  const handleError = (userErrors) => {
+    if (userErrors.length > 0) {
+      throw new Error(userErrors.map((error) => error.message).join(", "));
+    }
+  };
 
   try {
-    switch (method) {
-      case "POST": {
-        const name = formData.get("name");
-        const amount = formData.get("amount");
-        const currencyCode = formData.get("currencyCode");
-        const interval = formData.get("interval");
+    if (method === "DELETE") {
+      const id = formData.get("id");
+      if (!id) return json({ error: "ID field is required" });
 
-        if (!name || !amount || !currencyCode || !interval) {
-          return json({ error: "All fields are required" }, { status: 400 });
-        }
-
-        const response = await admin.graphql(
-          `#graphql
-          mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean!) {
-            appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, test: $test) {
-              userErrors {
-                field
-                message
-              }
-              appSubscription {
-                id
-              }
-              confirmationUrl
+      const response = await admin.graphql(
+        `#graphql
+        mutation AppSubscriptionCancel($id: ID!) {
+          appSubscriptionCancel(id: $id) {
+            userErrors {
+              message
             }
-          }`,
-          {
-            variables: {
-              name,
-              returnUrl:
-                "https://admin.shopify.com/store/bradnextgenwishlist/apps/brad-nextgen-wishlist-1/app/billing",
-              test: true,
-              lineItems: [
-                {
-                  plan: {
-                    appRecurringPricingDetails: {
-                      price: {
-                        amount: parseFloat(amount), // Ensure amount is a number
-                        currencyCode,
-                      },
-                      interval,
-                    },
+            appSubscription {
+              id
+              status
+            }
+          }
+        }`,
+        { variables: { id } },
+      );
+
+      const result = await response.json();
+      handleError(result?.data?.appSubscriptionCancel?.userErrors);
+      return json(result?.data?.appSubscriptionCancel);
+    } else if (method === "POST") {
+      const name = formData.get("name");
+      const amount = formData.get("amount");
+      const currencyCode = formData.get("currencyCode");
+      const interval = formData.get("interval");
+
+      if (!name || !amount || !currencyCode || !interval) {
+        return json({ error: "All fields are required" });
+      }
+
+      const response = await admin.graphql(
+        `#graphql
+        mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean!) {
+          appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, test: $test) {
+            userErrors {
+              message
+            }
+            appSubscription {
+              id
+            }
+            confirmationUrl
+          }
+        }`,
+        {
+          variables: {
+            name,
+            returnUrl: `https://admin.shopify.com/store/${session.shop.replace(".myshopify.com", "")}/apps/brad-nextgen-wishlist-1/app/billing`,
+            test: true,
+            lineItems: [
+              {
+                plan: {
+                  appRecurringPricingDetails: {
+                    price: { amount: parseFloat(amount), currencyCode },
+                    interval,
                   },
                 },
-              ],
-            },
+              },
+            ],
           },
-        );
+        },
+      );
 
-        if (!response.ok) {
-          throw new Error("GraphQL request failed");
-        }
-
-        const data = await response.json();
-        const result = data?.data?.appSubscriptionCreate;
-        if (result?.userErrors?.length > 0) {
-          return json({ errors: result.userErrors }, { status: 400 });
-        }
-        return json(result);
-      }
-
-      case "DELETE": {
-        const id = formData.get("id");
-
-        if (!id) return json({ error: "ID is missing" }, { status: 400 });
-
-        const response = await admin.graphql(
-          `#graphql
-          mutation AppSubscriptionCancel($id: ID!) {
-            appSubscriptionCancel(id: $id) {
-              userErrors {
-                field
-                message
-              }
-              appSubscription {
-                id
-                status
-              }
-            }
-          }`,
-          {
-            variables: { id },
-          },
-        );
-
-        if (!response.ok) {
-          throw new Error("GraphQL request failed");
-        }
-
-        const data = await response.json();
-        const result = data?.data?.appSubscriptionCancel;
-
-        if (result?.userErrors?.length > 0) {
-          return json({ errors: result.userErrors }, { status: 400 });
-        }
-
-        return json(result);
-      }
-
-      default:
-        return json({ error: "No such method" }, { status: 405 });
+      const result = await response.json();
+      handleError(result?.data?.appSubscriptionCreate?.userErrors);
+      return json(result?.data?.appSubscriptionCreate);
     }
-  } catch (error) {
-    console.error("Error occurred:", error.message);
-    return json({ error: error.message });
+  } catch (err) {
+    console.error(err);
+    return json({ error: err.message });
   }
 };

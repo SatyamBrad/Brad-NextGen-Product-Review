@@ -1,6 +1,6 @@
 import { useState } from "react";
-import "../styles/settings-preview.css";
-export default function SettingsPreview({
+import "../styles/customizer-preview.css";
+export default function CustomizerPreview({
   formColor,
   summaryColor,
   listColor,
@@ -49,10 +49,10 @@ export default function SettingsPreview({
   // console.log(Math.floor  (demoReviewsList.length / reviewsPerPage))
 
   return (
-    <div className="settings-preview">
+    <div className="customizer-preview">
       {isFormOpen && (
-        <div className="settings-preview-form">
-          <div className="settings-preview-form-app">
+        <div className="customizer-preview-form">
+          <div className="customizer-preview-form-app">
             <div
               onClick={() => {
                 setIsFormOpen(false);
@@ -90,7 +90,7 @@ export default function SettingsPreview({
             <h1>Write a review</h1>
 
             <div
-              className="settings-preview-form-item"
+              className="customizer-preview-form-item"
               style={{
                 display: "flex",
                 gap: "0.3rem",
@@ -185,7 +185,7 @@ export default function SettingsPreview({
               </svg>
             </div>
 
-            <div className="settings-preview-form-item">
+            <div className="customizer-preview-form-item">
               <label htmlFor="preview-form-review-title">Title</label>
               <input
                 type="text"
@@ -200,7 +200,7 @@ export default function SettingsPreview({
               />
             </div>
 
-            <div className="settings-preview-form-item">
+            <div className="customizer-preview-form-item">
               <label htmlFor="preview-form-review-description">Review</label>
               <textarea
                 rows={5}
@@ -215,7 +215,7 @@ export default function SettingsPreview({
               ></textarea>
             </div>
 
-            <div className="settings-preview-form-item">
+            <div className="customizer-preview-form-item">
               <label htmlFor="preview-form-review-author">Your Name</label>
               <input
                 type="text"
@@ -229,7 +229,7 @@ export default function SettingsPreview({
               />
             </div>
 
-            <div className="settings-preview-form-item">
+            <div className="customizer-preview-form-item">
               <label>Upload Images(Optional)</label>
               <div style={{ display: "flex" }}>
                 <input
@@ -277,9 +277,9 @@ export default function SettingsPreview({
             </div>
 
             {attributes?.map((item, index) => (
-              <div key={index} className="settings-preview-form-item">
+              <div key={index} className="customizer-preview-form-item">
                 <label>{item.header?.toUpperCase()}</label>
-                <div className="settings-preview-form-attributes">
+                <div className="customizer-preview-form-attributes">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <>
                       <input
@@ -312,7 +312,7 @@ export default function SettingsPreview({
               </div>
             ))}
 
-            <div className="settings-preview-form-item">
+            <div className="customizer-preview-form-item">
               <button
                 onClick={() => {
                   setIsFormOpen(false);
@@ -326,7 +326,7 @@ export default function SettingsPreview({
                     },
                   ]);
                 }}
-                className="settings-preview-submit-form"
+                className="customizer-preview-submit-form"
               >
                 Submit Review
               </button>
@@ -337,8 +337,8 @@ export default function SettingsPreview({
 
       <h1>Customer Reviews</h1>
 
-      <div className="settings-preview-summary">
-        <div className="settings-preview-summary-details">
+      <div className="customizer-preview-summary">
+        <div className="customizer-preview-summary-details">
           <div className="summary-details">
             <div>
               <h1>4.2</h1>
@@ -546,7 +546,7 @@ export default function SettingsPreview({
         </div>
 
         {hasAttribute && (
-          <div className="settings-preview-summary-attributes">
+          <div className="customizer-preview-summary-attributes">
             <h1>100% people would recommend this</h1>
             {attributes.map((item, index) => (
               <div key={index}>
@@ -568,7 +568,7 @@ export default function SettingsPreview({
         )}
       </div>
 
-      <div className="settings-preview-buttons">
+      <div className="customizer-preview-buttons">
         <button onClick={() => setIsFilterOpen((prev) => !prev)}>Filter</button>
         <button
           onClick={() => {
@@ -580,11 +580,11 @@ export default function SettingsPreview({
       </div>
 
       {isFilterOpen && (
-        <div className="settings-preview-filter">
-          <div className="settings-preview-filter-item">
+        <div className="customizer-preview-filter">
+          <div className="customizer-preview-filter-item">
             <label>Ratings</label>
             {[1, 2, 3, 4, 5].map((item) => (
-              <span key={item} className="settings-preview-filter-option">
+              <span key={item} className="customizer-preview-filter-option">
                 {item}
                 {[...Array(item)].map((_, index) => (
                   <svg
@@ -606,10 +606,10 @@ export default function SettingsPreview({
               </span>
             ))}
           </div>
-          <div className="settings-preview-filter-item">
+          <div className="customizer-preview-filter-item">
             <label>Order By</label>
             {["Latest First", "Oldest First"].map((item, index) => (
-              <span className="settings-preview-filter-option" key={index}>
+              <span className="customizer-preview-filter-option" key={index}>
                 {item}
               </span>
             ))}
@@ -617,14 +617,14 @@ export default function SettingsPreview({
         </div>
       )}
 
-      <div className={`settings-preview-list list-type-${listType}`}>
+      <div className={`customizer-preview-list list-type-${listType}`}>
         {demoReviewsList
           .slice(
             currReviewPage * reviewsPerPage,
             currReviewPage * reviewsPerPage + reviewsPerPage,
           )
           .map((item) => (
-            <div className="settings-preview-list-item">
+            <div className="customizer-preview-list-item">
               <div className="review-details">
                 <div className="review-author">
                   <h3>{item.reviewAuthor?.toUpperCase()}</h3>
@@ -687,7 +687,7 @@ export default function SettingsPreview({
           ))}
       </div>
 
-      <div className="settings-preview-page-navigation">
+      <div className="customizer-preview-page-navigation">
         {[...Array(Math.ceil(demoReviewsList.length / reviewsPerPage))].map(
           (_, index) => (
             <span key={index} onClick={() => setCurrReviewPage(index)}>
