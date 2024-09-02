@@ -56,7 +56,7 @@ export default function ReviewComponent({ item }) {
               {/* // publish button  */}
               <Form action="/app/reviews" method="POST">
                 <input type="hidden" name="id" value={item.id} />
-                <input type="hidden" name="newStatus" value={item.status === "Published" ? "Unpublished" : "Published"}/>
+                <input type="hidden" name="newStatus" value={item.status === "Pending" ? "Pending" : item.status === "Published" ? "Unpublished" : "Published"} />
                 <button type="submit"
                   style={{
                     width: "110px",
@@ -71,7 +71,7 @@ export default function ReviewComponent({ item }) {
                     textAlign: "center",
                   }}
                 >
-                  {item.status === "Published" ? "Unpublish" : "Publish"}
+                  {item.status === "Pending" ? "Publish" : item.status === "Published" ? "Unpublish" : "Publish"}
                 </button>
               </Form>
             </div>

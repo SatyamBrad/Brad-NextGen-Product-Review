@@ -453,7 +453,7 @@ const fillReviewList = (data) => {
   data.forEach((item) => {
     const reviewAuthor = document.createElement("div");
     reviewAuthor.classList.add("bnpr-review-author");
-    reviewAuthor.innerText = item.customerName
+    reviewAuthor.innerText = item.customerName;
 
     const starContainer = document.createElement("div");
     starContainer.classList.add("bnpr-star-container");
@@ -484,7 +484,7 @@ const fillReviewList = (data) => {
     if (item.images.length > 0) {
       imageContainer.classList.add("bnpr-image-container");
 
-      item.images.forEach(({imageUrl}) => {
+      item.images.forEach(({ imageUrl }) => {
         const img = document.createElement("img");
         img.classList.add("bnpr-image");
         img.src = imageUrl;

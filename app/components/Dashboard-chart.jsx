@@ -1,15 +1,15 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
-import 'chart.js/auto';  // Required for Chart.js 3 and above
-import './DashboardChart.css';  // Custom CSS for styling
+import 'chart.js/auto';
+import './DashboardChart.css';
 
-const ReviewChart = () => {
+const ReviewChart = ({ title, count, subtitle, reviewData, reviewDates }) => {
     const data = {
-        labels: ['16/05/24', '18/05/24', '20/05/24', '22/05/24'],  // X-axis labels
+        labels: reviewDates,  // X-axis labels from props
         datasets: [
             {
                 label: 'New review over time',
-                data: [0, 5, 5, 0],  // Y-axis data points
+                data: reviewData,  // Y-axis data points from props
                 borderColor: '#ffffff',
                 borderWidth: 2,
                 pointBackgroundColor: '#ffffff',
@@ -56,9 +56,9 @@ const ReviewChart = () => {
 
     return (
         <div className="review-chart-container">
-            <h3 className="chart-title">Total Review</h3>
-            <p className="chart-count">5,000</p>
-            <p className="chart-subtitle">New review over time</p>
+            <h3 className="chart-title">{title}</h3>
+            <p className="chart-count">{count}</p>
+            <p className="chart-subtitle">{subtitle}</p>
             <Line data={data} options={options} />
         </div>
     );

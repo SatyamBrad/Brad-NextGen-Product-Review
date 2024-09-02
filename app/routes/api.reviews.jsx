@@ -168,7 +168,7 @@ export const action = async ({ request }) => {
       case "FETCH_BY_PRODUCT":
         if (!shop) throw new Error("Required field: shop");
         if (!productId) throw new Error("Required field: productId");
-        
+
         const reviewsPerPage = Number(formData.get("reviewsPerPage"))
         const fetchByProductReviews = await db.review.findMany({
           where: {
@@ -208,6 +208,10 @@ export const action = async ({ request }) => {
         
         const imageUrls = [];
         await uploadImages(imageUrls, formData.getAll("images"));
+        console.log(Object.entries(formAttributes).map(([key, value]) => ({
+          attributeId: key,
+          value: value && Number(value),
+        })));
         const reviewToCreate = await db.review.create({
           data: {
             shop,
