@@ -47,16 +47,16 @@ model Review {
 }
 
 model ReviewImage {
-  id       String     @id @default(uuid())
+  id       String  @id @default(uuid())
   reviewId String
   review   Review  @relation(fields: [reviewId], references: [id])
   imageUrl String?
 }
 
 model ReviewDetail {
-  id          String    @id @default(uuid())
+  id          String  @id @default(uuid())
   reviewId    String
-  review      Review @relation(fields: [reviewId], references: [id])
-  attributeId String
+  review      Review  @relation(fields: [reviewId], references: [id])
+  attributeId String?
   value       Int?
 }

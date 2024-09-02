@@ -43,7 +43,7 @@ CREATE TABLE "ReviewImage" (
 CREATE TABLE "ReviewDetail" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "reviewId" TEXT NOT NULL,
-    "attributeId" TEXT NOT NULL,
+    "attributeId" TEXT,
     "value" INTEGER,
     CONSTRAINT "ReviewDetail_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "Review" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
