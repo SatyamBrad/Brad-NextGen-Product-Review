@@ -145,26 +145,6 @@ export const action = async ({ request }) => {
         });
         return cors(request, fetchAttributesResponse);
 
-      case "FETCH_ALL":
-        if (!shop) throw new Error("Required Field: shop");
-
-        const fetchAllReviews = await db.review.findMany({
-          where: {
-            shop,
-          },
-          include: {
-            images: true,
-          },
-        });
-
-        const fetchAllResponse = json({
-          ok: true,
-          message: "Successfully fetched all data from shop",
-          data: fetchAllReviews,
-        });
-
-        return cors(request, fetchAllResponse);
-
       case "FETCH_BY_PRODUCT":
         if (!shop) throw new Error("Required field: shop");
         if (!productId) throw new Error("Required field: productId");

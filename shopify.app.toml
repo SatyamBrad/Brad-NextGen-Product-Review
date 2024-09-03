@@ -3,7 +3,7 @@
 client_id = "53eb8bac00dcac185e719de2e1721e66"
 name = "Brad NextGen Wishlist"
 handle = "brad-nextgen-wishlist-1"
-application_url = "https://suggestion-switched-violence-diabetes.trycloudflare.com"
+application_url = "https://button-towards-finals-technique.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,16 +16,16 @@ scopes = "read_customers,write_customers,write_products"
 
 [auth]
 redirect_urls = [
-  "https://suggestion-switched-violence-diabetes.trycloudflare.com/auth/callback",
-  "https://suggestion-switched-violence-diabetes.trycloudflare.com/auth/shopify/callback",
-  "https://suggestion-switched-violence-diabetes.trycloudflare.com/api/auth/callback"
+  "https://button-towards-finals-technique.trycloudflare.com/auth/callback",
+  "https://button-towards-finals-technique.trycloudflare.com/auth/shopify/callback",
+  "https://button-towards-finals-technique.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
 
 [app_proxy]
-url = "https://suggestion-switched-violence-diabetes.trycloudflare.com/api"
+url = "https://button-towards-finals-technique.trycloudflare.com/api"
 subpath = "prapp"
 prefix = "apps"
 

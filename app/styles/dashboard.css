@@ -1,0 +1,44 @@
+.dashboard-container {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  padding: 1rem;
+  width: 100%;
+  display: flex;
+}
+
+.dashboard-navbar {
+  border-right: 2px solid white;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 1rem;
+  padding-block: 1rem;
+}
+
+.dashboard-navbar li {
+  margin-inline: auto;
+  width: 90%;
+  list-style: none;
+  text-transform: capitalize;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-navbar li:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-navbar li.selected-tab {
+  background-color: #ccc;
+  color: black;
+}
+
+.dashboard-content {
+  padding: 1rem;
+  flex: 5;
+}
