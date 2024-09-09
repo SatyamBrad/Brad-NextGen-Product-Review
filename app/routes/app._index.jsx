@@ -1,4 +1,5 @@
 import React from "react";
+import "../styles/home.css"
 
 export const loader = async ({ request }) => {
   return null;
@@ -6,8 +7,10 @@ export const loader = async ({ request }) => {
 
 export default function Index() {
   return (
-    <div>
-      Home
+    <div className="home-container">
+      <div className="home-navbar">
+        
+      </div>
     </div>
   );
 }

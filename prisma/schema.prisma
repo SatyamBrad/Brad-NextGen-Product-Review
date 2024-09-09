@@ -49,14 +49,14 @@ model Review {
 model ReviewImage {
   id       String  @id @default(uuid())
   reviewId String
-  review   Review  @relation(fields: [reviewId], references: [id])
+  review   Review  @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   imageUrl String?
 }
 
 model ReviewDetail {
   id          String  @id @default(uuid())
   reviewId    String
-  review      Review  @relation(fields: [reviewId], references: [id])
+  review      Review  @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   attributeId String?
   value       Int?
 }

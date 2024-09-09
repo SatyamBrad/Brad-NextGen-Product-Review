@@ -75,12 +75,9 @@ export default function Billing() {
 
       <div className="billing-plans">
         {plans[planDuration].map((item, index) => (
-          <div
-            key={index}
-            className={`billing-plans-item ${isCurrentPlan(item) ? "active-plan" : ""}`}
-          >
-            <div className="billing-plans-item-header">
-              <h3>{item.name}</h3>
+          <div key={index} className="billing-plans-item">
+            <div>
+              <h3 className="billing-plans-item-name">{item.name}</h3>
             </div>
 
             <div className="billing-plans-item-price">
@@ -94,59 +91,74 @@ export default function Billing() {
             <div className="billing-plans-item-information"></div>
 
             <div className="billing-plans-item-buttons">
-              <Form action="/app/billing" method="POST">
-                <input type="hidden" name="name" value={item.id} />
-                <input type="hidden" name="amount" value={item.amount} />
-                <input
-                  type="hidden"
-                  name="currencyCode"
-                  value={item.currencyCode}
-                />
-                <input
-                  type="hidden"
-                  name="interval"
-                  value={
-                    planDuration === "monthly" ? "EVERY_30_DAYS" : "ANNUAL"
-                  }
-                />
-
-                {isCurrentPlan(item) ? (
-                  <>
-                    <button disabled>Current Plan</button>
-                    {currentPlanName !== "free" &&
-                      currentPlanDuration !== planDuration && (
-                        <button>
-                          {currentPlanDuration === "monthly"
-                            ? "Upgrade to Yearly Plan"
-                            : "Downgrade to Monthly Plan"}
-                        </button>
-                      )}
-                  </>
-                ) : (
-                  <button>Select Plan</button>
-                )}
-              </Form>
-
-              {item.id === currentPlan && (
-                <Form
-                  action="/app/billing"
-                  method="DELETE"
-                  id="billing-delete-button"
-                >
-                  <input type="hidden" name="id" value={currentPlanId} />
-                  <button
-                    className="cancel-btn"
-                    onClick={(event) => {
-                      if (
-                        !confirm("Are you sure you want to Cancel the Plan?")
-                      ) {
-                        event.preventDefault();
-                      }
-                    }}
-                  >
-                    Cancel Plan
-                  </button>
+              {isCurrentPlan(item) ? (
+                <button disabled>Current Plan</button>
+              ) : (
+                <Form action="/app/billing" method="POST">
+                  <input type="hidden" name="name" value={item.id} />
+                  <input type="hidden" name="amount" value={item.amount} />
+                  <input
+                    type="hidden"
+                    name="currencyCode"
+                    value={item.currencyCode}
+                  />
+                  <input
+                    type="hidden"
+                    name="interval"
+                    value={
+                      planDuration === "monthly" ? "EVERY_30_DAYS" : "ANNUAL"
+                    }
+                  />
+                  <button type="submit"> Select Plan </button>
                 </Form>
+              )}
+
+              {currentPlanName !== "free" && isCurrentPlan(item) ? (
+                currentPlanDuration === planDuration ? (
+                  <Form
+                    action="/app/billing"
+                    method="DELETE"
+                    id="billing-delete-button"
+                  >
+                    <input type="hidden" name="id" value={currentPlanId} />
+                    <button
+                      className="cancel-btn"
+                      onClick={(event) => {
+                        if (
+                          !confirm("Are you sure you want to Cancel the Plan?")
+                        ) {
+                          event.preventDefault();
+                        }
+                      }}
+                    >
+                      Cancel Plan
+                    </button>
+                  </Form>
+                ) : (
+                  <Form action="/app/billing" method="POST">
+                    <input type="hidden" name="name" value={item.id} />
+                    <input type="hidden" name="amount" value={item.amount} />
+                    <input
+                      type="hidden"
+                      name="currencyCode"
+                      value={item.currencyCode}
+                    />
+                    <input
+                      type="hidden"
+                      name="interval"
+                      value={
+                        planDuration === "monthly" ? "EVERY_30_DAYS" : "ANNUAL"
+                      }
+                    />
+                    {currentPlanDuration === "monthly" ? (
+                      <button>Upgrade to Yearly plan</button>
+                    ) : (
+                      <button>Downgrade to Monthly Plan</button>
+                    )}
+                  </Form>
+                )
+              ) : (
+                <button style={{ visibility: "hidden" }}>hidden button</button>
               )}
             </div>
 
