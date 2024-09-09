@@ -11,6 +11,13 @@
   align-items: center;
 }
 
+.billing-header > h1 {
+  font-size: 1.2rem;
+  text-transform: capitalize;
+  font-weight: bold;
+  margin-block: 1rem;
+}
+
 .billing-header > div {
   display: flex;
   gap: 1rem;
@@ -25,13 +32,7 @@
 
 .billing-header label {
   cursor: pointer;
-}
-
-.billing-header > h1 {
   font-size: 1rem;
-  text-transform: capitalize;
-  font-weight: bold;
-  margin-block: 1rem;
 }
 
 .billing-header input[type="radio"] {
@@ -64,35 +65,28 @@ input[type="radio"]:hover + .custom-radio-btn,
 
 .billing-plans {
   margin-block: 2rem;
-  height: 80%;
   display: flex;
-  align-items: flex-start;
   justify-content: space-around;
   gap: 1rem;
+}
+
+.billing-plans-item {
+  width: 21%;
+  background-color: #3c3c4e;
+  color: white;
+  padding: 1.5rem 1.2rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  gap: 0.8rem;
 }
 
 .billing-plans-item > div {
   width: 100%;
 }
 
-.billing-plans-item {
-  width: 20%;
-  background-color: white;
-  padding: 1rem;
-  border-radius: 5px;
-  color: black;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-  gap: 0.8rem;
-}
-
-.billing-plans-item.active-plan {
-  background-color: #baffb4;
-}
-
-.billing-plans-item-header > h3 {
+.billing-plans-item-name {
   font-size: 1rem;
 }
 
@@ -102,24 +96,23 @@ input[type="radio"]:hover + .custom-radio-btn,
 }
 
 .billing-plans-item-buttons button {
-  margin-block: 0.3rem;
   width: 100%;
-  padding: 0.4rem 1rem;
-  border: 2px solid black;
+  margin-block: 0.3rem;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  border: none;
   border-radius: 15px;
-  background-color: transparent;
   cursor: pointer;
   font-weight: bold;
 }
 
 .billing-plans-item-buttons button.cancel-btn {
   background-color: #ff6363;
-  border-color: #ff6363;
   color: white;
 }
+
 .billing-plans-item-buttons button.cancel-btn:hover {
   background-color: red;
-  border-color: red;
 }
 
 .billing-plans-item-buttons button:hover,
@@ -129,11 +122,14 @@ input[type="radio"]:hover + .custom-radio-btn,
 }
 
 .billling-plans-item-features {
-  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  padding-left: 0.3rem;
 }
 
 .billling-plans-item-features li {
   list-style: none;
-  font-size: 0.9rem;
-  margin-block: 0.2rem;
+  font-size: 1rem;
 }
